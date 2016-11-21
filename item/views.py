@@ -46,6 +46,8 @@ class ItemCategoryUpdateAPIView(UpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        if not instance:
+            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -76,6 +78,13 @@ class ItemCategoryRetrieveDestroyAPIView(RetrieveDestroyAPIView):
                             status=status.HTTP_400_BAD_REQUEST)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class ItemCategoryListAPIView(ListAPIView):
@@ -123,6 +132,8 @@ class ItemUpdateAPIView(UpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        if not instance:
+            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -143,6 +154,13 @@ class ItemRetrieveDestroyAPIView(RetrieveDestroyAPIView):
     def get_object(self):
         obj_id = self.kwargs.get("id")
         return Item.objects(id=obj_id).first()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 # 列举属于某个category的items

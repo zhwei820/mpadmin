@@ -1,6 +1,8 @@
 # coding=utf-8
 import datetime
 
+from rest_framework import status
+
 from arch.models import Layer, Group
 from arch.serializers import LayerSerializer, GroupSerializer
 from django.shortcuts import render
@@ -28,6 +30,8 @@ class LayerUpdateAPIView(UpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        if not instance:
+            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -43,6 +47,13 @@ class LayerRetrieveDestroyAPIView(RetrieveDestroyAPIView):
     def get_object(self):
         obj_id = self.kwargs.get("id")
         return Layer.objects(id=obj_id).first()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class LayerListAPIView(ListAPIView):
@@ -68,6 +79,8 @@ class GroupUpdateAPIView(UpdateAPIView):
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
+        if not instance:
+            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -83,6 +96,13 @@ class GroupRetrieveDestroyAPIView(RetrieveDestroyAPIView):
     def get_object(self):
         obj_id = self.kwargs.get("id")
         return Group.objects(id=obj_id).first()
+
+    def retrieve(self, request, *args, **kwargs):
+        instance = self.get_object()
+        if not instance:
+            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data)
 
 
 class GroupWithLayerIDListAPIView(ListAPIView):
