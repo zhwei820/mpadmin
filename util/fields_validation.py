@@ -67,9 +67,9 @@ def validate_item_field(attr_value, attr_form):
     if field == "string":
         if not isinstance(attr_value, str):
             return -1, {"error": "attr_value is not a string."}
-        if len(attr_value) < attr_form.get('min_length') or len(attr_value) > attr_form.get("max_length"):
-            return -1, {"error": "string length invalid."}
-        if attr_form.get('valid_rule') == "None":
+        if len(attr_value) < int(attr_form["min_length"]) or len(attr_value) > int(attr_form["max_length"]):
+            return -1, {"error": "invalid string length."}
+        if attr_form.get('valid_rule') == "none":
             return 0, {"msg": "success"}
         elif attr_form.get('valid_rule') == "IPaddress":
             pattern = re.compile(r'\d+\.\d+\.\d+\.\d+')  # 匹配IP地址有待改进
@@ -82,14 +82,12 @@ def validate_item_field(attr_value, attr_form):
         match = pattern.match(attr_value)
         if not match:
             return -1, {"error": "did not match rule: %s" % attr_form.get('valid_rule')}
-        if len(attr_value) < int(attr_form["min_length"]) or len(attr_value) > int(attr_form["max_length"]):
-            return -1, {"error": "invalid string length."}
     elif field == "text":
         if not isinstance(attr_value, str):
             return -1, {"error": "attr_value is not a string."}
-        if len(attr_value) < attr_form.get('min_length') or len(attr_value) > attr_form.get("max_length"):
-            return -1, {"error": "string length invalid."}
-        if attr_form.get('valid_rule') == "None":
+        if len(attr_value) < int(attr_form["min_length"]) or len(attr_value) > int(attr_form["max_length"]):
+            return -1, {"error": "invalid string length."}
+        if attr_form.get('valid_rule') == "none":
             return 0, {"msg": "success"}
         elif attr_form.get('valid_rule') == "IPaddress":
             pattern = re.compile(r'\d+\.\d+\.\d+\.\d+')  # 匹配IP地址有待改进
@@ -102,8 +100,6 @@ def validate_item_field(attr_value, attr_form):
         match = pattern.match(attr_value)
         if not match:
             return -1, {"error": "did not match rule: %s" % attr_form.get('valid_rule')}
-        if len(attr_value) < int(attr_form["min_length"]) or len(attr_value) > int(attr_form["max_length"]):
-            return -1, {"error": "invalid string length."}
     elif field == "select":
         if not isinstance(attr_value, str):
             return -1, {"error": "attr_value is not a dict."}
@@ -153,12 +149,12 @@ def validate_item_structure(data):
     if not field_data:
         return -1, {"error": "Field data are not defined."}
     item_category_object = ItemCategory.objects.get(id=category)
-    if item_category_object:
+    if not item_category_object:
         return -1, {"error": "Category does not exists."}
-    for attr_group_name, attr_group_value in field_data:
+    for attr_group_name, attr_group_value in field_data.items():
         if attr_group_name not in item_category_object.structure:
             return -1, {"error": "Invaild attr_group:%s" % attr_group_name}
-        for attr_name, attr_value in attr_group_value:
+        for attr_name, attr_value in attr_group_value.items():
             if attr_name not in item_category_object.structure[attr_group_name]:
                 return -1, {"error": "Invaild attr:%s" % attr_name}
             state, msg = validate_item_field(attr_value, item_category_object.structure[attr_group_name][attr_name])

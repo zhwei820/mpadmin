@@ -24,8 +24,8 @@ class ItemCategory(Document):
 
 
 class Item(DynamicDocument):
-    name = fields.StringField(max_length=200, required=True)
-    category = fields.ReferenceField(ItemCategory, required=True, unique_with='name')
+    name = fields.StringField(max_length=200, required=True, unique_with='category')
+    category = fields.ReferenceField(ItemCategory, required=True)
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())
 
