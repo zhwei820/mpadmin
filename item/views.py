@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_mongoengine.generics import CreateAPIView,\
-    UpdateAPIView, RetrieveDestroyAPIView, RetrieveAPIView
+    UpdateAPIView, RetrieveDestroyAPIView, ListAPIView
 
 from item.models import ItemCategory, Item
 from item.serializers import ItemCategorySerializer, ItemSerializer
@@ -78,6 +78,12 @@ class ItemCategoryRetrieveDestroyAPIView(RetrieveDestroyAPIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
+class ItemCategoryListAPIView(ListAPIView):
+    serializer_class = ItemCategorySerializer
+    pagination_class = None
+    permission_classes = (IsAuthenticated,)
+
+
 class ItemCreateAPIView(CreateAPIView):
     serializer_class = ItemSerializer
     permission_classes = (IsAuthenticated,)
@@ -126,3 +132,14 @@ class ItemRetrieveDestroyAPIView(RetrieveDestroyAPIView):
     def get_object(self):
         obj_id = self.kwargs.get("id")
         return Item.objects(id=obj_id).first()
+
+
+# 列举属于某个category的items
+class ItemListAPIView(ListAPIView):
+    serializer_class = ItemSerializer
+    pagination_class = None
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        obj_id = self.kwargs.get("id")
+        return ItemCategory.objects(id=obj_id)
