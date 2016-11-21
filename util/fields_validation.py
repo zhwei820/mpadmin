@@ -167,52 +167,61 @@ def validate_item_structure(data):
     return 0, {"msg": "success"}
 
 
-def validate_category_structure(data):
-    if not isinstance(data, dict):
-        return -1, {"error": "Data is not a dict."}
-    field = data.get("field")
-    if field not in _valid_fields:
-        return -1, {"error": "Unknown attribute type."}
-    for k, v in _valid_fields[field]:
-        if k not in data:
-            return -1, {"error": "missed rule for %s." % k}
-        pattern = re.compile(v)
-        match = pattern.match(data[k])
-        if not match:
-            return -1, {"error": "dooe not match rule: %s." % k}
-    if field == 'string':
-        if int(data["min_length"]) > int(data["max_length"]):
-            return -1, {"error": "string: min_length is greater than max_length"}
-        if len(data["default"]) < int(data["min_length"]) or len(data["default"]) > int(data["max_length"]):
-            return -1, {"error": "default value's length is invalid"}
-    elif field == 'text':
-        if int(data["min_length"]) > int(data["max_length"]):
-            return -1, {"error": "string: min_length is greater than max_length"}
-        if len(data["default"]) < int(data["min_length"]) or len(data["default"]) > int(data["max_length"]):
-            return -1, {"error": "default value's length is invalid"}
-    elif field == 'select':
-        choices = data["choice"][1:-1].split("|")
-        if data["selected"] not in choices:
-            return -1, {"error": "default choice is not in given choices."}
-    elif field == 'multiple_select':
-        choices = data["choice"][1:-1].split("|")
-        default_choices = data["selected"].split("|")
-        for each in default_choices:
-            if each not in choices:
-                return -1, {"error": "default choice is not in given choices."}
-    elif field == 'integer':
-        if int(data["min_value"]) > int(data["max_value"]):
-            return -1, {"error": "integer: min_value is greater than max_value"}
-        if int(data["default"]) < int(data["min_length"]) or int(data["default"]) > int(data["max_length"]):
-            return -1, {"error": "default value is invalid"}
-    elif field == 'integer':
-        try:
-            date_object = datetime.datetime.strptime(data["default"], '%Y%m%d%H%M%S')
-        except ValueError:
-            return -1, {"error": "time data '%s' does not match format" % data["default"]}
-    elif field == 'reference':
-        item_category_obj = ItemCategory.objects(id=field["reference"])
-        if not item_category_obj:
-            return -1, {"error": "unknown reference."}
+def validate_category_structure(raw_data):
+    structure = raw_data.get("structure")
+    if not structure:
+        return -1, {"error": "raw Data missed attr: structure"}
+    if not isinstance(structure, dict):
+        return -1, {"error": "structure is not a dict."}
+    for k, s_data in structure.items():
+        if not isinstance(s_data, dict):
+            return -1, {"error": "s_data %s is not a dict." % k}
+        for attr_name, data in s_data.items():
+            if not isinstance(data, dict):
+                return -1, {"error": "Data is not a dict."}
+            field = data.get("field")
+            if field not in _valid_fields:
+                return -1, {"error": "Unknown attribute type."}
+            for k, v in _valid_fields[field].items():
+                if k not in data:
+                    return -1, {"error": "missed rule for %s." % k}
+                pattern = re.compile(v)
+                match = pattern.match(data[k])
+                if not match:
+                    return -1, {"error": "dooe not match rule: %s." % k}
+            if field == 'string':
+                if int(data["min_length"]) > int(data["max_length"]):
+                    return -1, {"error": "string: min_length is greater than max_length"}
+                if len(data["default"]) < int(data["min_length"]) or len(data["default"]) > int(data["max_length"]):
+                    return -1, {"error": "default value's length is invalid"}
+            elif field == 'text':
+                if int(data["min_length"]) > int(data["max_length"]):
+                    return -1, {"error": "string: min_length is greater than max_length"}
+                if len(data["default"]) < int(data["min_length"]) or len(data["default"]) > int(data["max_length"]):
+                    return -1, {"error": "default value's length is invalid"}
+            elif field == 'select':
+                choices = data["choice"][1:-1].split("|")
+                if data["selected"] not in choices:
+                    return -1, {"error": "default choice is not in given choices."}
+            elif field == 'multiple_select':
+                choices = data["choice"][1:-1].split("|")
+                default_choices = data["selected"].split("|")
+                for each in default_choices:
+                    if each not in choices:
+                        return -1, {"error": "default choice is not in given choices."}
+            elif field == 'integer':
+                if int(data["min_value"]) > int(data["max_value"]):
+                    return -1, {"error": "integer: min_value is greater than max_value"}
+                if int(data["default"]) < int(data["min_length"]) or int(data["default"]) > int(data["max_length"]):
+                    return -1, {"error": "default value is invalid"}
+            elif field == 'integer':
+                try:
+                    date_object = datetime.datetime.strptime(data["default"], '%Y%m%d%H%M%S')
+                except ValueError:
+                    return -1, {"error": "time data '%s' does not match format" % data["default"]}
+            elif field == 'reference':
+                item_category_obj = ItemCategory.objects(id=field["reference"])
+                if not item_category_obj:
+                    return -1, {"error": "unknown reference."}
 
     return 0, {"msg": "success"}

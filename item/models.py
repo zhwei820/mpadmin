@@ -7,8 +7,8 @@ import datetime
 
 # Create your models here.
 class ItemCategory(Document):
-    name = fields.StringField(max_length=200, required=True)
-    group = fields.ReferenceField(Group, required=True, unique_with='name')
+    name = fields.StringField(max_length=200, required=True, unique_with='group')
+    group = fields.ReferenceField('Group')
     structure = fields.DictField()
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())

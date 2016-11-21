@@ -21,8 +21,8 @@ class Layer(Document):
 
 
 class Group(Document):
-    name = fields.StringField(max_length=200, required=True)
-    layer = fields.ReferenceField(Layer, unique_with="name", required=True)
+    name = fields.StringField(max_length=200, required=True, unique_with="layer")
+    layer = fields.ReferenceField(Layer, required=True)
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())
 
