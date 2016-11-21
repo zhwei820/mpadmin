@@ -79,9 +79,20 @@ class ItemCategoryRetrieveDestroyAPIView(RetrieveDestroyAPIView):
 
 
 class ItemCategoryListAPIView(ListAPIView):
+    queryset = ItemCategory.objects.all()
     serializer_class = ItemCategorySerializer
     pagination_class = None
     permission_classes = (IsAuthenticated,)
+
+
+class ItemCategoryWithGroupIDListAPIView(ListAPIView):
+    serializer_class = ItemCategorySerializer
+    pagination_class = None
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        obj_id = self.kwargs.get("id")
+        return ItemCategory.objects(group=obj_id)
 
 
 class ItemCreateAPIView(CreateAPIView):
@@ -135,11 +146,11 @@ class ItemRetrieveDestroyAPIView(RetrieveDestroyAPIView):
 
 
 # 列举属于某个category的items
-class ItemListAPIView(ListAPIView):
+class ItemWithCategoryIDListAPIView(ListAPIView):
     serializer_class = ItemSerializer
     pagination_class = None
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         obj_id = self.kwargs.get("id")
-        return ItemCategory.objects(id=obj_id)
+        return Item.objects(category=obj_id)

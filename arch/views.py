@@ -9,7 +9,7 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_mongoengine.generics import CreateAPIView, UpdateAPIView, RetrieveDestroyAPIView
+from rest_framework_mongoengine.generics import CreateAPIView, UpdateAPIView, RetrieveDestroyAPIView, ListAPIView
 
 
 class LayerCreateAPIView(CreateAPIView):
@@ -45,6 +45,13 @@ class LayerRetrieveDestroyAPIView(RetrieveDestroyAPIView):
         return Layer.objects(id=obj_id).first()
 
 
+class LayerListAPIView(ListAPIView):
+    queryset = Layer.objects.all()
+    serializer_class = LayerSerializer
+    pagination_class = None
+    permission_classes = (IsAuthenticated,)
+
+
 class GroupCreateAPIView(CreateAPIView):
     serializer_class = GroupSerializer
     permission_classes = (IsAuthenticated,)
@@ -76,3 +83,13 @@ class GroupRetrieveDestroyAPIView(RetrieveDestroyAPIView):
     def get_object(self):
         obj_id = self.kwargs.get("id")
         return Group.objects(id=obj_id).first()
+
+
+class GroupWithLayerIDListAPIView(ListAPIView):
+    serializer_class = GroupSerializer
+    pagination_class = None
+    permission_classes = (IsAuthenticated,)
+
+    def get_queryset(self):
+        obj_id = self.kwargs.get("id")
+        return Group.objects(layer=obj_id)
