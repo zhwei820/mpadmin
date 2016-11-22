@@ -15,7 +15,6 @@ _valid_fields = {
     'text': {
         "required": r'^(True)|(False)$',
         "default": r'^(.|\n)*$',
-        "valid_rule": r'^(none)|(IPaddress)|(email)|(phone)$',
         "max_length": r'^\d+$',
         'min_length': r'^\d+$',
     },  # 多行文本
@@ -87,19 +86,6 @@ def validate_item_field(attr_value, attr_form):
             return -1, {"error": "attr_value is not a string."}
         if len(attr_value) < int(attr_form["min_length"]) or len(attr_value) > int(attr_form["max_length"]):
             return -1, {"error": "invalid string length."}
-        if attr_form.get('valid_rule') == "none":
-            return 0, {"msg": "success"}
-        elif attr_form.get('valid_rule') == "IPaddress":
-            pattern = re.compile(r'\d+\.\d+\.\d+\.\d+')  # 匹配IP地址有待改进
-        elif attr_form.get('valid_rule') == "email":
-            pattern = re.compile(r'^(\w)+(\.\w+)*@(\w)+((\.\w+)+)$')
-        elif attr_form.get('valid_rule') == "phone":
-            pattern = re.compile(r'^\d{11}$')
-        else:
-            return -1, {"error": "invalid valid_rule."}
-        match = pattern.match(attr_value)
-        if not match:
-            return -1, {"error": "did not match rule: %s" % attr_form.get('valid_rule')}
     elif field == "select":
         if not isinstance(attr_value, str):
             return -1, {"error": "attr_value is not a dict."}
