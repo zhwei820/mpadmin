@@ -304,6 +304,7 @@ POST
 
 > name: string, CI模型名字，需要和group保证联合唯一性
 > group: string(24位), 所属组ID
+> structure: dict, 模型的属性组和具体属性设置
 
 **返回结果示例：**
 
@@ -382,6 +383,7 @@ PUT
 
 > name: string, CI模型名字，需要和group保证联合唯一性
 > group: string(24位), 所属组ID
+> structure: dict, 模型的属性组和具体属性设置
 
 **返回结果示例：**
 
@@ -589,6 +591,190 @@ GET
 **接口地址：**
 
 > BASE_URL/item/category/(id)/
+
+**请求方法：**
+
+DELETE
+
+**返回结果示例：**
+
+成功：
+
+    http status 204
+
+## 创建CI对象
+
+**接口地址：**
+
+> BASE_URL/item/item/create/
+
+**请求方法：**
+
+POST
+
+**请求参数：**
+
+    {
+        "name": "create_ci2",
+        "category": "5832c0461774d526b092103c",
+        "structure": {
+            "system": {
+                "disk": "224"
+            },
+            "default": {
+                "price": "225"
+            }
+        }
+    }
+
+**参数说明：**
+
+> name: string, 对象名字，需要和category保证联合唯一性
+> category: string(24位), 所属层ID
+> structure: dict, 对象的属性组和具体属性值
+
+**返回结果示例：**
+
+成功：
+
+    http status 201
+    
+    {
+        "id": "5833e1511774d5078c6bd191",
+        "name": "create_ci2",
+        "category": "5832c0461774d526b092103c",
+        "structure": {
+            "system": {
+                "disk": "224"
+            },
+            "default": {
+                "price": "225"
+            }
+        }
+    }
+
+## 修改CI对象
+
+**接口地址：**
+
+> BASE_URL/item/item/(id)/update/
+
+**请求方法：**
+
+PUT
+
+**请求参数：**
+
+    {
+        "name": "create_ci2",
+        "category": "5832c0461774d526b092103c",
+        "structure": {
+            "system": {
+                "disk": "224"
+            },
+            "default": {
+                "price": "225"
+            }
+        }
+    }
+
+**参数说明：**
+
+> name: string, 对象名字，需要和category保证联合唯一性
+> category: string(24位), 所属层ID
+> structure: dict, 对象的属性组和具体属性值
+
+**返回结果示例：**
+
+成功：
+
+    http status 200
+    
+    {
+        "id": "5833e1511774d5078c6bd191",
+        "name": "create_ci2",
+        "category": "5832c0461774d526b092103c",
+        "structure": {
+            "system": {
+                "disk": "224"
+            },
+            "default": {
+                "price": "225"
+            }
+        }
+    }
+
+## 查看具体CI对象
+
+**接口地址：**
+
+> BASE_URL/item/item/(id)/
+
+**请求方法：**
+
+GET
+
+**返回结果示例：**
+
+成功：
+
+    http status 200
+    
+    {
+        "id": "5833e1511774d5078c6bd191",
+        "name": "create_ci2",
+        "category": "5832c0461774d526b092103c",
+        "structure": {
+            "system": {
+                "disk": "224"
+            },
+            "default": {
+                "price": "225"
+            }
+        }
+    }
+
+## 查看某一CI模型的所有CI对象
+
+**接口地址：**
+
+> BASE_URL/item/item/(id)/list/
+
+**请求方法：**
+
+GET
+
+**参数说明：**
+
+>id: CI模型ID
+
+**返回结果示例：**
+
+成功：
+
+    http status 200
+    
+    [
+        {
+            "id": "5833e1511774d5078c6bd191",
+            "name": "create_ci2",
+            "category": "5832c0461774d526b092103c",
+            "structure": {
+                "system": {
+                    "disk": "224"
+                },
+                "default": {
+                    "price": "225"
+                }
+            }
+        }
+    ]
+    
+## 删除CI对象
+    
+**接口地址：**
+
+> BASE_URL/item/item/(id)/
 
 **请求方法：**
 
