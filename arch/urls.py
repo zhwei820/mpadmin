@@ -13,6 +13,6 @@ urlpatterns = [
     url(r'^layer/(?P<id>\w{24})/$', LayerRetrieveDestroyAPIView.as_view()),
     url(r'^group/create/$', GroupCreateAPIView.as_view()),
     url(r'^group/(?P<id>\w{24})/update/$', GroupUpdateAPIView.as_view()),
-    url(r'^group/(?P<id>\w{24})/', GroupRetrieveDestroyAPIView.as_view()),
+    url(r'^group/(?P<id>\w{24})/$', GroupRetrieveDestroyAPIView.as_view()),
     url(r'^group/(?P<id>\w{24})/list/$', GroupWithLayerIDListAPIView.as_view()),
 ]
