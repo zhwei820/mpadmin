@@ -20,3 +20,11 @@
 - windows启动方式：执行CMDBEnv\Scripts\activate.bat
 
 在python虚拟环境中安装依赖模块，执行 >> pip install -r msg_pusher/requirements.txt ;
+
+## 部署文件：
+
+在目录 /etc 中有两个文件：
+
+> supervisord.conf 是项目的supervisor 启动配置；
+>
+> gunicorn.py 是多线程并发配置，最大并发10000
