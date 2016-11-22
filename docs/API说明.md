@@ -60,7 +60,7 @@ PUT
         "name": "create_layer1"
     }
 
-## 查看层
+## 查看具体层
 
 **接口地址：**
 
@@ -80,6 +80,33 @@ GET
         "id": "5833a9251774d5078c6bd18f",
         "name": "create_layer5"
     }
+
+## 查看所有层
+
+**接口地址：**
+
+> BASE_URL/arch/layer/list/
+
+**请求方法：**
+
+GET
+
+**返回结果示例：**
+
+成功：
+
+    http status 200
+    
+    [
+        {
+            "id": "583285cb1774d50ea85802f8",
+            "name": "create_layer1"
+        },
+        {
+            "id": "5833a9251774d5078c6bd18f",
+            "name": "create_layer3"
+        }
+    ]
     
 ## 删除层
     
@@ -131,11 +158,11 @@ POST
         "layer": "583285cb1774d50ea85802f8"
     }
 
-## 修改层
+## 修改组
 
 **接口地址：**
 
-> BASE_URL/arch/layer/(id)/update/
+> BASE_URL/arch/group/(id)/update/
 
 **请求方法：**
 
@@ -165,11 +192,11 @@ PUT
         "layer": "583285cb1774d50ea85802f8"
     }
 
-## 查看层
+## 查看具体组
 
 **接口地址：**
 
-> BASE_URL/arch/layer/(id)/
+> BASE_URL/arch/group/(id)/
 
 **请求方法：**
 
@@ -186,12 +213,43 @@ GET
         "name": "create_layer1",
         "layer": "583285cb1774d50ea85802f8"
     }
+
+## 查看某一层的所有组
+
+**接口地址：**
+
+> BASE_URL/arch/group/(id)/
+
+**请求方法：**
+
+GET
+
+**参数说明：**
+
+>id: 层ID
+
+**返回结果示例：**
+
+成功：
+
+    http status 200
     
-## 删除层
+    [
+        {
+            "id": "583285cb1774d50ea85802f8",
+            "name": "create_group1"
+        },
+        {
+            "id": "5833a9251774d5078c6bd18f",
+            "name": "create_group3"
+        }
+    ]
+    
+## 删除组
     
 **接口地址：**
 
-> BASE_URL/arch/layer/(id)/
+> BASE_URL/arch/group/(id)/
 
 **请求方法：**
 
