@@ -132,6 +132,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 try:
+    from CMDB.server_conf import *
+except ImportError:
+    pass
+
+try:
     from CMDB.local_conf import *
 except ImportError:
     pass
