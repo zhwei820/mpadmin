@@ -9,4 +9,4 @@ django-rest-framework-mongoengine==3.3.0
 
 # deployment
 gunicorn==19.6.0
-aiohttp==0.21.6
+aiohttp==1.1.5
