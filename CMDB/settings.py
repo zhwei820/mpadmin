@@ -87,8 +87,7 @@ WSGI_APPLICATION = 'CMDB.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.dummy',
     }
 }
 
@@ -130,6 +129,34 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.9/howto/static-files/
 
 STATIC_URL = '/static/'
+
+import mongoengine
+
+SESSION_ENGINE = 'django_mongoengine.sessions'
+SESSION_SERIALIZER = 'django_mongoengine.sessions.BSONSerializer'
+
+_MONGODB_USER = 'mongotest'
+_MONGODB_PASSWD = 'mongotest'
+_MONGODB_HOST = '192.168.199.222'
+_MONGODB_NAME = 'mongotest'
+_MONGODB_DATABASE_HOST = \
+    'mongodb://%s:%s@%s/%s' \
+    % (_MONGODB_USER, _MONGODB_PASSWD, _MONGODB_HOST, _MONGODB_NAME)
+
+MONGODB_DATABASES = {
+    "default": {
+        "name": _MONGODB_NAME,
+        "host": _MONGODB_HOST,
+        "password": _MONGODB_PASSWD,
+        "username": _MONGODB_USER,
+        "tz_aware": True, # if you using timezones in django (USE_TZ = True)
+    },
+}
+
+AUTHENTICATION_BACKENDS = (
+    'django_mongoengine.mongo_auth.backends.MongoEngineBackend',
+)
+AUTH_USER_MODEL = 'mongo_auth.MongoUser'
 
 try:
     from CMDB.server_conf import *
