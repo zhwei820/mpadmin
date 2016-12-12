@@ -10,7 +10,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_mongoengine.generics import CreateAPIView,\
-    UpdateAPIView, RetrieveDestroyAPIView, ListAPIView
+    UpdateAPIView, RetrieveDestroyAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from item.models import ItemCategory, Item
 from item.serializers import ItemCategorySerializer, ItemSerializer
@@ -18,9 +18,10 @@ from item.serializers import ItemCategorySerializer, ItemSerializer
 from util.fields_validation import validate_category_structure, validate_item_structure
 
 
-class ItemCategoryCreateAPIView(CreateAPIView):
+class ItemCategoryListCreateAPIView(ListCreateAPIView):
     serializer_class = ItemCategorySerializer
     permission_classes = (IsAuthenticated,)
+    queryset = ItemCategory.objects.all()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -35,7 +36,7 @@ class ItemCategoryCreateAPIView(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class ItemCategoryUpdateAPIView(UpdateAPIView):
+class ItemCategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ItemCategorySerializer
     permission_classes = (IsAuthenticated,)
 
@@ -59,15 +60,6 @@ class ItemCategoryUpdateAPIView(UpdateAPIView):
         if instance:
             instance.utime = datetime.datetime.now()
         return Response(serializer.data)
-
-
-class ItemCategoryRetrieveDestroyAPIView(RetrieveDestroyAPIView):
-    serializer_class = ItemCategorySerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        obj_id = self.kwargs.get("id")
-        return ItemCategory.objects(id=obj_id).first()
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -87,16 +79,8 @@ class ItemCategoryRetrieveDestroyAPIView(RetrieveDestroyAPIView):
         return Response(serializer.data)
 
 
-class ItemCategoryListAPIView(ListAPIView):
-    queryset = ItemCategory.objects.all()
-    serializer_class = ItemCategorySerializer
-    pagination_class = None
-    permission_classes = (IsAuthenticated,)
-
-
 class ItemCategoryWithGroupIDListAPIView(ListAPIView):
     serializer_class = ItemCategorySerializer
-    pagination_class = None
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -104,9 +88,10 @@ class ItemCategoryWithGroupIDListAPIView(ListAPIView):
         return ItemCategory.objects(group=obj_id)
 
 
-class ItemCreateAPIView(CreateAPIView):
+class ItemListCreateAPIView(CreateAPIView):
     serializer_class = ItemSerializer
     permission_classes = (IsAuthenticated,)
+    queryset = Item.objects.all()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -121,7 +106,7 @@ class ItemCreateAPIView(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class ItemUpdateAPIView(UpdateAPIView):
+class ItemRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ItemSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -146,15 +131,6 @@ class ItemUpdateAPIView(UpdateAPIView):
             instance.utime = datetime.datetime.now()
         return Response(serializer.data)
 
-
-class ItemRetrieveDestroyAPIView(RetrieveDestroyAPIView):
-    serializer_class = ItemSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        obj_id = self.kwargs.get("id")
-        return Item.objects(id=obj_id).first()
-
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance:
@@ -166,7 +142,6 @@ class ItemRetrieveDestroyAPIView(RetrieveDestroyAPIView):
 # 列举属于某个category的items
 class ItemWithCategoryIDListAPIView(ListAPIView):
     serializer_class = ItemSerializer
-    pagination_class = None
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
