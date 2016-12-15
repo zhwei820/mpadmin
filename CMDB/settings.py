@@ -46,6 +46,7 @@ INSTALLED_APPS = [
 
     'arch',
     'item',
+    'api',
 ]
 
 MIDDLEWARE_CLASSES = [

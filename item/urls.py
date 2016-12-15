@@ -7,10 +7,4 @@ from item.views import ItemCategoryListCreateAPIView,\
     ItemWithCategoryIDListAPIView, ItemCategoryWithGroupIDListAPIView
 
 urlpatterns = [
-    url(r'^categories/$', ItemCategoryListCreateAPIView.as_view()),
-    url(r'^categories/(?P<id>\w{24})/$', ItemCategoryRetrieveUpdateDestroyAPIView.as_view()),
-    url(r'^groups/(?P<id>\w{24})/categories/$', ItemCategoryWithGroupIDListAPIView.as_view()),
-    url(r'^items/$', ItemListCreateAPIView.as_view()),
-    url(r'^items/(?P<id>\w{24})/$', ItemRetrieveUpdateDestroyAPIView.as_view()),
-    url(r'^categories/(?P<id>\w{24})/items/$', ItemWithCategoryIDListAPIView.as_view()),
 ]
