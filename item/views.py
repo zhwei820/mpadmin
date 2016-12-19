@@ -1,11 +1,16 @@
 # coding=utf-8
+from arch.models import Layer, Group
+from django.http import Http404
 from django.shortcuts import render
 
 
 # Create your views here.
+from django.views.generic import TemplateView
 from django.views.generic import View
 import datetime
 
+from django_mongoengine.views import ListView
+from item.mixins import SidebarMixin
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -147,3 +152,60 @@ class ItemWithCategoryIDListAPIView(ListAPIView):
     def get_queryset(self):
         obj_id = self.kwargs.get("id")
         return Item.objects(category=obj_id)
+
+
+def add_sidebar_context(context):
+    layers = {}
+    layer_collection = Layer.objects()
+    for layer in layer_collection:
+        layers[layer.name] = {}
+        group_collection = Group.objects(layer=layer.id)
+        for group in group_collection:
+            layers[layer.name][group.name] = []
+            category_collection = ItemCategory.objects(group=group.id)
+            for category in category_collection:
+                layers[layer.name][group.name].append(category.name)
+
+    context["layers"] = layers
+    return context
+
+
+class ItemWithCategoryIDListView(TemplateView):
+    template_name = "item_list.html"
+
+    def get_context_data(self, **kwargs):
+        category = ItemCategory.objects(id=self.kwargs.get("id")).first()
+        if not category:
+            raise Http404("该CI模型不存在")
+        context = super(ItemWithCategoryIDListView, self).get_context_data(**kwargs)
+        context["object_list"] = Item.objects(category=self.kwargs.get("id"))
+        context["category"] = category
+        context = add_sidebar_context(context)
+        return context
+
+
+class ItemDetailView(TemplateView):
+    template_name = "item_detail.html"
+
+    def get_context_data(self, **kwargs):
+        item_obj = Item.objects(id=self.kwargs.get("id")).first()
+        if not item_obj:
+            raise Http404("该CI对象不存在")
+        context = super(ItemDetailView, self).get_context_data(**kwargs)
+        context["item"] = item_obj
+        context = add_sidebar_context(context)
+        return context
+
+
+class CategoryEditView(TemplateView):
+    template_name = "category_edit.html"
+
+    def get_context_data(self, **kwargs):
+        category_obj = ItemCategory.objects(id=self.kwargs.get("id")).first()
+        if not category_obj:
+            raise Http404("该CI模型不存在")
+        context = super(CategoryEditView, self).get_context_data(**kwargs)
+        context["category"] = category_obj
+        context = add_sidebar_context(context)
+        return context
+
