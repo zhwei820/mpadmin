@@ -2,18 +2,13 @@
 from django.conf.urls import url
 from django.contrib import admin
 
-from item.views import ItemCategoryCreateAPIView, ItemCategoryUpdateAPIView,\
-    ItemCategoryRetrieveDestroyAPIView, ItemUpdateAPIView, ItemCreateAPIView, ItemRetrieveDestroyAPIView, \
-    ItemCategoryListAPIView, ItemWithCategoryIDListAPIView, ItemCategoryWithGroupIDListAPIView
+from item.views import ItemCategoryListCreateAPIView,\
+    ItemCategoryRetrieveUpdateDestroyAPIView, ItemListCreateAPIView, ItemRetrieveUpdateDestroyAPIView, \
+    ItemWithCategoryIDListAPIView, ItemCategoryWithGroupIDListAPIView, ItemWithCategoryIDListView, ItemDetailView, \
+    CategoryEditView
 
 urlpatterns = [
-    url(r'^category/create/$', ItemCategoryCreateAPIView.as_view()),
-    url(r'^category/(?P<id>\w{24})/update/$', ItemCategoryUpdateAPIView.as_view()),
-    url(r'^category/(?P<id>\w{24})/$', ItemCategoryRetrieveDestroyAPIView.as_view()),
-    url(r'^category/list/$', ItemCategoryListAPIView.as_view()),
-    url(r'^category/(?P<id>\w{24})/list/$', ItemCategoryWithGroupIDListAPIView.as_view()),
-    url(r'^item/create/$', ItemCreateAPIView.as_view()),
-    url(r'^item/(?P<id>\w{24})/update/$', ItemUpdateAPIView.as_view()),
-    url(r'^item/(?P<id>\w{24})/$', ItemRetrieveDestroyAPIView.as_view()),
-    url(r'^item/(?P<id>\w{24})/list/$', ItemWithCategoryIDListAPIView.as_view()),
+    url(r'^categories/(?P<id>\w{24})/items/$', ItemWithCategoryIDListView.as_view()),
+    url(r'items/(?P<id>\w{24})/', ItemDetailView.as_view()),
+    url(r'^categories/(?P<id>\w{24})/', CategoryEditView.as_view()),
 ]

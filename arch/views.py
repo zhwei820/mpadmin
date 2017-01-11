@@ -11,15 +11,17 @@ from django.shortcuts import render
 # Create your views here.
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_mongoengine.generics import CreateAPIView, UpdateAPIView, RetrieveDestroyAPIView, ListAPIView
+from rest_framework_mongoengine.generics import CreateAPIView, UpdateAPIView, RetrieveDestroyAPIView, ListAPIView, \
+    ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 
-class LayerCreateAPIView(CreateAPIView):
+class LayerListCreateAPIView(ListCreateAPIView):
     serializer_class = LayerSerializer
+    queryset = Layer.objects.all()
     permission_classes = (IsAuthenticated,)
 
 
-class LayerUpdateAPIView(UpdateAPIView):
+class LayerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = LayerSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -38,15 +40,6 @@ class LayerUpdateAPIView(UpdateAPIView):
         if instance:
             instance.utime = datetime.datetime.now()
         return Response(serializer.data)
-
-
-class LayerRetrieveDestroyAPIView(RetrieveDestroyAPIView):
-    serializer_class = LayerSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        obj_id = self.kwargs.get("id")
-        return Layer.objects(id=obj_id).first()
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -56,19 +49,13 @@ class LayerRetrieveDestroyAPIView(RetrieveDestroyAPIView):
         return Response(serializer.data)
 
 
-class LayerListAPIView(ListAPIView):
-    queryset = Layer.objects.all()
-    serializer_class = LayerSerializer
-    pagination_class = None
-    permission_classes = (IsAuthenticated,)
-
-
-class GroupCreateAPIView(CreateAPIView):
+class GroupListCreateAPIView(ListCreateAPIView):
     serializer_class = GroupSerializer
     permission_classes = (IsAuthenticated,)
+    queryset = Group.objects.all()
 
 
-class GroupUpdateAPIView(UpdateAPIView):
+class GroupRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = GroupSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -87,15 +74,6 @@ class GroupUpdateAPIView(UpdateAPIView):
         if instance:
             instance.utime = datetime.datetime.now()
         return Response(serializer.data)
-
-
-class GroupRetrieveDestroyAPIView(RetrieveDestroyAPIView):
-    serializer_class = GroupSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        obj_id = self.kwargs.get("id")
-        return Group.objects(id=obj_id).first()
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -107,7 +85,6 @@ class GroupRetrieveDestroyAPIView(RetrieveDestroyAPIView):
 
 class GroupWithLayerIDListAPIView(ListAPIView):
     serializer_class = GroupSerializer
-    pagination_class = None
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):

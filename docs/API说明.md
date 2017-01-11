@@ -2,7 +2,7 @@
 
 **接口地址：**
 
-> BASE_URL/arch/layer/create/
+> BASE_URL/api/layers/
 
 **请求方法：**
 
@@ -33,7 +33,7 @@ POST
 
 **接口地址：**
 
-> BASE_URL/arch/layer/(id)/update/
+> BASE_URL/api/layers/(id)/
 
 **请求方法：**
 
@@ -64,7 +64,7 @@ PUT
 
 **接口地址：**
 
-> BASE_URL/arch/layer/(id)/
+> BASE_URL/api/layers/(id)/
 
 **请求方法：**
 
@@ -85,7 +85,7 @@ GET
 
 **接口地址：**
 
-> BASE_URL/arch/layer/list/
+> BASE_URL/api/layers/
 
 **请求方法：**
 
@@ -112,7 +112,7 @@ GET
     
 **接口地址：**
 
-> BASE_URL/arch/layer/(id)/
+> BASE_URL/api/layers/(id)/
 
 **请求方法：**
 
@@ -128,7 +128,7 @@ DELETE
 
 **接口地址：**
 
-> BASE_URL/arch/group/create/
+> BASE_URL/api/groups/
 
 **请求方法：**
 
@@ -162,7 +162,7 @@ POST
 
 **接口地址：**
 
-> BASE_URL/arch/group/(id)/update/
+> BASE_URL/api/groups/(id)/
 
 **请求方法：**
 
@@ -196,7 +196,7 @@ PUT
 
 **接口地址：**
 
-> BASE_URL/arch/group/(id)/
+> BASE_URL/api/groups/
 
 **请求方法：**
 
@@ -218,7 +218,7 @@ GET
 
 **接口地址：**
 
-> BASE_URL/arch/group/(id)/item/list/
+> BASE_URL/layers/(id)/groups/
 
 **请求方法：**
 
@@ -249,7 +249,7 @@ GET
     
 **接口地址：**
 
-> BASE_URL/arch/group/(id)/
+> BASE_URL/api/groups/(id)/
 
 **请求方法：**
 
@@ -265,7 +265,7 @@ DELETE
 
 **接口地址：**
 
-> BASE_URL/item/category/create/
+> BASE_URL/api/categories/
 
 **请求方法：**
 
@@ -344,7 +344,7 @@ POST
 
 **接口地址：**
 
-> BASE_URL/item/category/(id)/update/
+> BASE_URL/api/categories/(id)/
 
 **请求方法：**
 
@@ -423,7 +423,7 @@ PUT
 
 **接口地址：**
 
-> BASE_URL/item/category/(id)/
+> BASE_URL/api/categories/(id)/
 
 **请求方法：**
 
@@ -467,7 +467,7 @@ GET
 
 **接口地址：**
 
-> BASE_URL/item/category/(id)/list/
+> BASE_URL/api/groups/(id)/categories/
 
 **请求方法：**
 
@@ -517,7 +517,7 @@ GET
 
 **接口地址：**
 
-> BASE_URL/item/category/list/
+> BASE_URL/api/categories/
 
 **请求方法：**
 
@@ -590,7 +590,7 @@ GET
     
 **接口地址：**
 
-> BASE_URL/item/category/(id)/
+> BASE_URL/api/categories/(id)/
 
 **请求方法：**
 
@@ -606,7 +606,7 @@ DELETE
 
 **接口地址：**
 
-> BASE_URL/item/item/create/
+> BASE_URL/api/items/
 
 **请求方法：**
 
@@ -657,7 +657,7 @@ POST
 
 **接口地址：**
 
-> BASE_URL/item/item/(id)/update/
+> BASE_URL/api/items/(id)/
 
 **请求方法：**
 
@@ -708,7 +708,7 @@ PUT
 
 **接口地址：**
 
-> BASE_URL/item/item/(id)/
+> BASE_URL/api/items/(id)/
 
 **请求方法：**
 
@@ -738,7 +738,7 @@ GET
 
 **接口地址：**
 
-> BASE_URL/item/item/(id)/list/
+> BASE_URL/api/categories/(id)/items/
 
 **请求方法：**
 
@@ -774,7 +774,7 @@ GET
     
 **接口地址：**
 
-> BASE_URL/item/item/(id)/
+> BASE_URL/api/items/(id)/
 
 **请求方法：**
 

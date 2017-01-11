@@ -1,0 +1,77 @@
+{% extends "site_base.html" %}
+
+{% block page_header %}
+    <h1>编辑模型</h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row" id="edit-box">
+        <div class="col-xs-8">
+            <div class="box box-danger">
+                <div class="box-header">
+                    <h3 class="box-title">{{ category.name }}</h3>
+                </div>
+                <form role="form">
+                    <div class="box-body">
+                        {% for attr_group_name, attr_group in category.structure.items %}
+                            <hr/>
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-group"></i>
+                                    </div>
+                                    <input type="text" class="form-control pull-right"
+                                           placeholder="{{ attr_group_name }}"/>
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-edit"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            {% for attr_name, attr_value in attr_group.items %}
+                                <div class="form-group" style="padding-left: 10%">
+                                    <label>{{ attr_name }}:</label>
+                                    <div class="input-group">
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-tags"></i>
+                                        </div>
+                                        <input type="text" class="form-control pull-right"
+                                               placeholder="{{ attr_value.default }}"/>
+                                        <div class="input-group-addon">
+                                            <i class="fa fa-edit" @click="change-attr"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-xs-4">
+            <div class="box box-info">
+                <form role="form">
+                    <div class="box-body">
+                        <div v-for="(val, key) in structure.default.price" class="form-group">
+                            <label :for="id + '-' + key">{% templatetag openvariable %} key {% templatetag closevariable %}</label>
+                            <input type="text" :id="id + '-' + key" :name="structure.default.price" :placeholder="val" class="form-control"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block extra_script %}
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script type="text/javascript">
+        var vm = new Vue({
+            el: "#edit-box",
+            data: {
+                "name": "{{ category.name }}",
+                "id": "{{ category.id }}",
+                "structure": {{ category.structure | safe }}
+            }
+        });
+    </script>
+{% endblock %}

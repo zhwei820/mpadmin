@@ -1,0 +1,39 @@
+{% extends "site_base.html" %}
+
+{% block page_header %}
+    <h1>
+        {{ item.name }}
+    </h1>
+{% endblock %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-xs-12">
+            {% for attr_group_name, attr_group in item.structure.items %}
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title">{{ attr_group_name }}</h3>
+                    </div>
+                    <div class="box-body">
+                        <table id="item_table" class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th>属性</th>
+                                <th>值</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for attr_name, attr_value in attr_group.items %}
+                                <tr>
+                                    <td>{{ attr_name }}</td>
+                                    <td>{{ attr_value }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}

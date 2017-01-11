@@ -1,16 +1,21 @@
 # coding=utf-8
+from arch.models import Layer, Group
+from django.http import Http404
 from django.shortcuts import render
 
 
 # Create your views here.
+from django.views.generic import TemplateView
 from django.views.generic import View
 import datetime
 
+from django_mongoengine.views import ListView
+from item.mixins import SidebarMixin
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework_mongoengine.generics import CreateAPIView,\
-    UpdateAPIView, RetrieveDestroyAPIView, ListAPIView
+    UpdateAPIView, RetrieveDestroyAPIView, ListAPIView, ListCreateAPIView, RetrieveUpdateDestroyAPIView
 
 from item.models import ItemCategory, Item
 from item.serializers import ItemCategorySerializer, ItemSerializer
@@ -18,9 +23,10 @@ from item.serializers import ItemCategorySerializer, ItemSerializer
 from util.fields_validation import validate_category_structure, validate_item_structure
 
 
-class ItemCategoryCreateAPIView(CreateAPIView):
+class ItemCategoryListCreateAPIView(ListCreateAPIView):
     serializer_class = ItemCategorySerializer
     permission_classes = (IsAuthenticated,)
+    queryset = ItemCategory.objects.all()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -35,7 +41,7 @@ class ItemCategoryCreateAPIView(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class ItemCategoryUpdateAPIView(UpdateAPIView):
+class ItemCategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ItemCategorySerializer
     permission_classes = (IsAuthenticated,)
 
@@ -59,15 +65,6 @@ class ItemCategoryUpdateAPIView(UpdateAPIView):
         if instance:
             instance.utime = datetime.datetime.now()
         return Response(serializer.data)
-
-
-class ItemCategoryRetrieveDestroyAPIView(RetrieveDestroyAPIView):
-    serializer_class = ItemCategorySerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        obj_id = self.kwargs.get("id")
-        return ItemCategory.objects(id=obj_id).first()
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -87,16 +84,8 @@ class ItemCategoryRetrieveDestroyAPIView(RetrieveDestroyAPIView):
         return Response(serializer.data)
 
 
-class ItemCategoryListAPIView(ListAPIView):
-    queryset = ItemCategory.objects.all()
-    serializer_class = ItemCategorySerializer
-    pagination_class = None
-    permission_classes = (IsAuthenticated,)
-
-
 class ItemCategoryWithGroupIDListAPIView(ListAPIView):
     serializer_class = ItemCategorySerializer
-    pagination_class = None
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
@@ -104,9 +93,10 @@ class ItemCategoryWithGroupIDListAPIView(ListAPIView):
         return ItemCategory.objects(group=obj_id)
 
 
-class ItemCreateAPIView(CreateAPIView):
+class ItemListCreateAPIView(CreateAPIView):
     serializer_class = ItemSerializer
     permission_classes = (IsAuthenticated,)
+    queryset = Item.objects.all()
 
     def create(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
@@ -121,7 +111,7 @@ class ItemCreateAPIView(CreateAPIView):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-class ItemUpdateAPIView(UpdateAPIView):
+class ItemRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     serializer_class = ItemSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -146,15 +136,6 @@ class ItemUpdateAPIView(UpdateAPIView):
             instance.utime = datetime.datetime.now()
         return Response(serializer.data)
 
-
-class ItemRetrieveDestroyAPIView(RetrieveDestroyAPIView):
-    serializer_class = ItemSerializer
-    permission_classes = (IsAuthenticated,)
-
-    def get_object(self):
-        obj_id = self.kwargs.get("id")
-        return Item.objects(id=obj_id).first()
-
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance:
@@ -166,9 +147,65 @@ class ItemRetrieveDestroyAPIView(RetrieveDestroyAPIView):
 # 列举属于某个category的items
 class ItemWithCategoryIDListAPIView(ListAPIView):
     serializer_class = ItemSerializer
-    pagination_class = None
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self):
         obj_id = self.kwargs.get("id")
         return Item.objects(category=obj_id)
+
+
+def add_sidebar_context(context):
+    layers = {}
+    layer_collection = Layer.objects()
+    for layer in layer_collection:
+        layers[layer.name] = {}
+        group_collection = Group.objects(layer=layer.id)
+        for group in group_collection:
+            layers[layer.name][group.name] = []
+            category_collection = ItemCategory.objects(group=group.id)
+            for category in category_collection:
+                layers[layer.name][group.name].append(category.name)
+
+    context["layers"] = layers
+    return context
+
+
+class ItemWithCategoryIDListView(TemplateView):
+    template_name = "item_list.html"
+
+    def get_context_data(self, **kwargs):
+        category = ItemCategory.objects(id=self.kwargs.get("id")).first()
+        if not category:
+            raise Http404("该CI模型不存在")
+        context = super(ItemWithCategoryIDListView, self).get_context_data(**kwargs)
+        context["object_list"] = Item.objects(category=self.kwargs.get("id"))
+        context["category"] = category
+        context = add_sidebar_context(context)
+        return context
+
+
+class ItemDetailView(TemplateView):
+    template_name = "item_detail.html"
+
+    def get_context_data(self, **kwargs):
+        item_obj = Item.objects(id=self.kwargs.get("id")).first()
+        if not item_obj:
+            raise Http404("该CI对象不存在")
+        context = super(ItemDetailView, self).get_context_data(**kwargs)
+        context["item"] = item_obj
+        context = add_sidebar_context(context)
+        return context
+
+
+class CategoryEditView(TemplateView):
+    template_name = "category_edit.html"
+
+    def get_context_data(self, **kwargs):
+        category_obj = ItemCategory.objects(id=self.kwargs.get("id")).first()
+        if not category_obj:
+            raise Http404("该CI模型不存在")
+        context = super(CategoryEditView, self).get_context_data(**kwargs)
+        context["category"] = category_obj
+        context = add_sidebar_context(context)
+        return context
+
