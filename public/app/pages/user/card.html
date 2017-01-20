@@ -1,0 +1,67 @@
+<style>
+    .time {
+    font-size: 13px;
+    color: #999;
+  }
+  
+  .bottom {
+    margin-top: 13px;
+    line-height: 12px;
+  }
+
+  .button {
+    padding: 0;
+    float: right;
+  }
+
+  .image {
+    width: 100%;
+    display: block;
+  }
+
+  .clearfix:before,
+  .clearfix:after {
+      display: table;
+      content: "";
+  }
+  
+  .clearfix:after {
+      clear: both
+  }
+
+</style>
+
+<link rel="stylesheet" type="text/css" href="vue/index.css">
+<link rel="stylesheet" type="text/css" href="css/base.css">
+<link rel="stylesheet" type="text/css" href="css/normalize.css">
+<script src="/ele/vue/vue.js"></script>
+<script src="/ele/vue/vue-resource.min.js"></script>
+<script src="/ele/vue/index.js"></script>
+
+<div id="app">
+<el-row>
+  <el-col :span="8" v-for="(o, index) in 2" :offset="index > 0 ? 2 : 0">
+    <el-card :body-style="{ padding: '0px' }">
+      <img src="/ele/img/img.png" class="image">
+      <div style="padding: 14px;">
+        <span>Yummy hamburger</span>
+        <div class="bottom clearfix">
+          <time class="time">{{ currentDate }}</time>
+          <el-button type="text" class="button">Operating button</el-button>
+        </div>
+      </div>
+    </el-card>
+  </el-col>
+</el-row>
+</div>
+<script>
+    var Main = {
+  data() {
+    return {
+      currentDate: new Date()
+    };
+  }
+}
+var Ctor = Vue.extend(Main)
+new Ctor().$mount('#app')
+</script>

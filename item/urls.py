@@ -9,6 +9,6 @@ from item.views import ItemCategoryListCreateAPIView,\
 
 urlpatterns = [
     url(r'^categories/(?P<id>\w{24})/items/$', ItemWithCategoryIDListView.as_view()),
-    url(r'items/(?P<id>\w{24})/', ItemDetailView.as_view()),
+    url(r'^items/(?P<id>\w{24})/', ItemDetailView.as_view()),
     url(r'^categories/(?P<id>\w{24})/', CategoryEditView.as_view()),
 ]

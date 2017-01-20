@@ -170,6 +170,30 @@ def add_sidebar_context(context):
     return context
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class ItemWithCategoryIDListView(TemplateView):
     template_name = "item_list.html"
 
