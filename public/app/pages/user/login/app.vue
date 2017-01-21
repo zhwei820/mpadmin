@@ -33,8 +33,11 @@ export default {
     return {
       msg: 'Use Vue 2.0 Today!',
       logoImg: logo,
-      username:"",
-      password:"",
+      
+      ruleForm:{
+        username:"",
+        password:"",
+      }
     }
   },
 
@@ -53,7 +56,7 @@ export default {
       return "Basic " + hash;
     },
     login() {
-      localStorage.setItem("Authorization", this.make_base_auth(this.username, this.password))
+      localStorage.setItem("Authorization", this.make_base_auth(this.ruleForm.username, this.ruleForm.password))
 
       this.$http.get("/api/layers/?" + query).then((response) => {
         debugger

@@ -38,9 +38,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'django_mongoengine',
-    'django_mongoengine.mongo_auth',
-    'django_mongoengine.mongo_admin.sites',
-    'django_mongoengine.mongo_admin',
+    # 'django_mongoengine.mongo_auth',
+    # 'django_mongoengine.mongo_admin.sites',
+    # 'django_mongoengine.mongo_admin',
     'rest_framework',
     'rest_framework_mongoengine',
 
@@ -60,6 +60,19 @@ MIDDLEWARE_CLASSES = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        # 'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework.authentication.BasicAuthentication',
+        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+    ),
+}
+
 
 ROOT_URLCONF = 'CMDB.urls'
 
@@ -86,12 +99,13 @@ WSGI_APPLICATION = 'CMDB.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.dummy',
-    }
-}
+from decouple import config
+import dj_database_url
 
+DATABASES = {
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL'))
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
@@ -141,17 +155,18 @@ SESSION_SERIALIZER = 'django_mongoengine.sessions.BSONSerializer'
 MONGODB_DATABASES = {
     "default": {
         "name": 'mongotest',
-        "host": '192.168.199.222',
+        # "host": '192.168.199.222',
+        "host": '127.0.0.1',        
         "password": 'mongotest',
         "username": 'mongotest',
         "tz_aware": True,  # if you using timezones in django (USE_TZ = True)
     },
 }
 
-AUTHENTICATION_BACKENDS = (
-    'django_mongoengine.mongo_auth.backends.MongoEngineBackend',
-)
-AUTH_USER_MODEL = 'mongo_auth.MongoUser'
+# AUTHENTICATION_BACKENDS = (
+#     'django_mongoengine.mongo_auth.backends.MongoEngineBackend',
+# )
+# AUTH_USER_MODEL = 'mongo_auth.MongoUser'
 
 try:
     from CMDB.server_conf import *
