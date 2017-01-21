@@ -105,7 +105,6 @@ JWT_AUTH = {
 
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
 }
-This packages uses the JSON Web Token Python implementation, PyJWT and allows to modify some of it's available options.
 
 
 
