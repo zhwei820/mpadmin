@@ -154,26 +154,6 @@ class ItemWithCategoryIDListAPIView(ListAPIView):
         return Item.objects(category=obj_id)
 
 
-def add_sidebar_context(context):
-    layers = {}
-    layer_collection = Layer.objects()
-    for layer in layer_collection:
-        layers[layer.name] = {}
-        group_collection = Group.objects(layer=layer.id)
-        for group in group_collection:
-            layers[layer.name][group.name] = []
-            category_collection = ItemCategory.objects(group=group.id)
-            for category in category_collection:
-                layers[layer.name][group.name].append(category.name)
-
-    context["layers"] = layers
-    return context
-
-
-
-
-
-
 
 
 
