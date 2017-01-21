@@ -21,12 +21,12 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    url(r'^categories/$', ItemCategoryListCreateAPIView.as_view()),
-    url(r'^categories/(?P<id>\w{24})/$', ItemCategoryRetrieveUpdateDestroyAPIView.as_view()),
-    url(r'^groups/(?P<id>\w{24})/categories/$', ItemCategoryWithGroupIDListAPIView.as_view()),
+    url(r'^items_categories/$', ItemCategoryListCreateAPIView.as_view()),
+    url(r'^items_categories/(?P<id>\w{24})/$', ItemCategoryRetrieveUpdateDestroyAPIView.as_view()),
+    url(r'^groups/(?P<id>\w{24})/items_categories/$', ItemCategoryWithGroupIDListAPIView.as_view()),
     url(r'^items/$', ItemListCreateAPIView.as_view()),
     url(r'^items/(?P<id>\w{24})/$', ItemRetrieveUpdateDestroyAPIView.as_view()),
-    url(r'^categories/(?P<id>\w{24})/items/$', ItemWithCategoryIDListAPIView.as_view()),
+    url(r'^items_categories/(?P<id>\w{24})/items/$', ItemWithCategoryIDListAPIView.as_view()),
 ]
 
 from rest_framework_jwt.views import obtain_jwt_token
