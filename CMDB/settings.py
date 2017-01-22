@@ -189,8 +189,8 @@ SESSION_SERIALIZER = 'django_mongoengine.sessions.BSONSerializer'
 MONGODB_DATABASES = {
     "default": {
         "name": 'mongotest',
-        # "host": '192.168.199.222',
-        "host": '127.0.0.1',        
+        "host": '192.168.199.222',
+        # "host": '127.0.0.1',        
         "password": 'mongotest',
         "username": 'mongotest',
         "tz_aware": True,  # if you using timezones in django (USE_TZ = True)

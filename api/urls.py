@@ -29,8 +29,16 @@ urlpatterns += [
     url(r'^items_categories/(?P<id>\w{24})/items/$', ItemWithCategoryIDListAPIView.as_view()),
 ]
 
+urlpatterns += [
+    url(r'^field_list/', field_list),
+]
+
+
+
+
 from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns += [
     url(r'^api-token-auth/', obtain_jwt_token),
 ]
+

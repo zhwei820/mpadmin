@@ -6,27 +6,12 @@
     <el-date-picker v-model="param.end_time" type="date" placeholder="结束日期" :picker-options="pickerOptions0">
     </el-date-picker>
     <el-select v-model="param.value" placeholder="请选择">
-      <el-option v-for="item in options" :label="item.label" :value="item.value">
-      </el-option>
+      <!--<el-option v-for="item in options" :label="item.label" :value="item.value">
+      </el-option>-->
     </el-select>
     <el-input placeholder="姓名" v-model="param.name">
     </el-input>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
+   
     <el-button type="default" class="fa fa-refresh" @click="refresh_data"></el-button>
     <el-button type="primary" class="r fa fa-share-square-o" @click="saveExcel"></el-button>
     <el-input placeholder="搜索" class="right_search" icon="search" v-model="input2" @click="handleIconClick" @keyup.enter.native="handleIconClick">
@@ -61,21 +46,32 @@
         :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalNum">
         </el-pagination>
     </div>
-    <el-dialog title="收货地址" v-model="dialogFormVisible">
-      <el-form :model="form">
-        <el-form-item label="活动名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" auto-complete="off"></el-input>
+
+    <el-dialog title="CI类型编辑" v-model="dialogFormVisible">
+      <el-form :model="CICategory">
+
+        <el-form-item label="CI类型名称" :label-width="formLabelWidth" v-for="(item, index) in CICategory">
+          <el-input v-model="CICategory[index]" auto-complete="off"></el-input>
         </el-form-item>
+
+<!--
         <el-form-item label="活动区域" :label-width="formLabelWidth">
-          <el-select v-model="form.region" placeholder="请选择活动区域">
+          <el-select v-model="CICategory.region" placeholder="请选择活动区域">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
+        </el-form-item>-->
+
+        <el-form-item label="添加" :label-width="formLabelWidth">
+          <el-button @click="addStructure"><i class="fa fa-plus"></i></el-button>
         </el-form-item>
+
+
       </el-form>
       <div slot="footer" class="dialog-footer">
+        
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -94,27 +90,11 @@
             return time.getTime() < Date.now() - 8.64e7;
           }
         },
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
+        
         param: {
           start_time: (new Date((new Date()).setDate(new Date().getDate() - 1))),
           end_time: (new Date()),
           name: "",
-
           value: '',
         },
         input2: "",
@@ -142,23 +122,17 @@
         pageSize: 20,
         totalNum: 1,
 
-        dialogFormVisible: false,
-        form: {
-          name: '',
-          region: '',
-          date1: '',
-          date2: '',
-          delivery: false,
-          type: [],
-          resource: '',
-          desc: ''
+        dialogFormVisible: true,
+        CICategory: {
+          "name":"df",
+          "ip":"d22f",
         },
         formLabelWidth: '120px',
       }
     },
 
     beforeMount: function () {
-      this.fetch(0, this.pageSize)
+      // this.fetch(0, this.pageSize)
     },
     methods: {
       fetch() {
@@ -185,22 +159,20 @@
           });
         });
       },
+      addStructure(){
+
+      },
+      submit(){
+        debugger
+      },
+
       handleEdit(index, row) {
         console.log(index, row);
       },
       handleDelete(index, row) {
         console.log(index, row);
       },
-
-      handleSelect(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleOpen(key, keyPath) {
-        console.log(key, keyPath);
-      },
-      handleClose(key, keyPath) {
-        console.log(key, keyPath);
-      },
+ 
       handleIconClick(ev) {
 
         if (this.input2) {

@@ -4,49 +4,283 @@ import datetime
 from item.models import ItemCategory, Item
 import re
 
+from jsonschema import validate
+import json
+
+
+_fields_comment = {
+    'string': "单行文本",
+    'text': "多行文本",
+    'select': "单选",
+    'multi_select': "多选",
+    'number': "数值",
+    'datetime': "日期时间",
+    'required': "是否必填",
+    'name': "名称",
+    'default': "默认",
+    'max': "最大/最长",
+    'min': "最小/最短",
+    'unit': "单位",
+    'choice': "选项",
+    'field': "字段类型",
+    
+    
+    # 'reference': {
+    #     "required": r'^(True)|(False)$',
+    #     "reference": r'^\w{24}$',
+    # },  # 引用
+    # 'image': {
+    #     "required": r'^(True)|(False)$',
+    # },  # 图片
+}
+
+
+
+
+# json_schema
+
 _valid_fields = {
     'string': {
-        "required": r'^(True)|(False)$',
-        "default": r'^.*$',
-        "valid_rule": r'^(none)|(IPaddress)|(email)|(phone)$',
-        "max_length": r'^\d+$',
-        'min_length': r'^\d+$',
-    },  # 单行文本
+        "required": True, 
+        "type": "object", 
+        "id": "id", 
+        "properties": {
+            "field": {
+                "required": True, 
+                "type": "string", 
+                "id": "field"
+            }, 
+            "required": {
+                "required": True, 
+                "type": "boolean", 
+                "id": "required"
+            }, 
+            "name": {
+                "required": True, 
+                "type": "string", 
+                "id": "name"
+            },
+            "default":
+            {
+                "required": True, 
+                "type": "string", 
+                "id": "default",
+                "maxLength":100000,
+                "minLength":0,
+            }, 
+            "max": {
+                "required": True, 
+                "type": "number", 
+                "id": "max",
+                "minimum":0
+            },
+            "min": {
+                "required": True, 
+                "type": "number", 
+                "id": "max",
+                "maximum":100000000
+            },
+        }
+    }, 
     'text': {
-        "required": r'^(True)|(False)$',
-        "default": r'^(.|\n)*$',
-        "max_length": r'^\d+$',
-        'min_length': r'^\d+$',
-    },  # 多行文本
-    'select': {
-        "required": r'^(True)|(False)$',
-        "choice": r'^\d+\[(.+)(\|(.+))*\]$',
-        "selected": r'^(.+)$'
-    },  # 单选
-    'multiple_select': {
-        "required": r'^(True)|(False)$',
-        "choice": r'^\d+\[(.+)(\|(.+))*\]$',
-        "selected": r'^(.+)(\|(.+))*$'
-    },  # 多选
-    'integer': {
-        "required": r'^(True)|(False)$',
-        "default": r'^\d+$',
-        "unit": r'^.+$',
-        "max_value": r'^\d+$',
-        "min_value": r'^\d+$',
-    },  # 整数
-    'datetime': {
-        "required": r'^(True)|(False)$',
-        "default": r'^\d{14}$',
-    },  # 时间
-    'reference': {
-        "required": r'^(True)|(False)$',
-        "reference": r'^\w{24}$',
-    },  # 引用
-    'image': {
-        "required": r'^(True)|(False)$',
-    },  # 图片
+        "required": True, 
+        "type": "object", 
+        "id": "id", 
+        "properties": {
+            "field": {
+                "required": True, 
+                "type": "string", 
+                "id": "field"
+            }, 
+            "required": {
+                "required": True, 
+                "type": "boolean", 
+                "id": "required"
+            }, 
+            "name": {
+                "required": True, 
+                "type": "string", 
+                "id": "name"
+            },
+             "default":
+            {
+                "required": True, 
+                "type": "string", 
+                "id": "default"
+            }, 
+        }
+    }, 
+    'number': {
+        "required": True, 
+        "type": "object", 
+        "id": "id", 
+        "properties": {
+            "field": {
+                "required": True, 
+                "type": "string", 
+                "id": "field"
+            }, 
+            "required": {
+                "required": True, 
+                "type": "boolean", 
+                "id": "required"
+            }, 
+            "name": {
+                "required": True, 
+                "type": "string", 
+                "id": "name"
+            }, 
+            "max": {
+                "required": True, 
+                "type": "number", 
+                "id": "max",
+                "minimum":0
+            },
+            "min": {
+                "required": True, 
+                "type": "number", 
+                "id": "max",
+                "maximum":100000000
+            },
+            "unit": {
+                "required": True, 
+                "type": "string", 
+                "id": "unit"
+            },
+            "default":
+            {
+                "required": True, 
+                "type": "number", 
+                "id": "default",
+                "maximum":100000000,
+                "minimum":0
+                
+            }, 
+        }
+    },
+    "select": {
+        "required": True, 
+        "type": "object", 
+        "id": "machine_type", 
+        "properties": {
+            "field": {
+                "required": True, 
+                "type": "string", 
+                "id": "field"
+            }, 
+            "required": {
+                "required": True, 
+                "type": "boolean", 
+                "id": "required"
+            }, 
+            "name": {
+                "required": True, 
+                "type": "string", 
+                "id": "name"
+            }, 
+            "choice": {
+                "required": True, 
+                "type": "string", 
+                "id": "choice",
+                "pattern":r'^(.+|)*(.+)$'
+            }
+        }
+    }, 
+    "multi_select": {
+        "required": True, 
+        "type": "object", 
+        "id": "machine_type", 
+        "properties": {
+            "field": {
+                "required": True, 
+                "type": "string", 
+                "id": "field"
+            }, 
+            "required": {
+                "required": True, 
+                "type": "boolean", 
+                "id": "required"
+            }, 
+            "name": {
+                "required": True, 
+                "type": "string", 
+                "id": "name"
+            }, 
+            "choice": {
+                "required": True, 
+                "type": "string", 
+                "id": "choice",
+                "pattern":r'^(.+|)*(.+)$'
+            }
+        }
+    }, 
+    "datetime": {
+        "required": True, 
+        "type": "object", 
+        "id": "machine_type", 
+        "properties": {
+            "field": {
+                "required": True, 
+                "type": "string", 
+                "id": "field"
+            }, 
+            "required": {
+                "required": True, 
+                "type": "boolean", 
+                "id": "required"
+            }, 
+            "name": {
+                "required": True, 
+                "type": "string", 
+                "id": "name"
+            }, 
+            # "choice": {
+            #     "required": True, 
+            #     "type": "string", 
+            #     "id": "choice",
+            #     "pattern":r'^(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(?:\s)?([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})(?::)?([0-5]{1}\d{1})$'
+            # }
+        }
+    }, 
+    
 }
+
+def gemerating_schema(s_data):
+    json_schema = {
+                "$schema": "http://json-schema.org/draft-03/schema#", 
+                "required": True, 
+                "type": "object", 
+                "id": "#", 
+                "properties": {}
+                }
+
+    for attr_name, data in s_data.items():
+        if not isinstance(data, dict):
+            return -1, {"error": "Data is not a dict."}
+        field = data.get("field")
+        # print(attr_name)
+        # print(field)
+        if field not in _valid_fields:
+            return -1, {"error": "Unknown attribute filed type."}
+        schema_bean = _valid_fields[field]
+        schema_bean['id'] = attr_name
+        # print(schema_bean)
+
+        _max =  data.get("max")
+        if _max:
+            schema_bean['properties']['min']['maximum'] = _max
+            _min =  data.get("min")
+            schema_bean['properties']['max']['mininum'] = _min
+        if field == "number":
+            schema_bean['properties']['default']['maximum'] = _max
+            schema_bean['properties']['default']['mininum'] = _min
+        if field == "string":
+            schema_bean['properties']['default']['maxLength'] = _max
+            schema_bean['properties']['default']['minLength'] = _min
+
+        json_schema['properties'][attr_name] = schema_bean
+
+    return 0, json_schema
 
 
 def validate_item_field(attr_value, attr_form):
@@ -155,55 +389,86 @@ def validate_category_structure(raw_data):
         return -1, {"error": "raw Data missed attr: structure"}
     if not isinstance(structure, dict):
         return -1, {"error": "structure is not a dict."}
-    for k, s_data in structure.items():
+
+    s_data = structure['default']
+    if True:
         if not isinstance(s_data, dict):
-            return -1, {"error": "s_data %s is not a dict." % k}
+            return -1, {"error": "s_data is not a dict."}
+
+        json_shema = gemerating_schema(s_data)
+        try:
+            validate(s_data, json_shema[1])
+        except Exception as e:
+            print(e.message)
+        else:
+            print("json good")
         for attr_name, data in s_data.items():
-            if not isinstance(data, dict):
-                return -1, {"error": "Data is not a dict."}
             field = data.get("field")
-            if field not in _valid_fields:
-                return -1, {"error": "Unknown attribute type."}
-            for k, v in _valid_fields[field].items():
-                if k not in data:
-                    return -1, {"error": "missed rule for %s." % k}
-                pattern = re.compile(v)
-                match = pattern.match(data[k])
-                if not match:
-                    return -1, {"error": "dooe not match rule: %s." % k}
-            if field == 'string':
-                if int(data["min_length"]) > int(data["max_length"]):
-                    return -1, {"error": "string: min_length is greater than max_length"}
-                if len(data["default"]) < int(data["min_length"]) or len(data["default"]) > int(data["max_length"]):
-                    return -1, {"error": "default value's length is invalid"}
-            elif field == 'text':
-                if int(data["min_length"]) > int(data["max_length"]):
-                    return -1, {"error": "string: min_length is greater than max_length"}
-                if len(data["default"]) < int(data["min_length"]) or len(data["default"]) > int(data["max_length"]):
-                    return -1, {"error": "default value's length is invalid"}
-            elif field == 'select':
-                choices = data["choice"][1:-1].split("|")
-                if data["selected"] not in choices:
-                    return -1, {"error": "default choice is not in given choices."}
-            elif field == 'multiple_select':
-                choices = data["choice"][1:-1].split("|")
-                default_choices = data["selected"].split("|")
-                for each in default_choices:
-                    if each not in choices:
-                        return -1, {"error": "default choice is not in given choices."}
-            elif field == 'integer':
-                if int(data["min_value"]) > int(data["max_value"]):
-                    return -1, {"error": "integer: min_value is greater than max_value"}
-                if int(data["default"]) < int(data["min_length"]) or int(data["default"]) > int(data["max_length"]):
-                    return -1, {"error": "default value is invalid"}
-            elif field == 'integer':
-                try:
-                    date_object = datetime.datetime.strptime(data["default"], '%Y%m%d%H%M%S')
-                except ValueError:
-                    return -1, {"error": "time data '%s' does not match format" % data["default"]}
-            elif field == 'reference':
+            if field == 'reference':
                 item_category_obj = ItemCategory.objects(id=field["reference"])
                 if not item_category_obj:
                     return -1, {"error": "unknown reference."}
 
     return 0, {"msg": "success"}
+
+
+
+structure = {
+    "default": {
+        "ip": {
+            "name": "ip地址",
+            "field": "string",
+            "min": 1,
+            "max": 200,
+            "default": "1000",
+            "required": True
+        },
+        "cpu": {
+            "name": "cpu",
+            "field": "string",
+            "max": 200,
+            "min": 1,
+            "default": "1000",
+            "required": True
+        },
+        "memory": {
+            "name": "内存",
+            "field": "number",
+            "min": 10,
+            "max": 200,
+            "required": True,
+            "unit":"Gb",
+            "default": 100,
+        },
+        "machine_type": {
+            "name": "机器类型",
+            "field": "select",
+            "required": True,
+            "choice": "虚拟机|物理机|云主机",
+        },
+        "mul_test": {
+            "name": "机器类型",
+            "field": "multi_select",
+            "required": True,
+            "choice": "test1|test2|test3",
+        },
+        "ctime": {
+            "name": "购买日期",
+            "field": "datetime",
+            "required": True,
+        },
+    }
+}
+# s_data = structure['default']
+# json_shema = gemerating_schema(s_data)
+
+# print(json.dumps(json_shema[1]))
+
+# try:
+#     validate(s_data, json_shema[1])
+# except Exception as e:
+#     print(e.message)
+# else:
+#     print("json good")
+
+print(validate_category_structure({"structure":structure}))
