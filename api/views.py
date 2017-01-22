@@ -32,9 +32,4 @@ logger = logging.getLogger('default')
 @login_required
 def field_list(request):
     if request.method == 'GET':
-        for k in _valid_fields:
-            _valid_fields[k]['name'] = _fields_comment[k]
-            for k1 in _valid_fields[k]['properties']:
-                _valid_fields[k]['properties'][k1]['name'] = _fields_comment[k1]
-
-        return JsonResponse(_valid_fields, safe = False)
+        return JsonResponse({"field_list":_valid_fields, "fields_comment":_fields_comment}, safe = False)

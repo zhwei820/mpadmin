@@ -50,10 +50,12 @@
         <el-form-item label="CI类型名称" :label-width="formLabelWidth">
           <el-input v-model="CICategory.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item v-bind:label="item.name" :label-width="formLabelWidth" v-for="(item, index) in CICategory.structure.default">
-          <div>{{ CICategory.structure.default[index].properties.name.name }}</div>
-          <div>{{ CICategory.structure.default[index].properties.name }}</div>
-          <el-input v-model="CICategory.structure.default[index].properties.name" auto-complete="off"></el-input>
+        <el-form-item v-bind:label="fields_comment[item.field]" :label-width="formLabelWidth" v-for="(item, index) in CICategory.structure.default">
+          <div v-for="(v, i) in item" v-if="i != 'field'">
+            <div>{{ fields_comment[i] }}</div>
+            <el-input v-model="CICategory.structure.default[index][i]" auto-complete="off"></el-input>
+
+          </div>
         </el-form-item>
         <!--
         <el-form-item label="活动区域" :label-width="formLabelWidth">
@@ -135,6 +137,7 @@
           // "ip":"d22f",
         },
         field_list: {},
+        fields_comment: {},
         field: "",
       }
     },
@@ -146,8 +149,6 @@
     methods: {
       get_field_list() {
         var query = ""
-        // json2url(this.param)
-
         this.$http.get("/api/field_list" + query).then((response) => {
           if (response.status !== 200) {
             this.$message({
@@ -155,9 +156,10 @@
               message: '请求失败, 请重试'
             });
           }
-          // console.log(response.data)
+          console.log(response.data)
           // var res = JSON.parse(response.data)
-          this.field_list = response.data
+          this.field_list = response.data['field_list']
+          this.fields_comment = response.data['fields_comment']
         }, (response) => {
           this.$message({
             type: 'info',
@@ -188,14 +190,13 @@
         });
       },
       addStructure() {
-        // Vue.set(this.CICategory.structure.default, this.CICategory.structure.default.length + 1, this.field_list[this.field])
-
         var tmp = {}
         for (var k in this.field_list[this.field].properties) {
           tmp[k] = "";
         }
-        this.CICategory.structure.default.push(tmp)
+        tmp['field'] = this.field;
 
+        this.CICategory.structure.default.push(tmp)
         // this.CICategory.structure.default.splice(this.CICategory.structure.default.length + 1, this.field_list[this.field])
         console.log(this.CICategory.structure.default)
         console.log(this.field_list[this.field].properties)
