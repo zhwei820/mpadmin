@@ -79,7 +79,7 @@
 <script>
   import {
     excel,
-    json2url
+    json2url,Vue
   } from "../../../assets/js/util.js"
 
   export default {
@@ -160,7 +160,7 @@
         });
       },
       addStructure(){
-
+        Vue.set(this.CICategory, "proj", "红包锁屏")
       },
       submit(){
         debugger
