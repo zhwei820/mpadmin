@@ -23,6 +23,7 @@ _fields_comment = {
     'unit': "单位",
     'choice': "选项",
     'field': "字段类型",
+    'key': "关键词",
     
     
     # 'reference': {
@@ -59,6 +60,11 @@ _valid_fields = {
                 "required": True, 
                 "type": "string", 
                 "id": "name"
+            },
+            "key": {
+                "required": True, 
+                "type": "string", 
+                "id": "key"
             },
             "default":
             {
@@ -102,6 +108,11 @@ _valid_fields = {
                 "type": "string", 
                 "id": "name"
             },
+            "key": {
+                "required": True, 
+                "type": "string", 
+                "id": "key"
+            },
              "default":
             {
                 "required": True, 
@@ -130,6 +141,11 @@ _valid_fields = {
                 "type": "string", 
                 "id": "name"
             }, 
+            "key": {
+                "required": True, 
+                "type": "string", 
+                "id": "key"
+            },
             "max": {
                 "required": True, 
                 "type": "number", 
@@ -178,6 +194,11 @@ _valid_fields = {
                 "type": "string", 
                 "id": "name"
             }, 
+            "key": {
+                "required": True, 
+                "type": "string", 
+                "id": "key"
+            },
             "choice": {
                 "required": True, 
                 "type": "string", 
@@ -206,6 +227,11 @@ _valid_fields = {
                 "type": "string", 
                 "id": "name"
             }, 
+            "key": {
+                "required": True, 
+                "type": "string", 
+                "id": "key"
+            },
             "choice": {
                 "required": True, 
                 "type": "string", 
@@ -234,6 +260,11 @@ _valid_fields = {
                 "type": "string", 
                 "id": "name"
             }, 
+            "key": {
+                "required": True, 
+                "type": "string", 
+                "id": "key"
+            },
             # "choice": {
             #     "required": True, 
             #     "type": "string", 
@@ -254,7 +285,8 @@ def gemerating_schema(s_data):
                 "properties": {}
                 }
 
-    for attr_name, data in s_data.items():
+    for data in s_data:
+        attr_name = data.get("key")        
         if not isinstance(data, dict):
             return -1, {"error": "Data is not a dict."}
         field = data.get("field")
@@ -392,7 +424,7 @@ def validate_category_structure(raw_data):
 
     s_data = structure['default']
     if True:
-        if not isinstance(s_data, dict):
+        if not isinstance(s_data, list):
             return -1, {"error": "s_data is not a dict."}
 
         json_shema = gemerating_schema(s_data)
@@ -402,7 +434,8 @@ def validate_category_structure(raw_data):
             print(e.message)
         else:
             print("json good")
-        for attr_name, data in s_data.items():
+        for data in s_data:
+            attr_name = data.get("key")
             field = data.get("field")
             if field == 'reference':
                 item_category_obj = ItemCategory.objects(id=field["reference"])
@@ -414,8 +447,9 @@ def validate_category_structure(raw_data):
 
 
 structure = {
-    "default": {
-        "ip": {
+    "default": [
+         {
+             "key":"ip",
             "name": "ip地址",
             "field": "string",
             "min": 1,
@@ -423,7 +457,8 @@ structure = {
             "default": "1000",
             "required": True
         },
-        "cpu": {
+         {
+            "key":"cpu",
             "name": "cpu",
             "field": "string",
             "max": 200,
@@ -431,7 +466,8 @@ structure = {
             "default": "1000",
             "required": True
         },
-        "memory": {
+        {
+            "key":"memory",            
             "name": "内存",
             "field": "number",
             "min": 10,
@@ -440,24 +476,27 @@ structure = {
             "unit":"Gb",
             "default": 100,
         },
-        "machine_type": {
+        {
+            "key":"machine_type",
             "name": "机器类型",
             "field": "select",
             "required": True,
             "choice": "虚拟机|物理机|云主机",
         },
-        "mul_test": {
+        {
+            "key":"mul_test",
             "name": "机器类型",
             "field": "multi_select",
             "required": True,
             "choice": "test1|test2|test3",
         },
-        "ctime": {
+        {
+            "key":"buytime",            
             "name": "购买日期",
             "field": "datetime",
             "required": True,
         },
-    }
+    ]
 }
 # s_data = structure['default']
 # json_shema = gemerating_schema(s_data)

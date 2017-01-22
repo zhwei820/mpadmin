@@ -11,6 +11,7 @@ from rest_framework_jwt.compat import get_username_field, PasswordField
 
 from functools import wraps
 from django.utils.decorators import available_attrs
+from django.http import JsonResponse
 
 User = get_user_model()
 jwt_decode_handler = api_settings.JWT_DECODE_HANDLER

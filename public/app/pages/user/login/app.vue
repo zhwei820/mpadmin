@@ -91,7 +91,7 @@
       },
       login() {
         this.$http.post("/api/api-token-auth/?", this.ruleForm).then((response) => {
-            localStorage.setItem("Authorization", response.data['token'])
+            localStorage.setItem("Authorization", "JWT " + response.data['token'])
             if (response.status !== 200) {
               this.$message({
                 type: 'info',

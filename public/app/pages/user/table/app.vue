@@ -11,7 +11,6 @@
     </el-select>
     <el-input placeholder="姓名" v-model="param.name">
     </el-input>
-   
     <el-button type="default" class="fa fa-refresh" @click="refresh_data"></el-button>
     <el-button type="primary" class="r fa fa-share-square-o" @click="saveExcel"></el-button>
     <el-input placeholder="搜索" class="right_search" icon="search" v-model="input2" @click="handleIconClick" @keyup.enter.native="handleIconClick">
@@ -46,30 +45,32 @@
         :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalNum">
         </el-pagination>
     </div>
-
     <el-dialog title="CI类型编辑" v-model="dialogFormVisible">
       <el-form :model="CICategory">
-
-        <el-form-item label="CI类型名称" :label-width="formLabelWidth" v-for="(item, index) in CICategory">
-          <el-input v-model="CICategory[index]" auto-complete="off"></el-input>
+        <el-form-item label="CI类型名称" :label-width="formLabelWidth">
+          <el-input v-model="CICategory.name" auto-complete="off"></el-input>
         </el-form-item>
-
-<!--
+        <el-form-item v-bind:label="item.name" :label-width="formLabelWidth" v-for="(item, index) in CICategory.structure.default">
+          <div>{{ CICategory.structure.default[index].properties.name.name }}</div>
+          <div>{{ CICategory.structure.default[index].properties.name }}</div>
+          <el-input v-model="CICategory.structure.default[index].properties.name" auto-complete="off"></el-input>
+        </el-form-item>
+        <!--
         <el-form-item label="活动区域" :label-width="formLabelWidth">
           <el-select v-model="CICategory.region" placeholder="请选择活动区域">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
           </el-select>
         </el-form-item>-->
-
         <el-form-item label="添加" :label-width="formLabelWidth">
+          <el-select v-model="field" placeholder="请选择字段类型">
+            <el-option v-bind:label="item.name" v-bind:value="index" v-for="(item, index) in field_list">
+            </el-option>
+          </el-select>
           <el-button @click="addStructure"><i class="fa fa-plus"></i></el-button>
         </el-form-item>
-
-
       </el-form>
       <div slot="footer" class="dialog-footer">
-        
         <el-button @click="dialogFormVisible = false">取 消</el-button>
         <el-button type="primary" @click="submit">确 定</el-button>
       </div>
@@ -79,7 +80,8 @@
 <script>
   import {
     excel,
-    json2url,Vue
+    json2url,
+    Vue
   } from "../../../assets/js/util.js"
 
   export default {
@@ -90,7 +92,7 @@
             return time.getTime() < Date.now() - 8.64e7;
           }
         },
-        
+
         param: {
           start_time: (new Date((new Date()).setDate(new Date().getDate() - 1))),
           end_time: (new Date()),
@@ -123,23 +125,49 @@
         totalNum: 1,
 
         dialogFormVisible: true,
-        CICategory: {
-          "name":"df",
-          "ip":"d22f",
-        },
         formLabelWidth: '120px',
+
+        CICategory: {
+          "name": "",
+          structure: {
+            default: []
+          },
+          // "ip":"d22f",
+        },
+        field_list: {},
+        field: "",
       }
     },
 
     beforeMount: function () {
       // this.fetch(0, this.pageSize)
+      this.get_field_list()
     },
     methods: {
+      get_field_list() {
+        var query = ""
+        // json2url(this.param)
+
+        this.$http.get("/api/field_list" + query).then((response) => {
+          if (response.status !== 200) {
+            this.$message({
+              type: 'info',
+              message: '请求失败, 请重试'
+            });
+          }
+          // console.log(response.data)
+          // var res = JSON.parse(response.data)
+          this.field_list = response.data
+        }, (response) => {
+          this.$message({
+            type: 'info',
+            message: '请求失败, 请重试'
+          });
+        });
+      },
       fetch() {
         // console.log(this.param);
-
         var query = json2url(this.param)
-        
         this.$http.get("/api/layers/?" + query).then((response) => {
           debugger
           if (response.status !== 200) {
@@ -159,10 +187,20 @@
           });
         });
       },
-      addStructure(){
-        Vue.set(this.CICategory, "proj", "红包锁屏")
+      addStructure() {
+        // Vue.set(this.CICategory.structure.default, this.CICategory.structure.default.length + 1, this.field_list[this.field])
+
+        var tmp = {}
+        for (var k in this.field_list[this.field].properties) {
+          tmp[k] = "";
+        }
+        this.CICategory.structure.default.push(tmp)
+
+        // this.CICategory.structure.default.splice(this.CICategory.structure.default.length + 1, this.field_list[this.field])
+        console.log(this.CICategory.structure.default)
+        console.log(this.field_list[this.field].properties)
       },
-      submit(){
+      submit() {
         debugger
       },
 
@@ -172,7 +210,7 @@
       handleDelete(index, row) {
         console.log(index, row);
       },
- 
+
       handleIconClick(ev) {
 
         if (this.input2) {
