@@ -7,8 +7,9 @@ import datetime
 
 # Create your models here.
 class ItemCategory(Document):
-    name = fields.StringField(max_length=200, required=True, unique_with='group')
-    group = fields.ReferenceField('Group')
+    name = fields.StringField(max_length=200, required=True)
+    # name = fields.StringField(max_length=200, required=True, unique_with='group')
+    # group = fields.ReferenceField('Group')
     structure = fields.DictField()
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())
@@ -17,14 +18,14 @@ class ItemCategory(Document):
         "collection": "item_category",
         "indexes": [
             "name",
-            "$name",
+            # "$name",
             "ctime",
         ],
     }
 
 
 class Item(DynamicDocument):
-    name = fields.StringField(max_length=200, required=True, unique_with='category')
+    name = fields.StringField(max_length=200, required=True)
     category = fields.ReferenceField(ItemCategory, required=True)
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())

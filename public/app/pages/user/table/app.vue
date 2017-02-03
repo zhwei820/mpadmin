@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-button type="primary" @click="dialogFormVisible = true">新建</el-button>
+    <el-button type="primary" @click="createNewCategory">新建</el-button>
     <el-date-picker v-model="param.start_time" type="date" placeholder="开始日期" :picker-options="pickerOptions0">
     </el-date-picker>
     <el-date-picker v-model="param.end_time" type="date" placeholder="结束日期" :picker-options="pickerOptions0">
@@ -26,18 +26,16 @@
           </el-button>
         </div>
       </el-table-column>
-      <el-table-column fixed prop="date" :label=tableHead.date width="150">
-      </el-table-column>
       <el-table-column prop="name" :label=tableHead.name width="120">
       </el-table-column>
-      <el-table-column prop="province" :label=tableHead.province width="120">
+      <!--<el-table-column prop="province" :label=tableHead.province width="120">
       </el-table-column>
       <el-table-column prop="city" :label=tableHead.city width="120">
       </el-table-column>
       <el-table-column prop="address" :label=tableHead.address width="300">
       </el-table-column>
       <el-table-column prop="zip" :label=tableHead.zip width="120">
-      </el-table-column>
+      </el-table-column>-->
     </el-table>
     <div class="block">
       <!--<span class="demonstration">完整功能</span>-->
@@ -46,15 +44,26 @@
         </el-pagination>
     </div>
     <el-dialog title="CI类型编辑" v-model="dialogFormVisible">
-      <el-form :model="CICategory">
+      <el-form :model="CICategory" label-position="left">
         <el-form-item label="CI类型名称" :label-width="formLabelWidth">
           <el-input v-model="CICategory.name" auto-complete="off"></el-input>
         </el-form-item>
-        <el-form-item v-bind:label="fields_comment[item.field]" :label-width="formLabelWidth" v-for="(item, index) in CICategory.structure.default">
-          <div v-for="(v, i) in item" v-if="i != 'field'">
-            <div>{{ fields_comment[i] }}</div>
-            <el-input v-model="CICategory.structure.default[index][i]" auto-complete="off"></el-input>
-
+        <el-form-item v-bind:label="item.name" :label-width="formLabelWidth" v-for="(item, index) in CICategory.structure.default">
+          <el-button @click="delStructure(index)" type="danger" icon="minus" size="small"></el-button>
+          <div v-for="(v, i) in item" v-if="">
+            <div v-if="i!='name' && i!='key' && i != 'field'">
+              <div>{{ fields_comment[i] }}</div>
+              <el-switch v-if="i=='required'" on-text="" off-text="" v-model="CICategory.structure.default[index][i]"></el-switch>
+              <el-input v-else-if="i=='min' || i=='max' " type="number" v-model="CICategory.structure.default[index][i]" auto-complete="off"></el-input>
+              <el-input v-else v-model="CICategory.structure.default[index][i]" auto-complete="off"></el-input>
+            </div>
+            <div v-if="i == 'field'">
+              <div>类型</div>
+              <el-input v-model="fields_comment[v]" auto-complete="off"></el-input>
+            </div>
+            <div v-if="i=='name'||i=='key'">
+              <el-input v-if="i!='required' " v-model="CICategory.structure.default[index][i]" auto-complete="off" hidden></el-input>
+            </div>
           </div>
         </el-form-item>
         <!--
@@ -62,14 +71,25 @@
           <el-select v-model="CICategory.region" placeholder="请选择活动区域">
             <el-option label="区域一" value="shanghai"></el-option>
             <el-option label="区域二" value="beijing"></el-option>
-          </el-select>
+          </el-select> 
         </el-form-item>-->
-        <el-form-item label="添加" :label-width="formLabelWidth">
-          <el-select v-model="field" placeholder="请选择字段类型">
-            <el-option v-bind:label="item.name" v-bind:value="index" v-for="(item, index) in field_list">
-            </el-option>
-          </el-select>
-          <el-button @click="addStructure"><i class="fa fa-plus"></i></el-button>
+        <el-form-item label="添加属性" :label-width="formLabelWidth">
+          <div>
+            <div>名称</div>
+            <el-input v-model="tmp_name" auto-complete="off"></el-input>
+          </div>
+          <div>
+            <div>关键字</div>
+            <el-input v-model="tmp_key" auto-complete="off"></el-input>
+          </div>
+          <div>
+            <div>类型</div>
+            <el-select v-model="field" placeholder="请选择">
+              <el-option v-bind:label="item.name" v-bind:value="index" v-for="(item, index) in field_list">
+              </el-option>
+            </el-select>
+            <el-button @click="addStructure"><i class="fa fa-plus"></i></el-button>
+          </div>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -103,8 +123,7 @@
         },
         input2: "",
         tableHead: {
-          "date": "日期",
-          "name": "姓名",
+          "name": "CI类型名称",
           "test": "test",
           "province": "省份",
           "city": "市区",
@@ -126,16 +145,18 @@
         pageSize: 20,
         totalNum: 1,
 
-        dialogFormVisible: true,
+        dialogFormVisible: false,
         formLabelWidth: '120px',
 
         CICategory: {
           "name": "",
+          "id": "",
           structure: {
             default: []
           },
-          // "ip":"d22f",
         },
+        tmp_key: "",
+        tmp_name: "",
         field_list: {},
         fields_comment: {},
         field: "",
@@ -143,7 +164,7 @@
     },
 
     beforeMount: function () {
-      // this.fetch(0, this.pageSize)
+      this.fetch(0, this.pageSize)
       this.get_field_list()
     },
     methods: {
@@ -170,16 +191,17 @@
       fetch() {
         // console.log(this.param);
         var query = json2url(this.param)
-        this.$http.get("/api/layers/?" + query).then((response) => {
-          debugger
+        this.$http.get("/api/items_categories/?" + query).then((response) => {
           if (response.status !== 200) {
             this.$message({
               type: 'info',
               message: '请求失败, 请重试'
             });
           }
-          var res = JSON.parse(response.data)
-          this.tableData1 = res['data']
+
+          console.log(response.data);
+
+          this.tableData1 = response.data
           this.tableData = this.tableData1.slice(0, this.pageSize)
           this.totalNum = this.tableData1.length
         }, (response) => {
@@ -195,25 +217,60 @@
           tmp[k] = "";
         }
         tmp['field'] = this.field;
+        tmp['name'] = this.tmp_name;
+        tmp['key'] = this.tmp_key;
 
+        this.tmp_name = ""
+        this.tmp_key = ""
         this.CICategory.structure.default.push(tmp)
-        // this.CICategory.structure.default.splice(this.CICategory.structure.default.length + 1, this.field_list[this.field])
         console.log(this.CICategory.structure.default)
-        console.log(this.field_list[this.field].properties)
+      },
+      delStructure(i) {
+        console.log(i)
+        this.CICategory.structure.default.splice(i)
+
       },
       submit() {
+        if (!this.CICategory.id) {
+          this.$http.post("/api/items_categories/", this.CICategory).then((response) => {}, (response) => {
+            this.$message({
+              type: 'info',
+              message: '请求失败, 请重试'
+            });
+          });
+        } else {
+          this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {}, (
+            response) => {
+            this.$message({
+              type: 'info',
+              message: '请求失败, 请重试'
+            });
+          });
+
+        }
         debugger
       },
 
       handleEdit(index, row) {
-        console.log(index, row);
+        this.CICategory = row
+        this.dialogFormVisible = true
+        // console.log(index, row);
+      },
+      createNewCategory() {
+        this.dialogFormVisible = true
+        this.CICategory = {
+          "name": "",
+          "id": "",
+          structure: {
+            default: []
+          },
+        }
       },
       handleDelete(index, row) {
         console.log(index, row);
       },
 
       handleIconClick(ev) {
-
         if (this.input2) {
           var tmp = []
           for (var ii = 0; ii < this.tableData1.length; ii++) {
@@ -241,7 +298,7 @@
         excel([this.tableHead].concat(this.tableData1), this.tableHeadKeys, "aaa", "xls")
       },
       refresh_data() {
-        // this.fetch(0, this.pageSize)
+        this.fetch(0, this.pageSize)
 
       }
     }
