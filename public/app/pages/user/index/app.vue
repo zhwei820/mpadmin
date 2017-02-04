@@ -1,23 +1,19 @@
 <template>
   <div>
     <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
-      <el-menu-item index="1">处理中心</el-menu-item>
-      <el-submenu index="2">
-        <template slot="title">我的工作台</template>
-        <el-menu-item index="2-1">选项1</el-menu-item>
-        <el-menu-item index="2-2">选项2</el-menu-item>
-        <el-menu-item index="2-3">选项3</el-menu-item>
-      </el-submenu>
-      <el-menu-item index="3">订单管理</el-menu-item>
+      <el-menu-item index="1">CMDB管理中心</el-menu-item>
     </el-menu>
     <el-row class="tac">
       <!--sidebar start-->
       <el-col :span="4">
         <!--<h5>菜单</h5>-->
-        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" unique-opened="true">
-          <el-submenu :index="submenus.id" v-for="submenus in menus">
+        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" unique-opened=true>
+          <el-submenu :index="submenus.uri" v-for="submenus in menus">
             <template slot="title"><i class="el-icon-message"></i>{{submenus.text}}</template>
-            <el-menu-item :index="submenu.uri" v-for="submenu in submenus.items">{{submenu.text}}</el-menu-item>
+            <el-submenu :index="submenus1.uri" v-for="submenus1 in submenus.menus">
+              <template slot="title"><i class="el-icon-message"></i>{{submenus1.text}}</template>
+              <el-menu-item :index="submenu1.uri" v-for="submenu1 in submenus1.items">{{submenu1.text}}</el-menu-item>
+            </el-submenu>
           </el-submenu>
         </el-menu>
       </el-col>
@@ -28,7 +24,7 @@
           <el-breadcrumb-item>{{breadcrumb1}}</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>
         </el-breadcrumb>
-        <iframe id="checkListFrame" src="/user/table.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
+        <iframe id="checkListFrame" src="/user/layer.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
       </el-col>
     </el-row>
     <div id="footer">
@@ -52,45 +48,49 @@
         breadcrumb2: "",
 
         menus: [{
-          id: "1",
-          text: "导航1",
-          items: [{
-            text: "tooltip",
-            uri: "/user/tooltip.html?123",
+          uri: "/",
+          text: "模型",
+          menus: [{
+            uri: "/user/layer.html?123",
+            text: "导航1",
+            items: [{
+              text: "layer",
+              uri: "/user/layer.html?123",
+            }, {
+              text: "group",
+              uri: "/user/group.html?1233",
+            }, {
+              text: "CIModel",
+              uri: "/user/item_category.html?1232",
+            }, ]
           }, {
-            text: "表单2",
-            uri: "/user/form.html?1233",
+            uri: "/user/group.html?123",
+            text: "导航2",
+            items: [{
+              text: "layer",
+              uri: "/user/layer.html?1213",
+            }, {
+              text: "group",
+              uri: "/user/group.html?12313",
+            }, {
+              text: "CIModel",
+              uri: "/user/item_category.html?12132",
+            }, ]
           }, {
-            text: "表格1",
-            uri: "/user/table.html?1232",
+            uri: "/user/item_category.html?123",
+            text: "导航3",
+            items: [{
+              text: "layer",
+              uri: "/user/layer.html?1233",
+            }, {
+              text: "group",
+              uri: "/user/group.html?12323",
+            }, {
+              text: "CIModel",
+              uri: "/user/item_category.html?12432",
+            }, ]
           }, ]
-        }, {
-          id: "2",
-          text: "导航2",
-          items: [{
-            text: "tooltip",
-            uri: "/user/tooltip.html?123f",
-          }, {
-            text: "表单2",
-            uri: "/user/form.html?123d",
-          }, {
-            text: "表格1",
-            uri: "/user/table.html?123g",
-          }, ]
-        }, {
-          id: "3",
-          text: "导航3",
-          items: [{
-            text: "card",
-            uri: "/user/card.html?12332",
-          }, {
-            text: "表单2",
-            uri: "/user/form.html?123fg",
-          }, {
-            text: "表格1",
-            uri: "/user/table.html?123dds",
-          }, ]
-        }, ],
+        }],
         menus1: {},
       }
     },
@@ -102,7 +102,6 @@
           this.menus1[this.menus[ii].id][this.menus[ii].items[jj]['uri']] = this.menus[ii].items[jj]
         }
       }
-
 
       var breadcrumb1 = document.getElementsByClassName("el-breadcrumb__item")[0]
 
@@ -119,9 +118,13 @@
         this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
       },
       handleOpen(key, keyPath) {
-        // debugger
-        // $(".el-submenu").removeClass("is-opened")
-        // $("ul[class='el-menu']").css('display','none'); 
+        console.log(keyPath[0]);
+
+        if (keyPath[0] != "/") {
+          document.getElementById("checkListFrame").src = key
+          this.breadcrumb1 = this.menus1[keyPath[0]]['text']
+          this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
+        }
       },
 
     }

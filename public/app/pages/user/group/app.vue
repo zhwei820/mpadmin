@@ -17,6 +17,8 @@
       </el-table-column>
       <el-table-column prop="name" :label=tableHead.name width="120">
       </el-table-column>
+      <el-table-column prop="layer_name" :label=tableHead.layer_name width="120">
+      </el-table-column>
     </el-table>
     <div class="block">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="tablePage" :page-sizes="[100, ]"
@@ -24,7 +26,7 @@
         </el-pagination>
     </div>
     <el-dialog title="CI模型组编辑" v-model="dialogFormVisible">
-      <el-form >
+      <el-form>
         <el-form-item label="CI模型组名称" :label-width="formLabelWidth">
           <el-input v-model="form.name" auto-complete="off"></el-input>
         </el-form-item>
@@ -54,10 +56,14 @@
       return {
         input2: "",
         tableHead: {
-          "name": "层名称",
+          "name": "组名称",
+          "layer": "层",
+          "layer_name": "层名称",
         },
         tableHeadKeys: [
           "name",
+          "layer",
+          "layer_name",
         ],
         tableData1: [],
         tableData: [],
@@ -72,12 +78,13 @@
           layer: "default",
         },
         layer_list: {},
+        layer_name_list: {},
         formLabelWidth: '120px',
       }
     },
 
     beforeMount: function () {
-      this.fetch(0, 100)
+      
       this.get_layer_list()
     },
     methods: {
@@ -94,6 +101,11 @@
           for (var key in response.data) {
             this.layer_list[response.data[key].name] = response.data[key].id;
           }
+          this.layer_name_list = {}
+          for (var key in response.data) {
+            this.layer_name_list[response.data[key].id] = response.data[key].name;
+          }
+          this.fetch(0, 100)
         }, (response) => {
           this.$message({
             type: 'info',
@@ -110,6 +122,9 @@
             });
           }
           var res = response.data
+          for (var key in res) {
+            res[key].layer_name = this.layer_name_list[res[key].layer];
+          }
           this.tableData = res
           this.tableData1 = res
           this.totalNum = this.tableData1.length

@@ -9,7 +9,7 @@ import datetime
 class ItemCategory(Document):  #CI 模型定义
     name = fields.StringField(max_length=200, required=True)
     # name = fields.StringField(max_length=200, required=True, unique_with='group')
-    # group = fields.ReferenceField('Group')
+    group = fields.ReferenceField('Group')
     structure = fields.DictField()
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())
