@@ -415,7 +415,7 @@ def validate_item_structure(data):
     return 0, {"msg": "success"}
 
 
-def validate_category_structure(raw_data):
+def validate_category_structure(raw_data):  # 检验模型定义字段
     structure = raw_data.get("structure")
     if not structure:
         return -1, {"error": "raw Data missed attr: structure"}

@@ -8,11 +8,11 @@ Vue.use(VueResource);
 Vue.http.interceptors.push((request, next) => {
     var Authorization = localStorage.getItem("Authorization");
     console.log(Authorization);
-    
-  if(Authorization){
-      request.headers.set('Authorization', Authorization);
-  }
-  next();
+
+    if (Authorization) {
+        request.headers.set('Authorization', Authorization);
+    }
+    next();
 });
 
 
@@ -196,6 +196,34 @@ Date.prototype.Format = function (fmt) {
     return fmt;
 }
 
+var deepCopyOfObject = function (obj) {
+    if (typeof obj == 'object' && obj != null) {
+        var Constructor = obj.constructor,
+            newObj = null,
+            key;
+        newObj = new Constructor();
+        if (obj instanceof Array) {
+            for (key in obj) {
+                if (typeof obj[key] == 'object') {
+                    newObj.push(deepCopyOfObject(obj[key]));
+                } else {
+                    newObj.push(obj[key]);
+                }
+            }
+        } else {
+            for (key in obj) {
+                if (typeof obj[key] == 'object') {
+                    newObj[key] = deepCopyOfObject(obj[key]);
+                } else {
+                    newObj[key] = obj[key];
+                }
+            }
+        }
+    } else {
+        newObj = obj;
+    }
+    return newObj;
+};
 
 
 export {
@@ -206,4 +234,7 @@ export {
     paramParseObj,
     paramParse,
     Vue,
+    deepCopyOfObject,
 }
+
+

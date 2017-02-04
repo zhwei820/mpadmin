@@ -20,7 +20,7 @@ class Layer(Document):
     }
 
 
-class Group(Document):
+class Group(Document):  # CI 分组
     name = fields.StringField(max_length=200, required=True, unique_with="layer")
     layer = fields.ReferenceField(Layer, required=True)
     ctime = fields.DateTimeField(default=datetime.datetime.now())

@@ -6,7 +6,7 @@ import datetime
 
 
 # Create your models here.
-class ItemCategory(Document):
+class ItemCategory(Document):  #CI 模型定义
     name = fields.StringField(max_length=200, required=True)
     # name = fields.StringField(max_length=200, required=True, unique_with='group')
     # group = fields.ReferenceField('Group')
@@ -24,7 +24,7 @@ class ItemCategory(Document):
     }
 
 
-class Item(DynamicDocument):
+class Item(DynamicDocument): # CI 模型实例
     name = fields.StringField(max_length=200, required=True)
     category = fields.ReferenceField(ItemCategory, required=True)
     ctime = fields.DateTimeField(default=datetime.datetime.now())
