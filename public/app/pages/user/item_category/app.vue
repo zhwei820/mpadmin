@@ -225,8 +225,6 @@
             });
           }
 
-          console.log(response.data);
-
           this.tableData1 = response.data
           this.tableData = this.tableData1.slice(0, this.pageSize)
           this.totalNum = this.tableData1.length
@@ -280,7 +278,7 @@
 
         }
         this.dialogFormVisible = false
-        
+        this.refresh_data()
       },
 
       handleEdit(index, row) {

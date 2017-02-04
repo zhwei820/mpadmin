@@ -1,17 +1,6 @@
 <template>      
 <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
-      <el-button plain @click.native="open3">
-      成功
-    </el-button>
-    <el-button plain @click.native="open4">
-      警告
-    </el-button>
-    <el-button plain @click.native="open5">
-      消息
-    </el-button>
-    <el-button plain @click.native="open6">
-      错误
-    </el-button>
+
   <el-form-item label="Activity name" prop="name">
     <el-input v-model="ruleForm.name"></el-input>
   </el-form-item>

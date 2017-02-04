@@ -5,7 +5,7 @@ import datetime
 
 
 # Create your models here.
-class Layer(Document):
+class Layer(Document): # CI 层
     name = fields.StringField(max_length=200, unique=True, required=True)
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())
@@ -14,7 +14,7 @@ class Layer(Document):
         "collection": "layer",
         "indexes": [
             "name",
-            "$name",
+            # "$name",
             "ctime",
         ],
     }
@@ -30,7 +30,7 @@ class Group(Document):  # CI 分组
         "collection": "group",
         "indexes": [
             "name",
-            "$name",
+            # "$name",
             "ctime",
         ],
     }

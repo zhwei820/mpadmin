@@ -7,7 +7,6 @@ Vue.use(VueResource);
 
 Vue.http.interceptors.push((request, next) => {
     var Authorization = localStorage.getItem("Authorization");
-    console.log(Authorization);
 
     if (Authorization) {
         request.headers.set('Authorization', Authorization);
