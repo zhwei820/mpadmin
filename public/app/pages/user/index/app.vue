@@ -6,8 +6,22 @@
     <el-row class="tac">
       <!--sidebar start-->
       <el-col :span="4">
-        <!--<h5>菜单</h5>-->
         <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" unique-opened=true>
+          <div>
+            <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
+              <i class="fa fa-plus"></i> 新增CI模型层
+            </el-button>
+          </div>
+          <div>
+            <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
+              <i class="fa fa-plus"></i> 新增CI模型组
+            </el-button>
+          </div>
+          <div>
+            <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
+              <i class="fa fa-plus"></i> 新增CI模型
+            </el-button>
+          </div>
           <el-submenu :index="submenus.uri" v-for="submenus in menus">
             <template slot="title"><i class="el-icon-message"></i>{{submenus.text}}</template>
             <el-submenu :index="submenus1.uri" v-for="submenus1 in submenus.menus">
@@ -39,7 +53,6 @@
   import {
     addEvent
   } from "../../../assets/js/util.js"
-  // console.log(addEvent)
 
   export default {
     data() {
@@ -100,12 +113,13 @@
         this.menus1[this.menus[ii].uri]['text'] = this.menus[ii]['text']
         for (var kk = 0; kk < this.menus[ii].menus.length; kk++) {
 
-        this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri] = {}
-        this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri]['text'] = this.menus[ii].menus[kk]['text']
+          this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri] = {}
+          this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri]['text'] = this.menus[ii].menus[kk]['text']
 
           for (var jj = 0; jj < this.menus[ii].menus[kk].items.length; jj++) {
-            this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri][this.menus[ii].menus[kk].items[jj]['uri']] = this.menus[ii].menus[
-              kk].items[jj]
+            this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri][this.menus[ii].menus[kk].items[jj]['uri']] =
+              this.menus[ii].menus[
+                kk].items[jj]
           }
         }
       }
@@ -134,6 +148,9 @@
           this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
         }
       },
+      createNewLayer() {
+
+      }
 
     }
   }
@@ -160,5 +177,12 @@
   @import '../../../assets/css/index.css';
   body {
     font-family: Helvetica, sans-serif;
+  }
+  
+  .new_btn {
+    margin-left: -70px;
+    left: 50%;
+    position: relative;
+    margin-bottom: 3px;
   }
 </style>
