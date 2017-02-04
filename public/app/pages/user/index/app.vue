@@ -96,10 +96,17 @@
     },
     mounted: function () {
       for (var ii = 0; ii < this.menus.length; ii++) {
-        this.menus1[this.menus[ii].id] = {}
-        this.menus1[this.menus[ii].id]['text'] = this.menus[ii]['text']
-        for (var jj = 0; jj < this.menus[ii].items.length; jj++) {
-          this.menus1[this.menus[ii].id][this.menus[ii].items[jj]['uri']] = this.menus[ii].items[jj]
+        this.menus1[this.menus[ii].uri] = {}
+        this.menus1[this.menus[ii].uri]['text'] = this.menus[ii]['text']
+        for (var kk = 0; kk < this.menus[ii].menus.length; kk++) {
+
+        this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri] = {}
+        this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri]['text'] = this.menus[ii].menus[kk]['text']
+
+          for (var jj = 0; jj < this.menus[ii].menus[kk].items.length; jj++) {
+            this.menus1[this.menus[ii].uri][this.menus[ii].menus[kk].uri][this.menus[ii].menus[kk].items[jj]['uri']] = this.menus[ii].menus[
+              kk].items[jj]
+          }
         }
       }
 
@@ -118,10 +125,11 @@
         this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
       },
       handleOpen(key, keyPath) {
-        console.log(keyPath[0]);
 
-        if (keyPath[0] != "/") {
+        if (key != "/") {
           document.getElementById("checkListFrame").src = key
+          console.log(this.menus1);
+
           this.breadcrumb1 = this.menus1[keyPath[0]]['text']
           this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
         }
