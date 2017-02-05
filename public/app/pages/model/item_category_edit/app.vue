@@ -124,7 +124,7 @@
         CICategory: {
           "name": "",
           "id": "",
-          group: "",
+          group: "default",
           structure: {
             // default: [],
             hidden: {
@@ -137,7 +137,7 @@
         tmp_group: "default",
         field_list: {},
         fields_comment: {},
-        field: "",
+        field: "text",
         cpg_list: {
           default: ""
         },
@@ -202,21 +202,23 @@
         // this.$http.get("/api/items_categories/?" + query).then((response) => {
 
         var id = paramParse('id')
-        this.$http.get("/api/items_categories/" + id + "/").then((response) => {
-          if (response.status !== 200) {
+        if (id) {
+          this.$http.get("/api/items_categories/" + id + "/").then((response) => {
+            if (response.status !== 200) {
+              this.$message({
+                type: 'info',
+                message: '请求失败, 请重试'
+              });
+            }
+            this.CICategory = response.data
+
+          }, (response) => {
             this.$message({
               type: 'info',
               message: '请求失败, 请重试'
             });
-          }
-          this.CICategory = response.data
-
-        }, (response) => {
-          this.$message({
-            type: 'info',
-            message: '请求失败, 请重试'
           });
-        });
+        }
       },
       addStructure() {
         var tmp = {}
@@ -244,7 +246,16 @@
       },
       submit() {
         if (!this.CICategory.id) {
-         
+          this.$http.post("/api/items_categories/", this.CICategory).then((response) => {
+            location.href = "/model/item_category_edit.html?id=" + response.data.id
+          }, (
+            response) => {
+            this.$message({
+              type: 'info',
+              message: '请求失败, 请重试'
+            });
+          });
+
         } else {
           this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {}, (
             response) => {

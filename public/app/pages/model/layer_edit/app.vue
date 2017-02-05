@@ -1,20 +1,20 @@
 <template>
-    <!--<el-dialog title="CI模型层编辑" v-model="dialogFormVisible">-->
-    <el-row type="flex" class="row-bg" justify="center">
-      <el-col :span="6">
-        <h2>CI模型层编辑</h2>
-        <el-form :model="form" label-position="top">
-          <el-form-item label="CI模型层名称" label-width="80">
-            <el-input v-model="form.name" auto-complete="off"></el-input>
-          </el-form-item>
-        </el-form>
-        <div >
-          <el-button @click="dialogFormVisible = false">取 消</el-button>
-          <el-button type="primary" @click="submit">确 定</el-button>
-        </div>
-      </el-col>
-    </el-row>
-    <!--</el-dialog>-->
+  <!--<el-dialog title="CI模型层编辑" v-model="dialogFormVisible">-->
+  <el-row type="flex" class="row-bg" justify="center">
+    <el-col :span="6">
+      <h2>CI模型层编辑</h2>
+      <el-form :model="form" label-position="top">
+        <el-form-item label="CI模型层名称" label-width="80">
+          <el-input v-model="form.name" auto-complete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div>
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
+      </div>
+    </el-col>
+  </el-row>
+  <!--</el-dialog>-->
 </template>
 <script>
   import {
@@ -42,23 +42,35 @@
     methods: {
       fetch(offset, limit) {
         var id = paramParse('id')
-        this.$http.get("/api/layers/" + id + "/").then((response) => {
-          if (response.status !== 200) {
+        if (id) {
+          this.$http.get("/api/layers/" + id + "/").then((response) => {
+            if (response.status !== 200) {
+              this.$message({
+                type: 'info',
+                message: '请求失败, 请重试'
+              });
+            }
+            this.form = response.data
+
+          }, (response) => {
             this.$message({
               type: 'info',
               message: '请求失败, 请重试'
             });
-          }
-          this.form = response.data
-        }, (response) => {
-          this.$message({
-            type: 'info',
-            message: '请求失败, 请重试'
           });
-        });
+        }
       },
       submit() {
         if (!this.form.id) {
+          this.$http.post("/api/layers/", this.form).then((response) => {
+            location.href = "/model/layer_edit.html?id=" + response.data.id
+          }, (
+            response) => {
+            this.$message({
+              type: 'info',
+              message: '请求失败, 请重试'
+            });
+          });
 
         } else {
           this.$http.put("/api/layers/" + this.form.id + "/", this.form).then((response) => {}, (

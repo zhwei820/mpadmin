@@ -6,7 +6,7 @@
     <el-row class="tac">
       <!--sidebar start-->
       <el-col :span="4">
-        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" unique-opened=true>
+        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" >
           <div>
             <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
               <i class="fa fa-plus"></i> 新增CI模型层
@@ -60,120 +60,7 @@
       return {
         breadcrumb1: "dashboard",
         breadcrumb2: "",
-
-        menus: [{
-          uri: "/",
-          text: "层",
-          menus: [{
-            uri: "/model/layer.html?123",
-            text: "组",
-            items: [{
-              text: "模型",
-              uri: "/model/layer.html?123",
-            }, {
-              text: "模型",
-              uri: "/model/group.html?1233",
-            }, {
-              text: "模型",
-              uri: "/model/item_category.html?1232",
-            }, ]
-          }, {
-            uri: "/model/group.html?123",
-            text: "组",
-            items: [{
-              text: "模型",
-              uri: "/model/layer.html?1213",
-            }, {
-              text: "模型",
-              uri: "/model/group.html?12313",
-            }, {
-              text: "模型",
-              uri: "/model/item_category.html?12132",
-            }, ]
-          }],
-        }],
-        menus1: {},
-      }
-    },
-    mounted: function () {
-      var that = this
-      var layer_list, layer_name_list
-      var p1 = new Promise(
-        function (resolve, reject) {
-          that.get_model_data("/api/layers/", "", resolve, reject)
-        }
-      );
-
-      var group_list, group_name_list, group_by_list_of_group
-      var p2 = new Promise(
-        function (resolve, reject) {
-          that.get_model_data("/api/groups/", "layer", resolve, reject)
-        }
-      );
-
-
-      var item_category_list, item_category_name_list, group_by_list_of_item_category
-      var p3 = new Promise(
-        function (resolve, reject) {
-          that.get_model_data("/api/items_categories/", "group", resolve, reject)
-        }
-      );
-
-
-      p1.then((res) => {
-        layer_list = res[0];
-        layer_name_list = res[1]
-        console.log(layer_name_list)
-        return p2 // 黑科技!
-      }).then((res) => {
-        group_list = res[0];
-        group_name_list = res[1]
-        group_by_list_of_group = res[2]
-
-        console.log(group_name_list)
-        return p3
-      }).then((res) => {
-        item_category_list = res[0];
-        item_category_name_list = res[1]
-        group_by_list_of_item_category = res[2]
-
-        console.log(item_category_name_list)
-
-        this.menus = []
-
-        for (var key in layer_name_list) {
-          var element = layer_name_list[key];
-          var m1 = {
-            uri: "/model/layer_edit.html?id=" + key,
-            text: element,
-            items: []
-          }
-          var menus1 = []
-
-          for (var key1 in group_by_list_of_group[key]) {
-            var element1 = group_by_list_of_group[key][key1];
-
-            var menus2 = {};
-            menus2.uri = "/model/group_edit.html?id=" + element1.id
-            menus2.text = element1.name
-            menus2.items = []
-            console.log(group_by_list_of_item_category)
-            console.log(element1.id)
-            for (var key2 in group_by_list_of_item_category[element1.id]) {
-              var element2 = group_by_list_of_item_category[element1.id][key2];
-              console.log(element2)
-              var menu_item = {}
-              menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
-              menu_item.text = element2.name
-              menus2.items.push(menu_item)
-            }
-            menus1.push(menus2)
-          }
-          m1.menus = menus1;
-
-          this.menus.push(m1)
-        }
-
+        menus: [],
 
         // menus: [{
         //   uri: "/",
@@ -205,9 +92,86 @@
         //       uri: "/model/item_category.html?12132",
         //     }, ]
         //   }],
-        // }]
+        // }],
+        menus1: {},
+      }
+    },
+    mounted: function () {
+      var that = this
+      var layer_list, layer_name_list
+      var p1 = new Promise(
+        function (resolve, reject) {
+          that.get_model_data("/api/layers/", "", resolve, reject)
+        }
+      );
 
-        console.log(this.menus)
+      var group_list, group_name_list, group_by_list_of_group
+      var p2 = new Promise(
+        function (resolve, reject) {
+          that.get_model_data("/api/groups/", "layer", resolve, reject)
+        }
+      );
+
+
+      var item_category_list, item_category_name_list, group_by_list_of_item_category
+      var p3 = new Promise(
+        function (resolve, reject) {
+          that.get_model_data("/api/items_categories/", "group", resolve, reject)
+        }
+      );
+
+
+      p1.then((res) => {
+        layer_list = res[0];
+        layer_name_list = res[1]
+        // console.log(layer_name_list)
+        return p2 // 黑科技!
+      }).then((res) => {
+        group_list = res[0];
+        group_name_list = res[1]
+        group_by_list_of_group = res[2]
+
+        // console.log(group_name_list)
+        return p3
+      }).then((res) => {
+        item_category_list = res[0];
+        item_category_name_list = res[1]
+        group_by_list_of_item_category = res[2]
+
+        // console.log(item_category_name_list)
+
+        this.menus = []
+
+        for (var key in layer_name_list) {
+          var element = layer_name_list[key];
+          var m1 = {
+            uri: "/model/layer_edit.html?id=" + key,
+            text: element,
+            items: []
+          }
+          var menus1 = []
+
+          for (var key1 in group_by_list_of_group[key]) {
+            var element1 = group_by_list_of_group[key][key1];
+
+            var menus2 = {};
+            menus2.uri = "/model/group_edit.html?id=" + element1.id
+            menus2.text = element1.name
+            menus2.items = []
+            for (var key2 in group_by_list_of_item_category[element1.id]) {
+              var element2 = group_by_list_of_item_category[element1.id][key2];
+              var menu_item = {}
+              menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
+              menu_item.text = element2.name
+              menus2.items.push(menu_item)
+            }
+            menus1.push(menus2)
+          }
+          m1.menus = menus1;
+
+          this.menus.push(m1)
+        }
+
 
         // for (var ii = 0; ii < this.menus.length; ii++) {
         //   this.menus1[this.menus[ii].uri] = {}
