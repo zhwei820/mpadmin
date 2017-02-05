@@ -236,6 +236,8 @@
       submit() {
         if (!this.CICategory.id) {
           this.$http.post("/api/items_categories/", this.CICategory).then((response) => {
+            // location.href = "/model/item_category_edit.html?id=" + response.data.id
+            parent.vm.get_model_menus()
             location.href = "/model/item_category_edit.html?id=" + response.data.id
           }, (
             response) => {

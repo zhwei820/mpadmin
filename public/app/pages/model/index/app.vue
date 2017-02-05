@@ -4,9 +4,8 @@
       <el-menu-item index="1">CMDB管理中心</el-menu-item>
     </el-menu>-->
     <el-row class="tac">
-      <!--sidebar start-->
       <el-col :span="4">
-        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" >
+        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen">
           <div>
             <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
               <i class="fa fa-plus"></i> 新增CI模型层
@@ -35,11 +34,11 @@
       <!--sidebar end-->
       <el-col :span=20>
         <el-breadcrumb separator="/" class="breadcrumb_padding">
-          <el-breadcrumb-item>首页</el-breadcrumb-item>
+          <!--<el-breadcrumb-item>首页</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb1}}</el-breadcrumb-item>
-          <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>
+          <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>-->
         </el-breadcrumb>
-        <iframe id="checkListFrame" src="/model/layer.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
+        <iframe id="checkListFrame" src="/model/layer_edit.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
       </el-col>
     </el-row>
     <div id="footer">
@@ -97,106 +96,105 @@
       }
     },
     mounted: function () {
-      var that = this
-      var layer_list, layer_name_list
-      var p1 = new Promise(
-        function (resolve, reject) {
-          that.get_model_data("/api/layers/", "", resolve, reject)
-        }
-      );
-
-      var group_list, group_name_list, group_by_list_of_group
-      var p2 = new Promise(
-        function (resolve, reject) {
-          that.get_model_data("/api/groups/", "layer", resolve, reject)
-        }
-      );
-
-
-      var item_category_list, item_category_name_list, group_by_list_of_item_category
-      var p3 = new Promise(
-        function (resolve, reject) {
-          that.get_model_data("/api/items_categories/", "group", resolve, reject)
-        }
-      );
-
-
-      p1.then((res) => {
-        layer_list = res[0];
-        layer_name_list = res[1]
-        // console.log(layer_name_list)
-        return p2 // 黑科技!
-      }).then((res) => {
-        group_list = res[0];
-        group_name_list = res[1]
-        group_by_list_of_group = res[2]
-
-        // console.log(group_name_list)
-        return p3
-      }).then((res) => {
-        item_category_list = res[0];
-        item_category_name_list = res[1]
-        group_by_list_of_item_category = res[2]
-
-        // console.log(item_category_name_list)
-
-        this.menus = []
-
-        for (var key in layer_name_list) {
-          var element = layer_name_list[key];
-          var m1 = {
-            uri: "/model/layer_edit.html?id=" + key,
-            text: element,
-            items: []
-          }
-          var menus1 = []
-
-          for (var key1 in group_by_list_of_group[key]) {
-            var element1 = group_by_list_of_group[key][key1];
-
-            var menus2 = {};
-            menus2.uri = "/model/group_edit.html?id=" + element1.id
-            menus2.text = element1.name
-            menus2.items = []
-            for (var key2 in group_by_list_of_item_category[element1.id]) {
-              var element2 = group_by_list_of_item_category[element1.id][key2];
-              var menu_item = {}
-              menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
-              menu_item.text = element2.name
-              menus2.items.push(menu_item)
-            }
-            menus1.push(menus2)
-          }
-          m1.menus = menus1;
-
-          this.menus.push(m1)
-        }
-
-
-        // for (var ii = 0; ii < this.menus.length; ii++) {
-        //   this.menus1[this.menus[ii].uri] = {}
-        //   this.menus1[this.menus[ii].uri]['text'] = this.menus[ii]['text']
-
-
-        //   for (var jj = 0; jj < this.menus[ii].items.length; jj++) {
-        //     this.menus1[this.menus[ii].uri][this.menus[ii].items[jj]['uri']] =
-        //       this.menus[ii].items[jj]
-        //   }
-        // }
-
-        var breadcrumb1 = document.getElementsByClassName("el-breadcrumb__item")[0]
-
-        function breadcrumb_home() {
-          location.href = "/model/index.html"
-        }
-        addEvent(breadcrumb1, "click", breadcrumb_home)
-
-      })
-
-
+      this.get_model_menus()
+      window.vm = this;
     },
     methods: {
       get_model_menus() {
+        var that = this
+        var layer_list, layer_name_list
+        var p1 = new Promise(
+          function (resolve, reject) {
+            that.get_model_data("/api/layers/", "", resolve, reject)
+          }
+        );
+
+        var group_list, group_name_list, group_by_list_of_group
+        var p2 = new Promise(
+          function (resolve, reject) {
+            that.get_model_data("/api/groups/", "layer", resolve, reject)
+          }
+        );
+
+
+        var item_category_list, item_category_name_list, group_by_list_of_item_category
+        var p3 = new Promise(
+          function (resolve, reject) {
+            that.get_model_data("/api/items_categories/", "group", resolve, reject)
+          }
+        );
+
+
+        p1.then((res) => {
+          layer_list = res[0];
+          layer_name_list = res[1]
+          // console.log(layer_name_list)
+          return p2 // 黑科技!
+        }).then((res) => {
+          group_list = res[0];
+          group_name_list = res[1]
+          group_by_list_of_group = res[2]
+
+          // console.log(group_name_list)
+          return p3
+        }).then((res) => {
+          item_category_list = res[0];
+          item_category_name_list = res[1]
+          group_by_list_of_item_category = res[2]
+
+          // console.log(item_category_name_list)
+
+          this.menus = []
+
+          for (var key in layer_name_list) {
+            var element = layer_name_list[key];
+            var m1 = {
+              uri: "/model/layer_edit.html?id=" + key,
+              text: element,
+              items: []
+            }
+            var menus1 = []
+
+            for (var key1 in group_by_list_of_group[key]) {
+              var element1 = group_by_list_of_group[key][key1];
+
+              var menus2 = {};
+              menus2.uri = "/model/group_edit.html?id=" + element1.id
+              menus2.text = element1.name
+              menus2.items = []
+              for (var key2 in group_by_list_of_item_category[element1.id]) {
+                var element2 = group_by_list_of_item_category[element1.id][key2];
+                var menu_item = {}
+                menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
+                menu_item.text = element2.name
+                menus2.items.push(menu_item)
+              }
+              menus1.push(menus2)
+            }
+            m1.menus = menus1;
+
+            this.menus.push(m1)
+          }
+
+          // for (var ii = 0; ii < this.menus.length; ii++) {
+          //   this.menus1[this.menus[ii].uri] = {}
+          //   this.menus1[this.menus[ii].uri]['text'] = this.menus[ii]['text']
+
+
+          //   for (var jj = 0; jj < this.menus[ii].items.length; jj++) {
+          //     this.menus1[this.menus[ii].uri][this.menus[ii].items[jj]['uri']] =
+          //       this.menus[ii].items[jj]
+          //   }
+          // }
+
+          // var breadcrumb1 = document.getElementsByClassName("el-breadcrumb__item")[0]
+
+          // function breadcrumb_home() {
+          //   location.href = "/model/index.html"
+          // }
+          // addEvent(breadcrumb1, "click", breadcrumb_home)
+
+        })
 
       },
       get_model_data(url, group_by, resolve, reject) {
@@ -252,33 +250,34 @@
         }
       },
       createNewLayer() {
-          document.getElementById("checkListFrame").src = "/model/layer_edit.html?id="
+        document.getElementById("checkListFrame").src = "/model/layer_edit.html?id="
       },
       createNewGroup() {
-          document.getElementById("checkListFrame").src = "/model/group_edit.html?id="
-      },      
+        document.getElementById("checkListFrame").src = "/model/group_edit.html?id="
+      },
       createNewItemCategory() {
-          document.getElementById("checkListFrame").src = "/model/item_category_edit.html?id="
+        document.getElementById("checkListFrame").src = "/model/item_category_edit.html?id="
       },
     }
   }
 
 
-  var iframeids = ["checkListFrame"]
-  var iframehide = "yes"
+  function dyniframesize() {
+    var iframe = document.getElementById("checkListFrame");
+    try {
+      var bHeight = iframe.contentWindow.document.body.scrollHeight;
+      var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
 
-  function iFrameHeight() {
-    var ifm = document.getElementById("checkListFrame");
-    var subWeb = document.frames ? document.frames["iframepage"].document : ifm.contentDocument;
+      var bHeight = document.body.scrollHeight;
+      var dHeight = document.documentElement.scrollHeight;
 
-    if (ifm != null && subWeb != null) {
-      ifm.height = subWeb.body.scrollHeight;
-    }
-
+      var height = Math.max(bHeight, dHeight);
+      iframe.height = height;
+    } catch (ex) {}
   }
-  if (window.addEventListener) window.addEventListener("load", iFrameHeight, false)
-  else if (window.attachEvent) window.attachEvent("onload", iFrameHeight)
-  else window.onload = iFrameHeight
+  if (window.addEventListener) window.addEventListener("load", dyniframesize, false)
+  else if (window.attachEvent) window.attachEvent("onload", dyniframesize)
+  else window.onload = dyniframesize
 </script>
 <style scoped>
   @import '../../../assets/css/normalize.css';

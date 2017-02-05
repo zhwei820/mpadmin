@@ -66,8 +66,9 @@
       submit() {
         if (!this.form.id) {
           this.$http.post("/api/layers/", this.form).then((response) => {
-            parent.location.reload()
+            parent.vm.get_model_menus()
             location.href = "/model/layer_edit.html?id=" + response.data.id
+
           }, (
             response) => {
             this.$message({
