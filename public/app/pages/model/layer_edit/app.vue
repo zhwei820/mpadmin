@@ -2,7 +2,7 @@
   <!--<el-dialog title="CI模型层编辑" v-model="dialogFormVisible">-->
   <el-row type="flex" class="row-bg" justify="center">
     <el-col :span="6">
-      <h2>CI模型层编辑</h2>
+      <h2><span v-if="id">编辑</span><span v-else>新建</span>CI模型层</h2>
       <el-form :model="form" label-position="top">
         <el-form-item label="CI模型层名称" label-width="80">
           <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -33,6 +33,7 @@
           name: '',
           id: "",
         },
+        id: 0,
       }
     },
 
@@ -42,6 +43,8 @@
     methods: {
       fetch(offset, limit) {
         var id = paramParse('id')
+        this.id = id == undefined ? 0 : id
+
         if (id) {
           this.$http.get("/api/layers/" + id + "/").then((response) => {
             if (response.status !== 200) {
@@ -63,6 +66,7 @@
       submit() {
         if (!this.form.id) {
           this.$http.post("/api/layers/", this.form).then((response) => {
+            parent.location.reload()
             location.href = "/model/layer_edit.html?id=" + response.data.id
           }, (
             response) => {

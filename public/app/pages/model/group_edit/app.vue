@@ -2,7 +2,7 @@
   <div>
     <el-row type="flex" class="row-bg" justify="center">
       <el-col :span="6">
-        <h2>CI模型组编辑</h2>
+        <h2><span v-if="id">编辑</span><span v-else>新建</span>CI模型组</h2>
         <el-form label-position="top">
           <el-form-item label="CI模型组名称">
             <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -44,6 +44,7 @@
         layer_list: {},
         layer_name_list: {},
         formLabelWidth: '120px',
+        id: 0,
       }
     },
 
@@ -78,22 +79,26 @@
       },
       fetch(offset, limit) {
         var id = paramParse('id')
-        this.$http.get("/api/groups/" + id + "/").then((response) => {
+        this.id = id == undefined ? 0 : id
+        if (id) {
 
-          if (response.status !== 200) {
+          this.$http.get("/api/groups/" + id + "/").then((response) => {
+
+            if (response.status !== 200) {
+              this.$message({
+                type: 'info',
+                message: '请求失败, 请重试'
+              });
+            }
+            this.form = response.data
+
+          }, (response) => {
             this.$message({
               type: 'info',
               message: '请求失败, 请重试'
             });
-          }
-          this.form = response.data
-
-        }, (response) => {
-          this.$message({
-            type: 'info',
-            message: '请求失败, 请重试'
           });
-        });
+        }
       },
       submit() {
         if (!this.form.id) {

@@ -13,12 +13,12 @@
             </el-button>
           </div>
           <div>
-            <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
+            <el-button size="large" type="primary" class="new_btn" @click="createNewGroup()">
               <i class="fa fa-plus"></i> 新增CI模型组
             </el-button>
           </div>
           <div>
-            <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
+            <el-button size="large" type="primary" class="new_btn" @click="createNewItemCategory()">
               <i class="fa fa-plus"></i> 新增CI模型
             </el-button>
           </div>
@@ -252,9 +252,14 @@
         }
       },
       createNewLayer() {
-
-      }
-
+          document.getElementById("checkListFrame").src = "/model/layer_edit.html?id="
+      },
+      createNewGroup() {
+          document.getElementById("checkListFrame").src = "/model/group_edit.html?id="
+      },      
+      createNewItemCategory() {
+          document.getElementById("checkListFrame").src = "/model/item_category_edit.html?id="
+      },
     }
   }
 

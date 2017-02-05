@@ -2,7 +2,7 @@
   <div>
     <el-row type="flex" class="row-bg" justify="center">
       <el-col :span="12">
-        <h2>CI模型编辑</h2>
+        <h2><span v-if="id">编辑</span><span v-else>新建</span>CI模型</h2>
         <el-form :model="CICategory" label-position="left">
           <el-form-item label="CI模型名称" :label-width="formLabelWidth">
             <el-input v-model="CICategory.name" auto-complete="off"></el-input>
@@ -103,21 +103,8 @@
           value: '',
         },
         input2: "",
-        tableHead: {
-          "name": "CI模型名称",
-          group_name: "CI模型分组名称",
-        },
-        tableHeadKeys: [
-          "date",
-          "name",
-          "group_name",
-        ],
-        tableData1: [],
-        tableData: [],
-        tablePage: 1,
-        pageSize: 20,
-        totalNum: 1,
 
+        id: 0,
         dialogFormVisible: false,
         formLabelWidth: '120px',
 
@@ -202,6 +189,8 @@
         // this.$http.get("/api/items_categories/?" + query).then((response) => {
 
         var id = paramParse('id')
+        this.id = id == undefined ? 0 : id
+
         if (id) {
           this.$http.get("/api/items_categories/" + id + "/").then((response) => {
             if (response.status !== 200) {
