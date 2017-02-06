@@ -69,6 +69,13 @@
           for (var key in response.data) {
             this.layer_name_list[response.data[key].id] = response.data[key].name;
           }
+
+          this.form = {
+            "name": "",
+            "layer": this.layer_list.default,
+            "id": "",
+          }
+
           this.fetch(0, 100)
         }, (response) => {
           this.$message({

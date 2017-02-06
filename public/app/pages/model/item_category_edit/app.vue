@@ -16,7 +16,7 @@
           <div class="ci_prop_group" v-for="(ci_prop_group, index_cpg) in CICategory.structure">
             <div class="index_cpg" v-if="index_cpg != 'hidden'">
               <el-button @click="fold_cpg(index_cpg)" type="nomal" size="mini"> <i :class="{'fa':true, 'fa-plus':CICategory.structure['hidden'][index_cpg], 'fa-minus': !CICategory.structure['hidden'][index_cpg]}"></i>                </el-button>
-              {{index_cpg}}组
+              {{index_cpg}} 组 
               <div v-if="! CICategory.structure['hidden'][index_cpg]">
                 <el-form-item v-bind:label="item.name" :label-width="formLabelWidth" v-for="(item, index) in ci_prop_group">
                   <el-tooltip class="item" effect="dark" content="删除!" placement="top-start">
@@ -115,7 +115,7 @@
           structure: {
             // default: [],
             hidden: {
-              default: false
+              // default: false
             }
           },
         },
@@ -155,6 +155,18 @@
           this.group_name_list = {}
           for (var key in response.data) {
             this.group_name_list[response.data[key].id] = response.data[key].name;
+          }
+
+          this.CICategory = {
+            "name": "",
+            "id": "",
+            group: this.group_list.default,
+            structure: {
+              // default: [],
+              hidden: {
+                // default: false
+              }
+            },
           }
           this.fetch(0, this.pageSize);
         }, (response) => {
@@ -226,7 +238,8 @@
         }
 
         this.CICategory.structure[this.tmp_group].push(tmp)
-        this.CICategory.structure['hidden'][this.tmp_group] = false
+        Vue.set(this.CICategory.structure['hidden'], this.tmp_group, false)
+        Vue.set(this.cpg_list, this.tmp_group, '')
         this.tmp_group = "default"
         // console.log(this.CICategory.structure.default)
       },
@@ -267,9 +280,9 @@
       },
       fold_cpg(e) {
         if (this.CICategory.structure['hidden'][e]) {
-          this.CICategory.structure['hidden'][e] = false
+          Vue.set(this.CICategory.structure['hidden'], e, false)
         } else {
-          this.CICategory.structure['hidden'][e] = true
+          Vue.set(this.CICategory.structure['hidden'], e, true)
         }
       }
     }
