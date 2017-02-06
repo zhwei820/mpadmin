@@ -14,7 +14,7 @@
             </el-select>
           </el-form-item>
           <div class="ci_prop_group" v-for="(ci_prop_group, index_cpg) in CICategory.structure">
-            <div class="index_cpg" v-if="index_cpg != 'hidden'">
+            <div class="index_cpg" v-if="index_cpg != 'hidden' && ci_prop_group.length > 0">
               <el-button @click="fold_cpg(index_cpg)" type="nomal" size="mini"> <i :class="{'fa':true, 'fa-plus':CICategory.structure['hidden'][index_cpg], 'fa-minus': !CICategory.structure['hidden'][index_cpg]}"></i>                </el-button>
               {{index_cpg}} 组
               <div v-if="! CICategory.structure['hidden'][index_cpg]">
@@ -212,6 +212,13 @@
               });
             }
             this.CICategory = response.data
+            // debugger
+            for (var key in this.CICategory.structure) {
+              var rs = this.CICategory.structure[key][0]
+              if (key != 'hidden' && rs) {
+                Vue.set(this.cpg_list, key, '')
+              }
+            }
 
           }, (response) => {
             this.$message({
@@ -252,36 +259,25 @@
             // location.href = "/model/item_category_edit.html?id=" + response.data.id
             parent.vm.get_model_menus()
             location.href = "/model/item_category_edit.html?id=" + response.data.id
-          }, (
-            response) => {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
+          }, (response) => {
+            parent.vm.show_error_message(response.data.error)
           });
 
         } else {
           this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {
             parent.vm.get_model_menus()
             location.href = "/model/item_category_edit.html?id=" + response.data.id
-          }, (
-            response) => {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
+          }, (response) => {
+
+            parent.vm.show_error_message(response.data.error)
           });
-
         }
-        this.dialogFormVisible = false
-        this.refresh_data()
       },
-
       refresh_data() {
         this.fetch(0, this.pageSize)
-
       },
       fold_cpg(e) {
+
         if (this.CICategory.structure['hidden'][e]) {
           Vue.set(this.CICategory.structure['hidden'], e, false)
         } else {

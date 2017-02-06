@@ -278,8 +278,19 @@
       editGroup(id){
         document.getElementById("checkListFrame").src = "/model/group_edit.html?id=" + id
       },
+      show_error_message(msg){
+          this.$message({
+          type: 'error',
+          message: msg,
+          showClose: true,
+          duration:0,
+        });
+      },
 
-    }
+
+
+    },
+
   }
 
 

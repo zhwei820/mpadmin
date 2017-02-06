@@ -280,7 +280,7 @@ def gemerating_schema(s_data):
     json_schema = {
                 "$schema": "http://json-schema.org/draft-03/schema#", 
                 "required": True, 
-                "type": "object", 
+                # "type": "object", 
                 "id": "#", 
                 "properties": {}
                 }
@@ -299,10 +299,11 @@ def gemerating_schema(s_data):
         # print(schema_bean)
 
         _max =  data.get("max")
-        if _max:
-            schema_bean['properties']['min']['maximum'] = _max
-            _min =  data.get("min")
-            schema_bean['properties']['max']['mininum'] = _min
+        _min =  data.get("min")
+        if not _max or not _min or _max < _min:
+            return -1, {"error": "%s maximum and mininum not correct." % (attr_name)}
+        schema_bean['properties']['min']['maximum'] = _max
+        schema_bean['properties']['max']['mininum'] = _min
         if field == "number":
             schema_bean['properties']['default']['maximum'] = _max
             schema_bean['properties']['default']['mininum'] = _min
@@ -422,16 +423,22 @@ def validate_category_structure(raw_data):  # 检验模型定义字段
     if not isinstance(structure, dict):
         return -1, {"error": "structure is not a dict."}
 
-    s_data = structure['default']
-    if True:
+    for cpg_index in structure:
+        print(cpg_index)
+        if cpg_index == "hidden":
+            continue
+        s_data = structure[cpg_index]
         if not isinstance(s_data, list):
             return -1, {"error": "s_data is not a dict."}
 
-        json_shema = gemerating_schema(s_data)
+        json_shema_res = gemerating_schema(s_data)
+        if json_shema_res[0] < 0:
+            return -1, json_shema_res[1]
         try:
-            validate(s_data, json_shema[1])
+            print(json_shema_res)
+            validate(s_data, json_shema_res[1])
         except Exception as e:
-            print(e.message)
+            print(e)
         else:
             print("json good")
         for data in s_data:
@@ -449,7 +456,7 @@ def validate_category_structure(raw_data):  # 检验模型定义字段
 structure = {
     "default": [
          {
-             "key":"ip",
+            "key":"ip",
             "name": "ip地址",
             "field": "string",
             "min": 1,
@@ -510,4 +517,6 @@ structure = {
 # else:
 #     print("json good")
 
-print(validate_category_structure({"structure":structure}))
+
+
+# print(validate_category_structure({"structure":structure}))
