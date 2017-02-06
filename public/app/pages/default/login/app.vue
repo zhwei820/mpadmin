@@ -4,7 +4,7 @@
       <img v-bind:src="logoImg" width="100px">
       <h1>{{ msg }}</h1>
       <div id="loginForm">
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="120px" class="demo-ruleForm">
+        <el-form :model="ruleForm" ref="ruleForm" label-width="120px" class="demo-ruleForm">
           <el-form-item class="inputContainer" label="username" prop="username">
             <el-input v-model="ruleForm.username"></el-input>
           </el-form-item>
@@ -31,53 +31,6 @@
           username: "",
           password: "",
         },
-        rules: {
-          name: [{
-              required: true,
-              message: 'Please input Activity name',
-              trigger: 'blur'
-            },
-            {
-              min: 3,
-              max: 5,
-              message: 'Length should be 3 to 5',
-              trigger: 'blur'
-            }
-          ],
-          region: [{
-            required: true,
-            message: 'Please select Activity zone',
-            trigger: 'change'
-          }],
-          date1: [{
-            type: 'date',
-            required: true,
-            message: 'Please pick a date',
-            trigger: 'change'
-          }],
-          date2: [{
-            type: 'date',
-            required: true,
-            message: 'Please pick a time',
-            trigger: 'change'
-          }],
-          type: [{
-            type: 'array',
-            required: true,
-            message: 'Please select at least one activity type',
-            trigger: 'change'
-          }],
-          resource: [{
-            required: true,
-            message: 'Please select activity resource',
-            trigger: 'change'
-          }],
-          desc: [{
-            required: true,
-            message: 'Please input activity form',
-            trigger: 'blur'
-          }]
-        }
       }
     },
 
@@ -102,6 +55,7 @@
                 type: 'info',
                 message: '登录成功'
               });
+              location.href = "/model/index.html"
             }
           },
           (response) => {
