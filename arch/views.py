@@ -7,6 +7,8 @@ from arch.models import Layer, Group
 from arch.serializers import LayerSerializer, GroupSerializer
 from django.shortcuts import render
 
+from item.models import ItemCategory, Item
+
 
 # Create your views here.
 from rest_framework.permissions import IsAuthenticated
@@ -34,7 +36,7 @@ class LayerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         if not instance:
-            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -45,7 +47,7 @@ class LayerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance:
-            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -68,7 +70,7 @@ class GroupRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         if not instance:
-            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
@@ -79,13 +81,16 @@ class GroupRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance:
-            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
-        print(instance)
+        _obj_set = ItemCategory.objects(group=instance)
+        if _obj_set:
+            return Response({"error": "can't delete this group because it has category in it."},
+                            status=status.HTTP_400_BAD_REQUEST)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
 

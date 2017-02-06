@@ -53,7 +53,7 @@ class ItemCategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         if not instance:
-            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -71,7 +71,7 @@ class ItemCategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         # 当该CI对象模型未产生任何CI对象时，可以将其删除
         item_obj_set = Item.objects(category=instance)
         if item_obj_set:
-            return Response({"msg": "can't delete this category because it has items reserved."},
+            return Response({"error": "can't delete this category because it has items reserved."},
                             status=status.HTTP_400_BAD_REQUEST)
         self.perform_destroy(instance)
         return Response(status=status.HTTP_204_NO_CONTENT)
@@ -79,7 +79,7 @@ class ItemCategoryRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance:
-            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
@@ -123,7 +123,7 @@ class ItemRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         partial = kwargs.pop('partial', False)
         instance = self.get_object()
         if not instance:
-            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
 
@@ -139,7 +139,7 @@ class ItemRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         if not instance:
-            return Response({"msg": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "object does not exist."}, status=status.HTTP_400_BAD_REQUEST)
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
