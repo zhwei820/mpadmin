@@ -24,7 +24,7 @@
   export default {
     data() {
       return {
-        msg: 'Use Vue 2.0 Today!',
+        msg: 'CMDB管理系统',
         logoImg: logo,
 
         ruleForm: {
