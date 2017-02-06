@@ -1,6 +1,5 @@
 <template>
   <div>
-    <el-button type="primary" @click="createNewCategory">新建</el-button>
     <el-date-picker v-model="param.start_time" type="date" placeholder="开始日期" :picker-options="pickerOptions0">
     </el-date-picker>
     <el-date-picker v-model="param.end_time" type="date" placeholder="结束日期" :picker-options="pickerOptions0">
@@ -37,78 +36,6 @@
         :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalNum">
         </el-pagination>
     </div>
-    <el-dialog title="CI模型编辑" v-model="dialogFormVisible">
-      <el-form :model="CICategory" label-position="left">
-        <el-form-item label="CI模型名称" :label-width="formLabelWidth">
-          <el-input v-model="CICategory.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="CI模型分组" :label-width="formLabelWidth">
-          <el-select v-model="CICategory.group" placeholder="请选择">
-            <el-option v-bind:label="index" v-bind:value="item" v-for="(item, index) in group_list">
-            </el-option>
-          </el-select>
-        </el-form-item>
-        <div class="ci_prop_group" v-for="(ci_prop_group, index_cpg) in CICategory.structure">
-          <div class="index_cpg" v-if="index_cpg != 'hidden'">
-            <el-button @click="fold_cpg(index_cpg)" type="nomal" size="mini"> <i :class="{'fa':true, 'fa-plus':CICategory.structure['hidden'][index_cpg], 'fa-minus': !CICategory.structure['hidden'][index_cpg]}"></i>              </el-button>
-            {{index_cpg}}组
-            <div v-if="! CICategory.structure['hidden'][index_cpg]">
-              <el-form-item v-bind:label="item.name" :label-width="formLabelWidth" v-for="(item, index) in ci_prop_group">
-                <el-tooltip class="item" effect="dark" content="删除!" placement="top-start">
-                  <el-button @click="delStructure(index_cpg, index)" type="danger" icon="minus" size="mini" class="del_btn"></el-button>
-                </el-tooltip>
-                <div v-for="(v, i) in item" v-if="">
-                  <div v-if="i!='name' && i!='key' && i != 'field'">
-                    <div class="prop_label">{{ fields_comment[i] }}</div>
-                    <el-switch v-if="i=='required'" on-text="" off-text="" v-model="CICategory.structure[index_cpg][index][i]"></el-switch>
-                    <el-input v-else-if="i=='min' || i=='max' " type="number" v-model="CICategory.structure[index_cpg][index][i]" auto-complete="off"></el-input>
-                    <el-input v-else v-model="CICategory.structure[index_cpg][index][i]" auto-complete="off"></el-input>
-                  </div>
-                  <div v-if="i == 'field'">
-                    <div class="prop_label">类型</div>
-                    <el-input v-model="fields_comment[v]" auto-complete="off" disabled></el-input>
-                  </div>
-                  <div v-if="i=='name'||i=='key'">
-                    <el-input v-if="i!='required' " v-model="CICategory.structure[index_cpg][index][i]" auto-complete="off" hidden></el-input>
-                  </div>
-                </div>
-              </el-form-item>
-            </div>
-          </div>
-        </div>
-      
-        <el-form-item label="添加属性" :label-width="formLabelWidth">
-          <div class="inline">
-            <div>名称</div>
-            <el-input v-model="tmp_name" auto-complete="off"></el-input>
-          </div>
-          <div class="inline">
-            <div>关键字</div>
-            <el-input v-model="tmp_key" auto-complete="off"></el-input>
-          </div>
-          <div class="inline">
-            <div>属性分组(可动态添加)</div>
-            <el-select v-model="tmp_group" allow-create filterable="" placeholder="请选择属性分组">
-              <!--<el-option label="default" value="default"></el-option>-->
-              <el-option v-bind:label="index" v-bind:value="index" v-for="(item, index) in cpg_list">
-              </el-option>
-            </el-select>
-          </div>
-          <div>
-            <div>类型</div>
-            <el-select v-model="field" placeholder="请选择">
-              <el-option v-bind:label="item.name" v-bind:value="index" v-for="(item, index) in field_list">
-              </el-option>
-            </el-select>
-            <el-button @click="addStructure"><i class="fa fa-plus"></i></el-button>
-          </div>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submit">确 定</el-button>
-      </div>
-    </el-dialog>
   </div>
 </template>
 <script>
@@ -255,52 +182,7 @@
           });
         });
       },
-      addStructure() {
-        var tmp = {}
-        for (var k in this.field_list[this.field].properties) {
-          tmp[k] = "";
-        }
-        tmp['field'] = this.field;
-        tmp['name'] = this.tmp_name;
-        tmp['key'] = this.tmp_key;
-
-        this.tmp_name = ""
-        this.tmp_key = ""
-
-        if (this.CICategory.structure[this.tmp_group] == undefined) {
-          this.CICategory.structure[this.tmp_group] = []
-        }
-
-        this.CICategory.structure[this.tmp_group].push(tmp)
-        this.CICategory.structure['hidden'][this.tmp_group] = false
-        this.tmp_group = "default"
-        // console.log(this.CICategory.structure.default)
-      },
-      delStructure(g, i) {
-        this.CICategory.structure[g].splice(i, 1)
-      },
-      submit() {
-        if (!this.CICategory.id) {
-          this.$http.post("/api/items_categories/", this.CICategory).then((response) => {}, (response) => {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
-          });
-        } else {
-          this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {}, (
-            response) => {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
-          });
-
-        }
-        this.dialogFormVisible = false
-        this.refresh_data()
-      },
-
+     
       handleEdit(index, row) {
         row.structure['hidden'] = {}
         for (var key in row.structure) {

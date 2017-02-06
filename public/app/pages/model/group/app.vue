@@ -1,6 +1,5 @@
 <template>
   <div>
-    <el-button type="primary" @click="createNewLayer">新建</el-button>
     <el-button type="primary" icon="more" class="right_export" @click="saveExcel"></el-button>
     <el-input placeholder="搜索" class="right_search" icon="search" v-model="input2" @click="handleSearch" @keyup.enter.native="handleSearch">
     </el-input>
@@ -25,23 +24,7 @@
         :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalNum">
         </el-pagination>
     </div>
-    <el-dialog title="CI模型组编辑" v-model="dialogFormVisible">
-      <el-form>
-        <el-form-item label="CI模型组名称" :label-width="formLabelWidth">
-          <el-input v-model="form.name" auto-complete="off"></el-input>
-        </el-form-item>
-        <el-form-item label="CI模型层" :label-width="formLabelWidth">
-          <el-select v-model="form.layer" placeholder="请选择">
-            <el-option v-bind:label="index" v-bind:value="item" v-for="(item, index) in layer_list">
-            </el-option>
-          </el-select>
-        </el-form-item>
-      </el-form>
-      <div slot="footer" class="dialog-footer">
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submit">确 定</el-button>
-      </div>
-    </el-dialog>
+    
   </div>
 </template>
 <script>
@@ -135,27 +118,7 @@
           });
         });
       },
-      submit() {
-        if (!this.form.id) {
-          this.$http.post("/api/groups/", this.form).then((response) => {}, (response) => {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
-          });
-        } else {
-          this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {}, (
-            response) => {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
-          });
-
-        }
-        this.dialogFormVisible = false
-        this.fetch(0, 100)
-      },
+    
 
       handleEdit(index, row) {
         console.log(index, row);
