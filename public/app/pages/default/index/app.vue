@@ -1,12 +1,12 @@
 <template>
   <div class="" class="height_100">
     <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-      <el-menu-item index="/model/index.html">处理中心</el-menu-item>
+      <el-menu-item index="/model/index.html?1">CMDB管理</el-menu-item>
       <el-submenu index="2">
         <template slot="title">我的工作台</template>
-        <el-menu-item index="/model/index.html">选项1</el-menu-item>
-        <el-menu-item index="/model/index.html">选项2</el-menu-item>
-        <el-menu-item index="/model/index.html">选项3</el-menu-item>
+        <el-menu-item index="/model/index.html?11">选项1</el-menu-item>
+        <el-menu-item index="/model/index.html?12">选项2</el-menu-item>
+        <el-menu-item index="/model/index.html?13">选项3</el-menu-item>
       </el-submenu>
       <el-submenu index="x" class="nav-cap">
         <template slot="title">选项</template>
