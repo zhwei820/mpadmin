@@ -298,12 +298,13 @@ def gemerating_schema(s_data):
         schema_bean['id'] = attr_name
         # print(schema_bean)
 
-        _max =  data.get("max")
-        _min =  data.get("min")
+        _max =  data.get("max", -10000)
+        _min =  data.get("min", -10000)
         if not _max or not _min or _max < _min:
             return -1, {"error": "%s maximum and mininum not correct." % (attr_name)}
-        schema_bean['properties']['min']['maximum'] = _max
-        schema_bean['properties']['max']['mininum'] = _min
+        if _max > 0:
+            schema_bean['properties']['min']['maximum'] = _max
+            schema_bean['properties']['max']['mininum'] = _min
         if field == "number":
             schema_bean['properties']['default']['maximum'] = _max
             schema_bean['properties']['default']['mininum'] = _min
@@ -424,7 +425,6 @@ def validate_category_structure(raw_data):  # 检验模型定义字段
         return -1, {"error": "structure is not a dict."}
 
     for cpg_index in structure:
-        print(cpg_index)
         if cpg_index == "hidden":
             continue
         s_data = structure[cpg_index]

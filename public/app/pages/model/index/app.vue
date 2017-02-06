@@ -284,7 +284,7 @@
           type: 'error',
           message: msg,
           showClose: true,
-          duration:0,
+          // duration: 5,
         });
       },
 
