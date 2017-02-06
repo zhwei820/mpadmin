@@ -76,3 +76,4 @@ media/
 server_conf.py
 local_conf.py
 
+.env

@@ -22,10 +22,22 @@
             </el-button>
           </div>
           <el-submenu :index="submenus.uri" v-for="submenus in menus">
-            <template slot="title"><i class="fa fa-sitemap"></i> {{submenus.text}}</template>
+            <template slot="title"><i class="fa fa-sitemap"></i> {{submenus.text}}
+              <el-tooltip class="item" effect="dark" content="编辑" placement="top-start">
+                <el-button size="normal" type="default" class="edit_mini_btn" @click="editLayer(submenus.id)">
+                  <i class="fa fa-edit"></i>
+                </el-button>
+              </el-tooltip>
+            </template>
             <!--<el-menu-item :index="submenu.uri" v-for="submenu in submenus.items">{{submenu.text}}</el-menu-item>-->
             <el-submenu :index="submenus1.uri" v-for="submenus1 in submenus.menus">
-              <template slot="title"><i class="fa fa-cubes"></i> {{submenus1.text}}</template>
+              <template slot="title"><i class="fa fa-cubes"></i> {{submenus1.text}}
+                <el-tooltip class="item" effect="dark" content="编辑" placement="top-start">
+                  <el-button size="normal" type="default" class="edit_mini_btn" @click="editGroup(submenus1.id)">
+                    <i class="fa fa-edit"></i>
+                  </el-button>
+                </el-tooltip>
+              </template>
               <el-menu-item :index="submenu.uri" v-for="submenu in submenus1.items"><i class="fa fa-cube"> {{submenu.text}}</el-menu-item>
             </el-submenu>
           </el-submenu>
@@ -151,6 +163,7 @@
             var m1 = {
               uri: "/model/layer_edit.html?id=" + key,
               text: element,
+              id: key,
               items: []
             }
             var menus1 = []
@@ -161,12 +174,14 @@
               var menus2 = {};
               menus2.uri = "/model/group_edit.html?id=" + element1.id
               menus2.text = element1.name
+              menus2.id = element1.id
               menus2.items = []
               for (var key2 in group_by_list_of_item_category[element1.id]) {
                 var element2 = group_by_list_of_item_category[element1.id][key2];
                 var menu_item = {}
                 menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
                 menu_item.text = element2.name
+                menus2.id = element1.id
                 menus2.items.push(menu_item)
               }
               menus1.push(menus2)
@@ -240,11 +255,9 @@
         // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
       },
       handleOpen(key, keyPath) {
-
         if (key != "/") {
-          document.getElementById("checkListFrame").src = key
+          // document.getElementById("checkListFrame").src = key
           // console.log(this.menus1);
-
           // this.breadcrumb1 = this.menus1[keyPath[0]]['text']
           // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
         }
@@ -258,6 +271,14 @@
       createNewItemCategory() {
         document.getElementById("checkListFrame").src = "/model/item_category_edit.html?id="
       },
+      editLayer(id){
+        debugger
+        document.getElementById("checkListFrame").src = "/model/layer_edit.html?id=" + id
+      },
+      editGroup(id){
+        document.getElementById("checkListFrame").src = "/model/group_edit.html?id=" + id
+      },
+
     }
   }
 
@@ -291,5 +312,14 @@
     left: 50%;
     position: relative;
     margin-bottom: 3px;
+  }
+  .edit_mini_btn {
+    /*float: right;
+    margin-top: 10px;
+    margin-right: 10px;
+    position: relative;
+    margin-bottom: 3px;*/
+    background: transparent;
+    border: navajowhite;
   }
 </style>
