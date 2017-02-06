@@ -102,6 +102,7 @@
             parent.vm.get_model_menus()
             location.href = "/model/layer_edit.html?id="
           }, (response) => {
+            debugger
             parent.vm.show_error_message(response.data.error)
           });
         }

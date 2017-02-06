@@ -246,10 +246,7 @@
       },
       handleOpen(key, keyPath) {
         if (key != "/") {
-          // document.getElementById("checkListFrame").src = key
-          // console.log(this.menus1);
-          // this.breadcrumb1 = this.menus1[keyPath[0]]['text']
-          // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
+         
         }
       },
       createNewLayer() {
@@ -270,12 +267,7 @@
         e.stopPropagation()
       },
       show_error_message(msg){
-          this.$message({
-          type: 'error',
-          message: msg,
-          showClose: true,
-          // duration: 5,
-        });
+          parent.vm.show_error_message(msg)
       },
     },
   }

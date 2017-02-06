@@ -51,6 +51,14 @@ class LayerRetrieveUpdateDestroyAPIView(RetrieveUpdateDestroyAPIView):
         serializer = self.get_serializer(instance)
         return Response(serializer.data)
 
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        _obj_set = Group.objects(layer=instance)
+        if _obj_set:
+            return Response({"error": "can't delete this layer because it has group in it."},
+                            status=status.HTTP_400_BAD_REQUEST)
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class GroupListCreateAPIView(ListCreateAPIView):
     serializer_class = GroupSerializer

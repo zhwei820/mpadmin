@@ -18,8 +18,8 @@
             <el-menu-item index="2"><i class="el-icon-message"></i>导航二</el-menu-item>
           </el-menu-item-group>-->
           <!--<el-menu-item-group title="分组二">-->
-            <el-menu-item index="/model/index.html"><i class="fa fa-cogs"></i> 模型</el-menu-item>
-            <el-menu-item index="/model/index.html?"><i class="fa fa-cogs"></i> 模型</el-menu-item>
+          <el-menu-item index="/model/index.html"><i class="fa fa-cogs"></i> 模型</el-menu-item>
+          <el-menu-item index="/model/index.html?"><i class="fa fa-cogs"></i> 模型</el-menu-item>
           <!--</el-menu-item-group>-->
         </el-menu>
       </el-col>
@@ -51,16 +51,7 @@
       }
     },
     mounted: function () {
-      console.log(this.menus);
-
-      // for (var ii = 0; ii < this.menus.length; ii++) {
-      //   this.menus1[this.menus[ii].id] = {}
-      //   this.menus1[this.menus[ii].id]['text'] = this.menus[ii]['text']
-      //   for (var jj = 0; jj < this.menus[ii].items.length; jj++) {
-      //     this.menus1[this.menus[ii].id][this.menus[ii].items[jj]['uri']] = this.menus[ii].items[jj]
-      //   }
-      // }
-
+      window.vm = this;
     },
     methods: {
       handleSelect(key, keyPath) {
@@ -69,7 +60,15 @@
         // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
       },
       handleOpen(key, keyPath) {},
-    }
+      show_error_message(msg) {
+        this.$message({
+          type: 'error',
+          message: msg,
+          showClose: true,
+          // duration: 5,
+        });
+      },
+    },
   }
 
   // function dyniframesize() {
@@ -107,5 +106,4 @@
     background: transparent;
     border: navajowhite;
   }
-
 </style>
