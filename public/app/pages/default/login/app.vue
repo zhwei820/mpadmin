@@ -55,7 +55,7 @@
                 type: 'info',
                 message: '登录成功'
               });
-              location.href = "/model/index.html"
+              location.href = "/default/index.html"
             }
           },
           (response) => {
