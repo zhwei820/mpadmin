@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-row type="flex" class="row-bg" justify="center">
-      <el-col :span="12">
+      <el-col :span="16">
         <h2><span v-if="id">编辑</span><span v-else>新建</span>CI模型</h2>
         <el-form :model="CICategory" label-position="left">
           <el-form-item label="CI模型名称" :label-width="formLabelWidth">
