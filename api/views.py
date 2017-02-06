@@ -35,8 +35,9 @@ def field_list(request):
         return JsonResponse({"field_list":_valid_fields, "fields_comment":_fields_comment}, safe = False)
 
 
-# @login_required
-# def cimodel_menus(request):
-#     if request.method == 'GET':
-#         return JsonResponse({"field_list":_valid_fields, "fields_comment":_fields_comment}, safe = False)
+@login_required
+def current_user(request):
+    print(request.user)
+    if request.method == 'GET':
+        return JsonResponse({"username":request.user.username, "realname":request.user.first_name + request.user.last_name}, safe = False)
 

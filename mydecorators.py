@@ -92,7 +92,9 @@ def user_pass_func(test_func):
     def decorator(view_func):
         @wraps(view_func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
-            if test_func(request.META['HTTP_AUTHORIZATION']):
+            user = test_func(request.META['HTTP_AUTHORIZATION'])
+            if user:
+                request.user = user
                 return view_func(request, *args, **kwargs)
             result = {"status": "0", "message": "User not login"}
             return JsonResponse(result)
@@ -108,11 +110,12 @@ def login_required(function=None):
     def verify(t):
         a = VerifyJSONWebTokenSerializer()
         try:
-            a.validate({"token":t[3:].strip()})
+            res = a.validate({"token":t[3:].strip()})
+            user = res['user']
         except Exception as e:
             return False
         else:
-            return True
+            return user
     
     actual_decorator = user_pass_func(verify)
     if function:

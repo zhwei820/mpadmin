@@ -1,23 +1,25 @@
 <template>
   <div class="" class="height_100">
-    <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
-      <el-menu-item index="1">处理中心</el-menu-item>
+    <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu-item index="/model/index.html">处理中心</el-menu-item>
       <el-submenu index="2">
         <template slot="title">我的工作台</template>
-        <el-menu-item index="2-1">选项1</el-menu-item>
-        <el-menu-item index="2-2">选项2</el-menu-item>
-        <el-menu-item index="2-3">选项3</el-menu-item>
+        <el-menu-item index="/model/index.html">选项1</el-menu-item>
+        <el-menu-item index="/model/index.html">选项2</el-menu-item>
+        <el-menu-item index="/model/index.html">选项3</el-menu-item>
       </el-submenu>
-      <el-menu-item index="3">订单管理</el-menu-item>
+      <el-submenu index="x" class="nav-cap">
+        <template slot="title">选项</template>
+        <el-menu-item :index="urls.logout">退出</el-menu-item>
+        <el-menu-item :index="urls.changepassword">修改密码</el-menu-item>
+      </el-submenu>
+      <div class="nav-user">
+        <span>欢迎 管理员，{{admin_user}}！</span>
+      </div>
     </el-menu>
     <el-row class="tac height_100" :gutter="20">
       <el-col :span="4">
         <el-menu mode="vertical" default-active="1" class="el-menu-vertical-demo" @select="handleSelect">
-          <!--<el-menu-item-group title="分组一">
-            <el-menu-item index="1"><i class="el-icon-message"></i>导航一</el-menu-item>
-            <el-menu-item index="2"><i class="el-icon-message"></i>导航二</el-menu-item>
-          </el-menu-item-group>-->
-          <!--<el-menu-item-group title="分组二">-->
           <el-menu-item index="/model/index.html"><i class="fa fa-cogs"></i> 模型</el-menu-item>
           <el-menu-item index="/model/index.html?"><i class="fa fa-cogs"></i> 模型</el-menu-item>
           <!--</el-menu-item-group>-->
@@ -46,15 +48,34 @@
       return {
         breadcrumb1: "dashboard",
         breadcrumb2: "",
-
+        urls: {
+          logout: "/default/login.html",
+          changepassword: "/admin/manage/password"
+        },
+        admin_user: "",
         menus1: {},
       }
     },
     mounted: function () {
       window.vm = this;
+
+      this.$http.get("/api/current_user/").then((response) => {
+        this.admin_user = response.data.realname ? response.data.realname : response.data.username
+        this.form = response.data
+      }, (response) => {
+        this.$message({
+          type: 'info',
+          message: '请求失败, 请重试'
+        });
+      });
     },
     methods: {
       handleSelect(key, keyPath) {
+        if (key == this.urls.logout) {
+          localStorage.setItem("Authorization", '')
+          location.href = key;
+          return;
+        }
         document.getElementById("checkListFrame1").src = key
         // this.breadcrumb1 = this.menus1[keyPath[0]]['text']
         // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
@@ -70,23 +91,6 @@
       },
     },
   }
-
-  // function dyniframesize() {
-  //   var iframe = document.getElementById("checkListFrame1");
-  //   try {
-  //     var bHeight = iframe.contentWindow.document.body.scrollHeight;
-  //     var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
-
-  //     var bHeight = document.body.scrollHeight;
-  //     var dHeight = document.documentElement.scrollHeight;
-
-  //     var height = Math.max(bHeight, dHeight);
-  //     iframe.height = height;
-  //   } catch (ex) {}
-  // }
-  // if (window.addEventListener) window.addEventListener("load", dyniframesize, false)
-  // else if (window.attachEvent) window.attachEvent("onload", dyniframesize)
-  // else window.onload = dyniframesize
 </script>
 <style scoped>
   @import '../../../assets/css/normalize.css';
@@ -105,5 +109,19 @@
   .edit_mini_btn {
     background: transparent;
     border: navajowhite;
+  }
+  
+  .nav-cap {
+    font-size: 18;
+    float: right!important;
+  }
+  
+  .nav-user {
+    display: inline;
+    color: aliceblue;
+    float: right;
+    margin-right: 20px;
+    position: relative;
+    margin-top: 17px;
   }
 </style>
