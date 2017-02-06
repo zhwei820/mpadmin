@@ -24,18 +24,18 @@
           <el-submenu :index="submenus.uri" v-for="submenus in menus">
             <template slot="title"><i class="fa fa-sitemap"></i> {{submenus.text}}
               <el-tooltip class="item" effect="dark" content="编辑" placement="top-start">
-                <el-button size="normal" type="default" class="edit_mini_btn" @click="editLayer(submenus.id)">
+                <button type="default" class="edit_mini_btn" @click="editLayer(submenus.id, $event)">
                   <i class="fa fa-edit"></i>
-                </el-button>
+                </button>
               </el-tooltip>
             </template>
             <!--<el-menu-item :index="submenu.uri" v-for="submenu in submenus.items">{{submenu.text}}</el-menu-item>-->
             <el-submenu :index="submenus1.uri" v-for="submenus1 in submenus.menus">
               <template slot="title"><i class="fa fa-cubes"></i> {{submenus1.text}}
                 <el-tooltip class="item" effect="dark" content="编辑" placement="top-start">
-                  <el-button size="normal" type="default" class="edit_mini_btn" @click="editGroup(submenus1.id)">
+                  <button type="default" class="edit_mini_btn" @click="editGroup(submenus1.id, $event)">
                     <i class="fa fa-edit"></i>
-                  </el-button>
+                  </button>
                 </el-tooltip>
               </template>
               <el-menu-item :index="submenu.uri" v-for="submenu in submenus1.items"><i class="fa fa-cube"> {{submenu.text}}</el-menu-item>
@@ -271,12 +271,13 @@
       createNewItemCategory() {
         document.getElementById("checkListFrame").src = "/model/item_category_edit.html?id="
       },
-      editLayer(id){
-        debugger
+      editLayer(id, e){
         document.getElementById("checkListFrame").src = "/model/layer_edit.html?id=" + id
+        e.stopPropagation()
       },
-      editGroup(id){
+      editGroup(id, e){
         document.getElementById("checkListFrame").src = "/model/group_edit.html?id=" + id
+        e.stopPropagation()
       },
       show_error_message(msg){
           this.$message({
@@ -286,8 +287,6 @@
           duration:0,
         });
       },
-
-
 
     },
 
