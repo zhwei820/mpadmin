@@ -17,7 +17,7 @@
         <div class="dialog-footer">
           <el-row type="flex" class="row-bg" justify="end">
             <el-col :span="24">
-              <el-button size="mini" type="danger" @click="deleteGroup()" :class="{'disabled': !this.form.id}">删除</el-button>
+              <el-button size="mini" type="danger" @click="deleteGroup()" :class="{'hidden': !this.form.id || this.form.name == 'default'}">删除</el-button>
             </el-col>
             <el-button type="primary" @click="submit">确 定</el-button>
           </el-row>
