@@ -92,7 +92,7 @@ def user_pass_func(test_func):
     def decorator(view_func):
         @wraps(view_func, assigned=available_attrs(view_func))
         def _wrapped_view(request, *args, **kwargs):
-            user = test_func(request.META['HTTP_AUTHORIZATION'])
+            user = test_func(request.META.get("HTTP_AUTHORIZATION"))
             if user:
                 request.user = user
                 return view_func(request, *args, **kwargs)
