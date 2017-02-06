@@ -1,9 +1,9 @@
 <template>
-  <div>
+  <div class="height_100">
     <!--<el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
       <el-menu-item index="1">CMDB管理中心</el-menu-item>
     </el-menu>-->
-    <el-row class="tac">
+    <el-row class="tac height_100">
       <el-col :span="4">
         <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen">
           <div>
@@ -44,13 +44,13 @@
         </el-menu>
       </el-col>
       <!--sidebar end-->
-      <el-col :span=20>
+      <el-col :span=20 class="height_100">
         <el-breadcrumb separator="/" class="breadcrumb_padding">
           <!--<el-breadcrumb-item>首页</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb1}}</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>-->
         </el-breadcrumb>
-        <iframe id="checkListFrame" src="/model/layer_edit.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
+        <iframe id="checkListFrame" class="height_100" src="/model/layer_edit.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
       </el-col>
     </el-row>
 
@@ -131,7 +131,6 @@
           }
         );
 
-
         p1.then((res) => {
           layer_list = res[0];
           layer_name_list = res[1]
@@ -141,18 +140,14 @@
           group_list = res[0];
           group_name_list = res[1]
           group_by_list_of_group = res[2]
-
           // console.log(group_name_list)
           return p3
         }).then((res) => {
           item_category_list = res[0];
           item_category_name_list = res[1]
           group_by_list_of_item_category = res[2]
-
           // console.log(item_category_name_list)
-
           this.menus = []
-
           for (var key in layer_name_list) {
             var element = layer_name_list[key];
             var m1 = {
@@ -286,22 +281,22 @@
   }
 
 
-  function dyniframesize() {
-    var iframe = document.getElementById("checkListFrame");
-    try {
-      var bHeight = iframe.contentWindow.document.body.scrollHeight;
-      var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+  // function dyniframesize() {
+  //   var iframe = document.getElementById("checkListFrame");
+  //   try {
+  //     var bHeight = iframe.contentWindow.document.body.scrollHeight;
+  //     var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
 
-      var bHeight = document.body.scrollHeight;
-      var dHeight = document.documentElement.scrollHeight;
+  //     var bHeight = document.body.scrollHeight;
+  //     var dHeight = document.documentElement.scrollHeight;
 
-      var height = Math.max(bHeight, dHeight);
-      iframe.height = height;
-    } catch (ex) {}
-  }
-  if (window.addEventListener) window.addEventListener("load", dyniframesize, false)
-  else if (window.attachEvent) window.attachEvent("onload", dyniframesize)
-  else window.onload = dyniframesize
+  //     var height = Math.max(bHeight, dHeight);
+  //     iframe.height = height;
+  //   } catch (ex) {}
+  // }
+  // if (window.addEventListener) window.addEventListener("load", dyniframesize, false)
+  // else if (window.attachEvent) window.attachEvent("onload", dyniframesize)
+  // else window.onload = dyniframesize
 </script>
 <style scoped>
   @import '../../../assets/css/normalize.css';
@@ -325,4 +320,5 @@
     background: transparent;
     border: navajowhite;
   }
+
 </style>

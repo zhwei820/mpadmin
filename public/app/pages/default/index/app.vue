@@ -1,5 +1,5 @@
 <template>
-  <div class="">
+  <div class="" class="height_100">
     <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal">
       <el-menu-item index="1">处理中心</el-menu-item>
       <el-submenu index="2">
@@ -10,7 +10,7 @@
       </el-submenu>
       <el-menu-item index="3">订单管理</el-menu-item>
     </el-menu>
-    <el-row class="tac" :gutter="20">
+    <el-row class="tac height_100" :gutter="20">
       <el-col :span="4">
         <el-menu mode="vertical" default-active="1" class="el-menu-vertical-demo" @select="handleSelect">
           <!--<el-menu-item-group title="分组一">
@@ -23,13 +23,13 @@
           <!--</el-menu-item-group>-->
         </el-menu>
       </el-col>
-      <el-col :span=20>
+      <el-col :span=20 class="height_100">
         <el-breadcrumb separator="/" class="breadcrumb_padding">
           <el-breadcrumb-item>首页</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb1}}</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>
         </el-breadcrumb>
-        <iframe id="checkListFrame1" src="/model/index.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
+        <iframe id="checkListFrame1" class="height_100" src="/model/index.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
       </el-col>
     </el-row>
     <div id="footer">
@@ -72,22 +72,22 @@
     }
   }
 
-  function dyniframesize() {
-    var iframe = document.getElementById("checkListFrame1");
-    try {
-      var bHeight = iframe.contentWindow.document.body.scrollHeight;
-      var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
+  // function dyniframesize() {
+  //   var iframe = document.getElementById("checkListFrame1");
+  //   try {
+  //     var bHeight = iframe.contentWindow.document.body.scrollHeight;
+  //     var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
 
-      var bHeight = document.body.scrollHeight;
-      var dHeight = document.documentElement.scrollHeight;
+  //     var bHeight = document.body.scrollHeight;
+  //     var dHeight = document.documentElement.scrollHeight;
 
-      var height = Math.max(bHeight, dHeight);
-      iframe.height = height;
-    } catch (ex) {}
-  }
-  if (window.addEventListener) window.addEventListener("load", dyniframesize, false)
-  else if (window.attachEvent) window.attachEvent("onload", dyniframesize)
-  else window.onload = dyniframesize
+  //     var height = Math.max(bHeight, dHeight);
+  //     iframe.height = height;
+  //   } catch (ex) {}
+  // }
+  // if (window.addEventListener) window.addEventListener("load", dyniframesize, false)
+  // else if (window.attachEvent) window.attachEvent("onload", dyniframesize)
+  // else window.onload = dyniframesize
 </script>
 <style scoped>
   @import '../../../assets/css/normalize.css';
@@ -107,4 +107,5 @@
     background: transparent;
     border: navajowhite;
   }
+
 </style>

@@ -16,4 +16,8 @@
     -webkit-box-shadow: none;
     box-shadow: none;
     opacity: .65;
-} 
+}
+
+.height_100 {
+    height: 100%;
+}
