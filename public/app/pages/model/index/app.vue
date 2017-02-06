@@ -53,12 +53,7 @@
         <iframe id="checkListFrame" src="/model/layer_edit.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
       </el-col>
     </el-row>
-    <div id="footer">
-      <hr>
-      <footer class="text-center">
-        <p>© 我的公司</p>
-      </footer>
-    </div>
+
   </div>
 </template>
 <script>
@@ -287,9 +282,7 @@
           // duration: 5,
         });
       },
-
     },
-
   }
 
 

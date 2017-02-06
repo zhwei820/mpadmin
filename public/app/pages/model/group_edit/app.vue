@@ -149,9 +149,7 @@
             parent.vm.show_error_message(response.data.error)
           });
         }
-
       },
-
     }
   }
 </script>
