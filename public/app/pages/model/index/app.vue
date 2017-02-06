@@ -22,11 +22,11 @@
             </el-button>
           </div>
           <el-submenu :index="submenus.uri" v-for="submenus in menus">
-            <template slot="title"><i class="el-icon-message"></i>{{submenus.text}}</template>
+            <template slot="title"><i class="fa fa-sitemap"></i> {{submenus.text}}</template>
             <!--<el-menu-item :index="submenu.uri" v-for="submenu in submenus.items">{{submenu.text}}</el-menu-item>-->
             <el-submenu :index="submenus1.uri" v-for="submenus1 in submenus.menus">
-              <template slot="title"><i class="el-icon-message"></i>{{submenus1.text}}</template>
-              <el-menu-item :index="submenu.uri" v-for="submenu in submenus1.items">{{submenu.text}}</el-menu-item>
+              <template slot="title"><i class="fa fa-cubes"></i> {{submenus1.text}}</template>
+              <el-menu-item :index="submenu.uri" v-for="submenu in submenus1.items"><i class="fa fa-cube"> {{submenu.text}}</el-menu-item>
             </el-submenu>
           </el-submenu>
         </el-menu>
