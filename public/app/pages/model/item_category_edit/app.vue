@@ -16,7 +16,7 @@
           <div class="ci_prop_group" v-for="(ci_prop_group, index_cpg) in CICategory.structure">
             <div class="index_cpg" v-if="index_cpg != 'hidden'">
               <el-button @click="fold_cpg(index_cpg)" type="nomal" size="mini"> <i :class="{'fa':true, 'fa-plus':CICategory.structure['hidden'][index_cpg], 'fa-minus': !CICategory.structure['hidden'][index_cpg]}"></i>                </el-button>
-              {{index_cpg}} 组 
+              {{index_cpg}} 组
               <div v-if="! CICategory.structure['hidden'][index_cpg]">
                 <el-form-item v-bind:label="item.name" :label-width="formLabelWidth" v-for="(item, index) in ci_prop_group">
                   <el-tooltip class="item" effect="dark" content="删除!" placement="top-start">
@@ -261,7 +261,10 @@
           });
 
         } else {
-          this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {}, (
+          this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {
+            parent.vm.get_model_menus()
+            location.href = "/model/items_categories.html?id=" + response.data.id
+          }, (
             response) => {
             this.$message({
               type: 'info',

@@ -78,7 +78,10 @@
           });
 
         } else {
-          this.$http.put("/api/layers/" + this.form.id + "/", this.form).then((response) => {}, (
+          this.$http.put("/api/layers/" + this.form.id + "/", this.form).then((response) => {
+            parent.vm.get_model_menus()
+            location.href = "/model/layer_edit.html?id=" + response.data.id
+          }, (
             response) => {
             this.$message({
               type: 'info',

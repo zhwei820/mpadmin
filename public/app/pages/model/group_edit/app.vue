@@ -121,7 +121,10 @@
           });
 
         } else {
-          this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {}, (
+          this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {
+            parent.vm.get_model_menus()
+            location.href = "/model/groups.html?id=" + response.data.id
+          }, (
             response) => {
             this.$message({
               type: 'info',
