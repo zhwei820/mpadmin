@@ -263,7 +263,7 @@
         } else {
           this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {
             parent.vm.get_model_menus()
-            location.href = "/model/items_categories.html?id=" + response.data.id
+            location.href = "/model/item_category_edit.html?id=" + response.data.id
           }, (
             response) => {
             this.$message({

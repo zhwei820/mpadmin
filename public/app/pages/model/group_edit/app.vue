@@ -123,7 +123,7 @@
         } else {
           this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {
             parent.vm.get_model_menus()
-            location.href = "/model/groups.html?id=" + response.data.id
+            location.href = "/model/group_edit.html?id=" + response.data.id
           }, (
             response) => {
             this.$message({
