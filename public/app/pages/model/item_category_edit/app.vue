@@ -70,7 +70,9 @@
         </el-form>
         <div class="dialog-footer">
           <el-row type="flex" class="row-bg" justify="end">
-            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-col :span="24">
+              <el-button size="mini" type="danger" @click="deleteItemCategory()" :class="{'disabled': !this.CICategory.id}">删除</el-button>
+            </el-col>
             <el-button type="primary" @click="submit">确 定</el-button>
           </el-row>
         </div>
@@ -277,13 +279,23 @@
         this.fetch(0, this.pageSize)
       },
       fold_cpg(e) {
-
         if (this.CICategory.structure['hidden'][e]) {
           Vue.set(this.CICategory.structure['hidden'], e, false)
         } else {
           Vue.set(this.CICategory.structure['hidden'], e, true)
         }
+      },
+      deleteItemCategory() {
+        if (this.CICategory.id) {
+          this.$http.delete("/api/items_categories/" + this.CICategory.id + "/").then((response) => {
+            parent.vm.get_model_menus()
+            location.href = "/model/item_category_edit.html?id="
+          }, (response) => {
+            parent.vm.show_error_message(response.data.error)
+          });
+        }
       }
+
     }
   }
 </script>
@@ -321,4 +333,5 @@
     width: 25px;
     height: 25px;
   }
+  
 </style>

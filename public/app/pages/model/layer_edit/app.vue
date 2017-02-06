@@ -9,8 +9,12 @@
         </el-form-item>
       </el-form>
       <div>
-        <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="submit">确 定</el-button>
+          <el-row type="flex" class="row-bg" justify="end">
+            <el-col :span="24">
+              <el-button size="mini" type="danger" @click="deleteLayer()" :class="{'disabled': !this.form.id}">删除</el-button>
+            </el-col>
+            <el-button type="primary" @click="submit">确 定</el-button>
+          </el-row>
       </div>
     </el-col>
   </el-row>
@@ -92,12 +96,23 @@
         }
         this.fetch(0, 100)
       },
+      deleteLayer() {
+        if (this.form.id) {
+          this.$http.delete("/api/layers/" + this.form.id + "/").then((response) => {
+            parent.vm.get_model_menus()
+            location.href = "/model/layer_edit.html?id="
+          }, (response) => {
+            parent.vm.show_error_message(response.data.error)
+          });
+        }
 
+      },
     }
   }
 </script>
 <style scoped>
   @import '../../../assets/css/normalize.css';
+  @import '../../../assets/css/index.css';
   .right_search {
     float: right;
     width: 20%;
