@@ -302,6 +302,7 @@
     left: 50%;
     position: relative;
     margin-bottom: 3px;
+    width: 153px;
   }
   .edit_mini_btn {
     /*float: right;

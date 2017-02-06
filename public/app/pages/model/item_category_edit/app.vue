@@ -61,7 +61,7 @@
             <div>
               <div>类型</div>
               <el-select v-model="field" placeholder="请选择">
-                <el-option v-bind:label="item.name" v-bind:value="index" v-for="(item, index) in field_list">
+                <el-option v-bind:label="fields_comment[index]" v-bind:value="index" v-for="(item, index) in field_list">
                 </el-option>
               </el-select>
               <el-button @click="addStructure"><i class="fa fa-plus"></i></el-button>
