@@ -10,6 +10,10 @@ Vue.http.interceptors.push((request, next) => {
 
     if (Authorization) {
         request.headers.set('Authorization', Authorization);
+    } else {
+        if (parent != window) {
+            parent.parent.parent.parent.parent.location.href = "/default/login.html"
+        }
     }
     next();
 });
@@ -235,5 +239,3 @@ export {
     Vue,
     deepCopyOfObject,
 }
-
-
