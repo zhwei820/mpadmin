@@ -257,12 +257,11 @@
           this.$http.post("/api/items/", ci_item).then((response) => {
             window.vm.get_model_menus()
             this.$router.push({
-              path: "/item_category_edit/" + response.data.id
+              path: "/item_edit/"
             })
-            // window.vm.get_model_menus()            
-            // this.$router.push({
-            //   path: "/layer_edit/" + id
-            // })
+            this.dialogFormVisible = false
+            this.fetch()
+
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
@@ -271,8 +270,11 @@
           this.$http.put("/api/items/" + this.CIItem.id + "/", ci_item).then((response) => {
             window.vm.get_model_menus()
             this.$router.push({
-              path: "/item_category_edit/" + response.data.id
+              path: "/item_edit/"
             })
+
+            this.dialogFormVisible = false
+            this.fetch()
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
