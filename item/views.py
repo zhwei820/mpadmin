@@ -93,7 +93,7 @@ class ItemCategoryWithGroupIDListAPIView(ListAPIView):
         return ItemCategory.objects(group=obj_id)
 
 
-class ItemListCreateAPIView(CreateAPIView):
+class ItemListCreateAPIView(ListCreateAPIView):
     serializer_class = ItemSerializer
     permission_classes = (IsAuthenticated,)
     queryset = Item.objects.all()
