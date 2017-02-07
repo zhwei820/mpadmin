@@ -237,13 +237,13 @@
         }
       },
       createNewLayer() {
-        document.getElementById("checkListFrame").src = "/model/layer_edit.html?id="
+        this.$router.push({path:"/layer_edit/"})        
       },
       createNewGroup() {
-        document.getElementById("checkListFrame").src = "/model/group_edit.html?id="
+        this.$router.push({path:"/group_edit/"})                
       },
       createNewItemCategory() {
-        document.getElementById("checkListFrame").src = "/model/item_category_edit.html?id="
+        this.$router.push({path:"/item_category_edit/"})        
       },
       editLayer(id, e){
         this.$router.push({path:"/layer_edit/" + id})
