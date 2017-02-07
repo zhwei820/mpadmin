@@ -102,8 +102,11 @@
       submit() {
         if (!this.form.id) {
           this.$http.post("/api/groups/", this.form).then((response) => {
-            parent.vm.get_model_menus()
-            location.href = "/model/group_edit.html?id=" + response.data.id
+            window.vm.get_model_menus()
+            this.$router.push({
+              path: "/group_edit/" + response.data.id
+            })
+
           }, (
             response) => {
             this.$message({
@@ -114,8 +117,10 @@
 
         } else {
           this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {
-            parent.vm.get_model_menus()
-            location.href = "/model/group_edit.html?id=" + response.data.id
+            window.vm.get_model_menus()            
+            this.$router.push({
+              path: "/group_edit/" + response.data.id
+            })
           }, (
             response) => {
             this.$message({
@@ -131,8 +136,10 @@
       deleteGroup() {
         if (this.form.id) {
           this.$http.delete("/api/groups/" + this.form.id + "/").then((response) => {
-            parent.vm.get_model_menus()
-            location.href = "/model/group_edit.html?id="
+            this.$emit('get_model_menus')
+            this.$router.push({
+              path: "/group_edit/"
+            })
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });

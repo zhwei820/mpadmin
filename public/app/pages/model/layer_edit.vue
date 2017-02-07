@@ -71,9 +71,10 @@
       submit() {
         if (!this.form.id) {
           this.$http.post("/api/layers/", this.form).then((response) => {
-            parent.vm.get_model_menus()
-            location.href = "/model/layer_edit.html?id=" + response.data.id
-
+            window.vm.get_model_menus()            
+            this.$router.push({
+              path: "/layer_edit/" + response.data.id
+            })
           }, (
             response) => {
             this.$message({
@@ -84,8 +85,10 @@
 
         } else {
           this.$http.put("/api/layers/" + this.form.id + "/", this.form).then((response) => {
-            parent.vm.get_model_menus()
-            location.href = "/model/layer_edit.html?id=" + response.data.id
+            window.vm.get_model_menus()            
+            this.$router.push({
+              path: "/layer_edit/" + response.data.id
+            })
           }, (
             response) => {
             this.$message({
@@ -100,8 +103,10 @@
       deleteLayer() {
         if (this.form.id) {
           this.$http.delete("/api/layers/" + this.form.id + "/").then((response) => {
-            parent.vm.get_model_menus()
-            location.href = "/model/layer_edit.html?id="
+            window.vm.get_model_menus()            
+            this.$router.push({
+              path: "/layer_edit/" + response.data.id
+            })
           }, (response) => {
             debugger
             parent.vm.show_error_message(response.data.error)

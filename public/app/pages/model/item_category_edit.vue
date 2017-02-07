@@ -259,19 +259,25 @@
       submit() {
         if (!this.CICategory.id) {
           this.$http.post("/api/items_categories/", this.CICategory).then((response) => {
-            // location.href = "/model/item_category_edit.html?id=" + response.data.id
-            parent.vm.get_model_menus()
-            location.href = "/model/item_category_edit.html?id=" + response.data.id
+            window.vm.get_model_menus()
+            this.$router.push({
+              path: "/item_category_edit/" + response.data.id
+            })
+            // window.vm.get_model_menus()            
+            // this.$router.push({
+            //   path: "/layer_edit/" + id
+            // })
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
 
         } else {
           this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {
-            parent.vm.get_model_menus()
-            location.href = "/model/item_category_edit.html?id=" + response.data.id
+            window.vm.get_model_menus()
+            this.$router.push({
+              path: "/item_category_edit/" + response.data.id
+            })
           }, (response) => {
-
             parent.vm.show_error_message(response.data.error)
           });
         }
@@ -289,8 +295,10 @@
       deleteItemCategory() {
         if (this.CICategory.id) {
           this.$http.delete("/api/items_categories/" + this.CICategory.id + "/").then((response) => {
-            parent.vm.get_model_menus()
-            location.href = "/model/item_category_edit.html?id="
+            window.vm.get_model_menus()
+            this.$router.push({
+              path: "/item_category_edit/"
+            })
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });

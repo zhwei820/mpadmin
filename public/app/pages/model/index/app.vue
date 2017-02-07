@@ -110,7 +110,7 @@
     }},
     mounted: function () {
       this.get_model_menus()
-      window.vm = this;
+      window.vm = this
     },
     methods: {
       get_model_menus() {
@@ -185,7 +185,6 @@
               menus1.push(menus2)
             }
             m1.menus = menus1;
-
             this.menus.push(m1)
           }
 
@@ -243,14 +242,14 @@
         this.$router.push({path:"/group_edit/"})                
       },
       createNewItemCategory() {
-        this.$router.push({path:"/item_category_edit/"})        
+        this.$router.push({path:"/item_category_edit/"})
       },
       editLayer(id, e){
         this.$router.push({path:"/layer_edit/" + id})
         e.stopPropagation()
       },
       editGroup(id, e){
-        this.$router.push({path:"/group_edit/" + id})        
+        this.$router.push({path:"/group_edit/" + id})
         e.stopPropagation()
       },
       show_error_message(msg){
