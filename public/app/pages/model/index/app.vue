@@ -5,7 +5,7 @@
     </el-menu>-->
     <el-row class="tac height_100">
       <el-col :span="4">
-        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen">
+        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" router>
           <div>
             <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
               <i class="fa fa-plus"></i> 新增CI模型层
@@ -38,7 +38,7 @@
                   </button>
                 </el-tooltip>
               </template>
-              <el-menu-item :index="submenu.uri" v-for="submenu in submenus1.items"><i class="fa fa-cube"> {{submenu.text}}</el-menu-item>
+              <el-menu-item :index="submenu.uri" :route="submenu.route" v-for="submenu in submenus1.items"><i class="fa fa-cube"> {{submenu.text}}</el-menu-item>
             </el-submenu>
           </el-submenu>
         </el-menu>
@@ -50,7 +50,7 @@
           <el-breadcrumb-item>{{breadcrumb1}}</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>-->
         </el-breadcrumb>
-        <iframe id="checkListFrame" class="height_100" src="/model/layer_edit.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
+        <router-view></router-view>
       </el-col>
     </el-row>
 
@@ -102,6 +102,12 @@
         menus1: {},
       }
     },
+    watch: {
+    '$route' (to, from) {
+      if(to.path.split("/")[1] == from.path.split("/")[1]){
+        window.vm_n.fetch(0,100)
+      }
+    }},
     mounted: function () {
       this.get_model_menus()
       window.vm = this;
@@ -122,7 +128,6 @@
             that.get_model_data("/api/groups/", "layer", resolve, reject)
           }
         );
-
 
         var item_category_list, item_category_name_list, group_by_list_of_item_category
         var p3 = new Promise(
@@ -171,6 +176,9 @@
                 var menu_item = {}
                 menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
                 menu_item.text = element2.name
+
+                menu_item.route = { path: '/item_category_edit/' + element2.id}
+
                 menus2.id = element1.id
                 menus2.items.push(menu_item)
               }
@@ -180,24 +188,6 @@
 
             this.menus.push(m1)
           }
-
-          // for (var ii = 0; ii < this.menus.length; ii++) {
-          //   this.menus1[this.menus[ii].uri] = {}
-          //   this.menus1[this.menus[ii].uri]['text'] = this.menus[ii]['text']
-
-
-          //   for (var jj = 0; jj < this.menus[ii].items.length; jj++) {
-          //     this.menus1[this.menus[ii].uri][this.menus[ii].items[jj]['uri']] =
-          //       this.menus[ii].items[jj]
-          //   }
-          // }
-
-          // var breadcrumb1 = document.getElementsByClassName("el-breadcrumb__item")[0]
-
-          // function breadcrumb_home() {
-          //   location.href = "/model/index.html"
-          // }
-          // addEvent(breadcrumb1, "click", breadcrumb_home)
 
         })
 
@@ -240,13 +230,10 @@
         });
       },
       handleSelect(key, keyPath) {
-        document.getElementById("checkListFrame").src = key
-        // this.breadcrumb1 = this.menus1[keyPath[0]]['text']
-        // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
+        console.log('ll');
       },
       handleOpen(key, keyPath) {
         if (key != "/") {
-         
         }
       },
       createNewLayer() {
@@ -259,11 +246,11 @@
         document.getElementById("checkListFrame").src = "/model/item_category_edit.html?id="
       },
       editLayer(id, e){
-        document.getElementById("checkListFrame").src = "/model/layer_edit.html?id=" + id
+        this.$router.push({path:"/layer_edit/" + id})
         e.stopPropagation()
       },
       editGroup(id, e){
-        document.getElementById("checkListFrame").src = "/model/group_edit.html?id=" + id
+        this.$router.push({path:"/group_edit/" + id})        
         e.stopPropagation()
       },
       show_error_message(msg){
@@ -272,23 +259,6 @@
     },
   }
 
-
-  // function dyniframesize() {
-  //   var iframe = document.getElementById("checkListFrame");
-  //   try {
-  //     var bHeight = iframe.contentWindow.document.body.scrollHeight;
-  //     var dHeight = iframe.contentWindow.document.documentElement.scrollHeight;
-
-  //     var bHeight = document.body.scrollHeight;
-  //     var dHeight = document.documentElement.scrollHeight;
-
-  //     var height = Math.max(bHeight, dHeight);
-  //     iframe.height = height;
-  //   } catch (ex) {}
-  // }
-  // if (window.addEventListener) window.addEventListener("load", dyniframesize, false)
-  // else if (window.attachEvent) window.attachEvent("onload", dyniframesize)
-  // else window.onload = dyniframesize
 </script>
 <style scoped>
   @import '../../../assets/css/normalize.css';
@@ -305,11 +275,7 @@
     width: 153px;
   }
   .edit_mini_btn {
-    /*float: right;
-    margin-top: 10px;
-    margin-right: 10px;
-    position: relative;
-    margin-bottom: 3px;*/
+    
     background: transparent;
     border: navajowhite;
   }

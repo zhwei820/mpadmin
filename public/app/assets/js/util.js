@@ -5,6 +5,9 @@ Vue.use(ElementUI)
 import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
+import VueRouter from 'vue-router'
+Vue.use(VueRouter)
+
 Vue.http.interceptors.push((request, next) => {
     var Authorization = localStorage.getItem("Authorization");
 
@@ -18,9 +21,6 @@ Vue.http.interceptors.push((request, next) => {
     next();
 });
 
-
-
-
 var addEvent = function (elem, event, fn) {
     if (elem.addEventListener) {
         elem.addEventListener(event, fn, false);
@@ -31,11 +31,9 @@ var addEvent = function (elem, event, fn) {
     }
 }
 
-
 var echo = function (value) {　　
     console.log(value)
 }
-
 
 function getType(o) {
     var _t;

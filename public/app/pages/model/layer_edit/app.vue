@@ -9,12 +9,12 @@
         </el-form-item>
       </el-form>
       <div>
-          <el-row type="flex" class="row-bg" justify="end">
-            <el-col :span="24">
-              <el-button size="mini" type="danger" @click="deleteLayer()" :class="{'hidden': !this.form.id || this.form.name == 'default'}">删除</el-button>
-            </el-col>
-            <el-button type="primary" @click="submit">确 定</el-button>
-          </el-row>
+        <el-row type="flex" class="row-bg" justify="end">
+          <el-col :span="24">
+            <el-button size="mini" type="danger" @click="deleteLayer()" :class="{'hidden': !this.form.id || this.form.name == 'default'}">删除</el-button>
+          </el-col>
+          <el-button type="primary" @click="submit">确 定</el-button>
+        </el-row>
       </div>
     </el-col>
   </el-row>
@@ -42,11 +42,12 @@
     },
 
     beforeMount: function () {
+      window.vm_n = this;
       this.fetch(0, 100)
     },
     methods: {
       fetch(offset, limit) {
-        var id = paramParse('id')
+        var id = this.$route.params.id
         this.id = id == undefined ? 0 : id
 
         if (id) {

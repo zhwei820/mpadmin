@@ -53,18 +53,13 @@
     },
 
     beforeMount: function () {
+      window.vm_n = this;
       this.get_layer_list()
     },
     methods: {
       get_layer_list() {
         var query = ""
         this.$http.get("/api/layers/" + query).then((response) => {
-          if (response.status !== 200) {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
-          }
           this.layer_list = {}
           for (var key in response.data) {
             this.layer_list[response.data[key].name] = response.data[key].id;
@@ -89,18 +84,11 @@
         });
       },
       fetch(offset, limit) {
-        var id = paramParse('id')
+        // var id = paramParse('id')
+        var id = this.$route.params.id
         this.id = id == undefined ? 0 : id
         if (id) {
-
           this.$http.get("/api/groups/" + id + "/").then((response) => {
-
-            if (response.status !== 200) {
-              this.$message({
-                type: 'info',
-                message: '请求失败, 请重试'
-              });
-            }
             this.form = response.data
 
           }, (response) => {

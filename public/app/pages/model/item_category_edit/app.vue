@@ -136,9 +136,9 @@
     },
 
     beforeMount: function () {
+      window.vm_n = this;
       this.get_group_list()
       this.get_field_list()
-
     },
     methods: {
       get_group_list() {
@@ -197,12 +197,13 @@
           });
         });
       },
-      fetch() {
+      fetch(offset, limit) {
         // console.log(this.param);
         // var query = json2url(this.param)
         // this.$http.get("/api/items_categories/?" + query).then((response) => {
 
-        var id = paramParse('id')
+        // var id = paramParse('id')
+        var id = this.$route.params.id
         this.id = id == undefined ? 0 : id
 
         if (id) {
@@ -333,5 +334,4 @@
     width: 25px;
     height: 25px;
   }
-  
 </style>
