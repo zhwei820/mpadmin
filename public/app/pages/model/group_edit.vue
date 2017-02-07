@@ -45,6 +45,7 @@
           id: "",
           layer: "default",
         },
+        _form: {},
         layer_list: {},
         layer_name_list: {},
         formLabelWidth: '120px',
@@ -54,6 +55,7 @@
 
     beforeMount: function () {
       window.vm_n = this;
+      this._form = deepCopyOfObject(this.form)
       this.get_layer_list()
     },
     methods: {
@@ -68,13 +70,6 @@
           for (var key in response.data) {
             this.layer_name_list[response.data[key].id] = response.data[key].name;
           }
-
-          this.form = {
-            "name": "",
-            "layer": this.layer_list.default,
-            "id": "",
-          }
-
           this.fetch(0, 100)
         }, (response) => {
           this.$message({
@@ -97,6 +92,9 @@
               message: '请求失败, 请重试'
             });
           });
+        } else {
+          this.form = deepCopyOfObject(this._form)
+          this.form.layer = this.layer_list.default
         }
       },
       submit() {
@@ -117,7 +115,7 @@
 
         } else {
           this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {
-            window.vm.get_model_menus()            
+            window.vm.get_model_menus()
             this.$router.push({
               path: "/group_edit/" + response.data.id
             })

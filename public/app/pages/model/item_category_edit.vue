@@ -109,7 +109,6 @@
         id: 0,
         dialogFormVisible: false,
         formLabelWidth: '120px',
-
         CICategory: {
           "name": "",
           "id": "",
@@ -121,6 +120,7 @@
             }
           },
         },
+        _CICategory: {},
         tmp_key: "",
         tmp_name: "",
         tmp_group: "default",
@@ -137,6 +137,8 @@
 
     beforeMount: function () {
       window.vm_n = this;
+      this._CICategory = deepCopyOfObject(this.CICategory)
+      
       this.get_group_list()
       this.get_field_list()
     },
@@ -159,17 +161,6 @@
             this.group_name_list[response.data[key].id] = response.data[key].name;
           }
 
-          this.CICategory = {
-            "name": "",
-            "id": "",
-            group: this.group_list.default,
-            structure: {
-              // default: [],
-              hidden: {
-                // default: false
-              }
-            },
-          }
           this.fetch(0, this.pageSize);
         }, (response) => {
           this.$message({
@@ -229,6 +220,9 @@
               message: '请求失败, 请重试'
             });
           });
+        } else {
+          this.CICategory = deepCopyOfObject(this._CICategory)
+          this.CICategory.group = this.group_list.default
         }
       },
       addStructure() {
@@ -251,7 +245,6 @@
         Vue.set(this.CICategory.structure['hidden'], this.tmp_group, false)
         Vue.set(this.cpg_list, this.tmp_group, '')
         this.tmp_group = "default"
-        // console.log(this.CICategory.structure.default)
       },
       delStructure(g, i) {
         this.CICategory.structure[g].splice(i, 1)
@@ -304,7 +297,6 @@
           });
         }
       }
-
     }
   }
 </script>
