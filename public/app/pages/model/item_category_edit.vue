@@ -87,7 +87,7 @@
     Vue,
     deepCopyOfObject,
     paramParse
-  } from "../../../assets/js/util.js"
+  } from "../../assets/js/util.js"
 
   export default {
     data() {
@@ -301,8 +301,8 @@
   }
 </script>
 <style scoped>
-  @import '../../../assets/css/normalize.css';
-  @import '../../../assets/css/index.css';
+  @import '../../assets/css/normalize.css';
+  @import '../../assets/css/index.css';
   .right_search {
     float: right;
     width: 20%;

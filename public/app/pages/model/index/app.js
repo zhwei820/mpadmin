@@ -6,9 +6,9 @@ import {
 import 'element-ui/lib/theme-default/index.css'
 import App from './app.vue'
 
-import LayerEdit from '../layer_edit/app.vue'
-import GroupEdit from '../group_edit/app.vue'
-import ItemCategoryEdit from '../item_category_edit/app.vue'
+import LayerEdit from '../layer_edit.vue'
+import GroupEdit from '../group_edit.vue'
+import ItemCategoryEdit from '../item_category_edit.vue'
 
 import VueRouter from 'vue-router'
 
@@ -21,7 +21,7 @@ const router = new VueRouter({
   base: __dirname,
   routes: [{
       path: '/',
-      component: GroupEdit
+      component: LayerEdit
     },
     {
       path: '/layer_edit',
