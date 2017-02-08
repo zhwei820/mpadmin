@@ -102,22 +102,57 @@ def user_pass_func(test_func):
     return decorator
 
 
+def verify(t):
+    a = VerifyJSONWebTokenSerializer()
+    try:
+        res = a.validate({"token":t[3:].strip()})
+        user = res['user']
+    except Exception as e:
+        return False
+    else:
+        return user
+
 def login_required(function=None):
     """
     Decorator for views that checks that the user is logged in, redirecting
     to the log-in page if necessary.
     """
-    def verify(t):
-        a = VerifyJSONWebTokenSerializer()
-        try:
-            res = a.validate({"token":t[3:].strip()})
-            user = res['user']
-        except Exception as e:
-            return False
-        else:
-            return user
     
     actual_decorator = user_pass_func(verify)
     if function:
         return actual_decorator(function)
     return actual_decorator
+
+
+from django.utils.deprecation import MiddlewareMixin
+
+from api.models import UserActionLog
+import json
+
+class UserActionLoggingMiddleware(MiddlewareMixin):
+    """
+    This middleware compresses content if the browser allows gzip compression.
+    It sets the Vary header accordingly, so that caches will base their storage
+    on the Accept-Encoding header.
+    """
+    def __init__(self, get_response=None):
+        self.get_response = get_response
+        super(UserActionLoggingMiddleware, self).__init__(get_response=get_response)
+
+    def process_request(self, request):
+        if request.method != "GET":
+            user = verify(request.META.get("HTTP_AUTHORIZATION"))
+            if user:
+                request.user = user
+
+            request._body = request.read()
+
+            user_action_log = UserActionLog()
+            user_action_log.method = request.method
+            user_action_log.content = request._body
+            user_action_log.user_id = request.user.id
+            user_action_log.user_name = request.user.username
+            user_action_log.uri = request.path
+            user_action_log.save()
+
+        return None
