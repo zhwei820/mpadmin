@@ -550,7 +550,6 @@ def validate_category_structure(raw_data):  # 检验模型定义字段
         if json_shema_res[0] < 0:
             return -1, json_shema_res[1]
         try:
-            print(json_shema_res)
             validate(s_data, json_shema_res[1])
         except Exception as e:
             print(e)
@@ -672,7 +671,7 @@ s_data = [
 
 json_shema = gemerating_item_schema(s_data)
 
-print(json.dumps(json_shema[1]))
+# print(json.dumps(json_shema[1]))
 
 try:
     validate(s_data1, json_shema[1])
