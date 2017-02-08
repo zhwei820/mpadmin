@@ -55,12 +55,6 @@
 
         if (id) {
           this.$http.get("/api/layers/" + id + "/").then((response) => {
-            if (response.status !== 200) {
-              this.$message({
-                type: 'info',
-                message: '请求失败, 请重试'
-              });
-            }
             this.form = response.data
 
           }, (response) => {

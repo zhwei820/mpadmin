@@ -195,12 +195,7 @@
         var query = ""
         var list, name_list, group_by_list
         this.$http.get(url + query).then((response) => {
-          if (response.status !== 200) {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
-          }
+          
           list = {}
           for (var key in response.data) {
             list[response.data[key].name] = response.data[key].id;
@@ -221,11 +216,18 @@
           }
           resolve([list, name_list, group_by_list])
         }, (response) => {
-          this.$message({
-            type: 'info',
-            message: '请求失败, 请重试'
-          });
-          reject()
+          // reject()
+          console.log(response.data.detail);
+          var msg = response.data.detail != undefined ? response.data.detail : response.data.error
+          parent.vm.show_error_message(msg)
+          if(msg == "Signature has expired."){
+            localStorage.setItem("Authorization", '')
+            setTimeout(function() {
+              parent.document.location.href = "/default/login.html"
+            }, 500);
+            return
+          }
+            
         });
       },
       handleSelect(key, keyPath) {
