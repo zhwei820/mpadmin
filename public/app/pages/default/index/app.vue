@@ -81,10 +81,10 @@
         // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
       },
       handleOpen(key, keyPath) {},
-      show_error_message(msg) {
+      show_error_message(msg) {        
         this.$message({
           type: 'error',
-          message: msg,
+          message: msg || "请求失败, 请检查数据并重试",
           showClose: true,
           // duration: 5,
         });

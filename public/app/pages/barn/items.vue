@@ -49,22 +49,26 @@
           {{index_cpg}} 组
           <div v-if="! CIItem._category.structure['hidden'][index_cpg]">
             <el-form-item :label="v1.name" :label-width="formLabelWidth" v-for="v1 in v">
-              <div v-if="v1.field != 'select' && v1.field != 'multi_select'">
+              <div v-if="v1.field != 'select' && v1.field != 'multi_select' && v1.field != 'datetime'">
                 <el-input :type="v1.field == 'number'?'number':'text'" v-model="CIItem[v1.key]" auto-complete="off"></el-input><span v-if="v1.field == 'number'"> {{v1.unit}}</span>
               </div>
-              <div v-else-if="v1.field == 'select'">
+              <!--<div v-if="v1.field == 'select'">
                 <select v-model="CIItem[v1.key]" :class="{'form-control':true}">
                   <option v-for="item in v1._choice" v-bind:value="item">
                     {{ item }}
                   </option>
                 </select>
-              </div>
-              <div v-else>
-                <el-select v-model="CIItem[v1.key]" multiple>
+              </div>-->
+              <div v-if="v1.field == 'multi_select' || v1.field == 'select'">
+                <el-select v-model="CIItem[v1.key]" :multiple="v1.field == 'multi_select'">
                   <el-option v-for="item in v1._choice" v-bind:value="item">
                     {{ item }}
                   </el-option>
                 </el-select>
+              </div>
+              <div v-if="v1.field == 'datetime'">
+                <el-date-picker v-model="CIItem[v1.key]" type="datetime" placeholder="选择日期时间">
+                </el-date-picker>
               </div>
               类型：{{fields_comment[v1.field]}}, <span v-if="v1.field == 'string' || v1.field == 'number'">最大/最长： {{v1.max}}, 最小: {{v.min}}, </span>
             </el-form-item>
@@ -210,22 +214,26 @@
         }
       },
       handleEdit(index, row) {
-        this.CIItem = deepCopyOfObject(row)
-        this.CIItem._category = this.item_category,
+        var _CIItem = deepCopyOfObject(row)
+
+        _CIItem._category = this.item_category,
           this.dialogFormVisible = true
         for (var key in this.item_category.structure) {
           var element = this.item_category.structure[key];
           for (var key1 in element) {
 
-            if (element[key1].field == "multi_select" && typeof (this.CIItem[element[key1].key]) == "string") {
-              this.CIItem[element[key1].key] = [this.CIItem[element[key1].key]]
+            if (element[key1].field == "multi_select" && typeof (_CIItem[element[key1].key]) == "string") {
+              _CIItem[element[key1].key] = [_CIItem[element[key1].key]]
             }
           }
         }
+        this.CIItem = _CIItem
+        console.log(this.CIItem);
+
       },
       createNewCIItem() {
         this.dialogFormVisible = true
-        this.CIItem = {
+        var _CIItem = {
           "name": "234",
           "id": "",
           _category: this.item_category,
@@ -238,10 +246,11 @@
               element[key1].default = [this.item_category.structure[key][key1]._choice[0]] //multi_select 默认是array
             }
             if (element[key1].key != undefined) {
-              this.CIItem[element[key1].key] = element[key1].default
+              _CIItem[element[key1].key] = element[key1].default || ''
             }
           }
         }
+        this.CIItem = _CIItem
       },
       handleDelete(index, row) {
         this.$confirm('此操作将永久删除' + row.name + ', 是否继续?', '提示', {
@@ -340,7 +349,7 @@
   }
   
   .el-input {
-    width: 150px;
+    width: 250px;
   }
   
   .inline {
@@ -355,7 +364,7 @@
     display: inline-block;
     width: 20%;
   }
-    
+  
   .multi_select {
     height: 200px
   }
