@@ -84,7 +84,7 @@
       show_error_message(msg) {        
         this.$message({
           type: 'error',
-          message: msg || "请求失败, 请检查数据并重试",
+          message: msg || "请求失败, 请检查数据(重名)并重试",
           showClose: true,
           // duration: 5,
         });
