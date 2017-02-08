@@ -168,7 +168,6 @@
       get_item_category() {
         this.$http.get("/api/items_categories/" + this.id).then((response) => {
           this.item_category = response.data
-          console.log(this.item_category);
         }, (response) => {
           this.$message({
             type: 'info',
@@ -179,7 +178,6 @@
       fetch() {
         var id = this.$route.params.id
         this.id = id == undefined ? "" : id
-        console.log(this.id);
         
         if (this.id) {
           this.$http.get("/api/items_categories/" + this.id + '/items').then((response) => {
