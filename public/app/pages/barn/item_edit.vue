@@ -28,8 +28,8 @@
       </el-table-column>
       <el-table-column prop="name" :label=tableHead.name width="120">
       </el-table-column>
-      <el-table-column prop="group_name" :label=tableHead.group_name width="120">
-      </el-table-column>
+      <!--<el-table-column prop="group_name" :label=tableHead.group_name width="120">
+      </el-table-column>-->
     </el-table>
     <div class="block">
       <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="tablePage" :page-sizes="[20, 50, 100, 200, 400]"
@@ -49,14 +49,17 @@
           {{index_cpg}} 组
           <div v-if="! CIItem._category.structure['hidden'][index_cpg]">
             <el-form-item :label="v1.name" :label-width="formLabelWidth" v-for="v1 in v">
-              <el-input v-model="CIItem[v1.key]" auto-complete="off"></el-input>
+              <div v-if="v1.field != 'select' && v1.field != 'multi_select'">
+                <el-input :type="v1.field == 'number'?'number':'text'" v-model="CIItem[v1.key]" auto-complete="off"></el-input><span v-if="v1.field == 'number'"> {{v1.unit}}</span>
+              </div>
+              <div v-else>
+                <select v-model="CIItem[v1.key]" class="form-control">
+                  <option v-for="item in v1._choice" v-bind:value="item">
+                    {{ item }}
+                  </option>
+                </select>
+              </div>
             </el-form-item>
-            <!--<el-form-item label="CI模型分组" :label-width="formLabelWidth">
-            <el-select v-model="CIItem.group" placeholder="请选择">
-              <el-option v-bind:label="index" v-bind:value="item" v-for="(item, index) in item_category_list">
-              </el-option>
-            </el-select>
-          </el-form-item>-->
           </div>
         </div>
         <div class="ci_prop_group" v-for="(ci_prop_group, index_cpg) in CIItem.structure">
@@ -99,7 +102,7 @@
         },
         input2: "",
         tableHead: {
-          "name": "CI模型名称",
+          "name": "CI模型实例名称",
           group_name: "CI模型分组名称",
         },
         tableHeadKeys: [
@@ -123,9 +126,9 @@
             name: ""
           },
         },
-        tmp_key: "",
-        tmp_name: "",
-        tmp_group: "default",
+        // tmp_key: "",
+        // tmp_name: "",
+        // tmp_group: "default",
         field_list: {},
         fields_comment: {},
         field: "",
@@ -191,30 +194,30 @@
           });
         });
       },
-      addStructure() {
-        var tmp = {}
-        for (var k in this.field_list[this.field].properties) {
-          tmp[k] = "";
-        }
-        tmp['field'] = this.field;
-        tmp['name'] = this.tmp_name;
-        tmp['key'] = this.tmp_key;
+      // addStructure() {
+      //   var tmp = {}
+      //   for (var k in this.field_list[this.field].properties) {
+      //     tmp[k] = "";
+      //   }
+      //   tmp['field'] = this.field;
+      //   tmp['name'] = this.tmp_name;
+      //   tmp['key'] = this.tmp_key;
 
-        this.tmp_name = ""
-        this.tmp_key = ""
+      //   this.tmp_name = ""
+      //   this.tmp_key = ""
 
-        if (this.CIItem.structure[this.tmp_group] == undefined) {
-          this.CIItem.structure[this.tmp_group] = []
-        }
+      //   if (this.CIItem.structure[this.tmp_group] == undefined) {
+      //     this.CIItem.structure[this.tmp_group] = []
+      //   }
 
-        this.CIItem.structure[this.tmp_group].push(tmp)
-        Vue.set(this.CIItem.structure['hidden'], this.tmp_group, false)
-        Vue.set(this.cpg_list, this.tmp_group, '')
-        this.tmp_group = "default"
-      },
-      delStructure(g, i) {
-        this.CIItem.structure[g].splice(i, 1)
-      },
+      //   this.CIItem.structure[this.tmp_group].push(tmp)
+      //   Vue.set(this.CIItem.structure['hidden'], this.tmp_group, false)
+      //   Vue.set(this.cpg_list, this.tmp_group, '')
+      //   this.tmp_group = "default"
+      // },
+      // delStructure(g, i) {
+      //   this.CIItem.structure[g].splice(i, 1)
+      // },
       handleEdit(index, row) {
         row.structure['hidden'] = {}
         for (var key in row.structure) {
@@ -239,12 +242,18 @@
           var element = this.CIItem._category.structure[key];
 
           for (var key1 in element) {
+            if (element[key1].field != undefined && (element[key1].field == "select" || element[key1].field ==
+                "multi_select")) {
+              this.CIItem._category.structure[key][key1]._choice = this.CIItem._category.structure[key][key1].choice.split(
+                "|")
+                element[key1].default = this.CIItem._category.structure[key][key1]._choice[0]
+            }
             var element1 = element[key1];
-            this.CIItem[element1.key] = element1.default
+            if (element1.key != undefined) {
+              this.CIItem[element1.key] = element1.default
+            }
           }
         }
-        console.log(this.CIItem);
-
       },
       handleDelete(index, row) {
         console.log(index, row);
