@@ -52,12 +52,19 @@
               <div v-if="v1.field != 'select' && v1.field != 'multi_select'">
                 <el-input :type="v1.field == 'number'?'number':'text'" v-model="CIItem[v1.key]" auto-complete="off"></el-input><span v-if="v1.field == 'number'"> {{v1.unit}}</span>
               </div>
-              <div v-else>
-                <select v-model="CIItem[v1.key]" :class="{'form-control':true, 'multi_select':v1.field == 'multi_select'}" :multiple="v1.field == 'multi_select'">
+              <div v-else-if="v1.field == 'select'">
+                <select v-model="CIItem[v1.key]" :class="{'form-control':true}">
                   <option v-for="item in v1._choice" v-bind:value="item">
                     {{ item }}
                   </option>
                 </select>
+              </div>
+              <div v-else>
+                <el-select v-model="CIItem[v1.key]" multiple>
+                  <el-option v-for="item in v1._choice" v-bind:value="item">
+                    {{ item }}
+                  </el-option>
+                </el-select>
               </div>
               类型：{{fields_comment[v1.field]}}, <span v-if="v1.field == 'string' || v1.field == 'number'">最大/最长： {{v1.max}}, 最小: {{v.min}}, </span>
             </el-form-item>
@@ -140,8 +147,6 @@
       }
     },
     beforeMount: function () {
-      console.log(this.id);
-      
       window.vm_n = this
       this.fetch(0, this.pageSize);
       this.get_field_list()
@@ -168,6 +173,19 @@
       get_item_category() {
         this.$http.get("/api/items_categories/" + this.id).then((response) => {
           this.item_category = response.data
+
+          for (var key in this.item_category.structure) {
+            var element = this.item_category.structure[key];
+
+            for (var key1 in element) {
+              if (element[key1].field != undefined && (element[key1].field == "select" || element[key1].field ==
+                  "multi_select")) {
+                this.item_category.structure[key][key1]._choice = this.item_category.structure[key][key1].choice.split(
+                  "|")
+              }
+            }
+          }
+
         }, (response) => {
           this.$message({
             type: 'info',
@@ -178,7 +196,7 @@
       fetch() {
         var id = this.$route.params.id
         this.id = id == undefined ? "" : id
-        
+
         if (this.id) {
           this.$http.get("/api/items_categories/" + this.id + '/items').then((response) => {
             var res = response.data
@@ -195,16 +213,24 @@
         }
       },
       handleEdit(index, row) {
-        row.structure['hidden'] = {}
-        for (var key in row.structure) {
-          row.structure['hidden'][key] = false;
-          if (key != "hidden") {
-            this.cpg_list[key] = ""
+        this.CIItem = deepCopyOfObject(row)
+        this.CIItem._category = this.item_category,
+          this.dialogFormVisible = true
+        for (var key in this.item_category.structure) {
+          var element = this.item_category.structure[key];
+          for (var key1 in element) {
+
+            if (element[key1].field == "multi_select" && typeof (this.CIItem[element[key1].key]) == "string") {
+              this.CIItem[element[key1].key] = [this.CIItem[element[key1].key]]
+            }
+            console.log(this.CIItem[element[key1].key]);
+            console.log(typeof (this.CIItem[element[key1].key]));
+            
+
           }
         }
-        this.CIItem = deepCopyOfObject(row)
-        this.dialogFormVisible = true
-        // console.log(index, row);
+            console.log(this.CIItem);
+        
       },
       createNewCIItem() {
         this.dialogFormVisible = true
@@ -214,21 +240,14 @@
           _category: this.item_category,
           category: this.id,
         }
-        for (var key in this.CIItem._category.structure) {
-          var element = this.CIItem._category.structure[key];
-
+        for (var key in this.item_category.structure) {
+          var element = this.item_category.structure[key];
           for (var key1 in element) {
-            if (element[key1].field != undefined && (element[key1].field == "select" || element[key1].field ==
-                "multi_select")) {
-              this.CIItem._category.structure[key][key1]._choice = this.CIItem._category.structure[key][key1].choice.split(
-                "|")
-              if (element[key1].field == "multi_select") {
-                element[key1].default = [this.CIItem._category.structure[key][key1]._choice[0]] //multi_select 默认是array
-              }
+            if (element[key1].field == "multi_select") {
+              element[key1].default = [this.item_category.structure[key][key1]._choice[0]] //multi_select 默认是array
             }
-            var element1 = element[key1];
-            if (element1.key != undefined) {
-              this.CIItem[element1.key] = element1.default
+            if (element[key1].key != undefined) {
+              this.CIItem[element[key1].key] = element[key1].default
             }
           }
         }
@@ -249,7 +268,6 @@
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
-
         } else {
           this.$http.put("/api/items/" + this.CIItem.id + "/", ci_item).then((response) => {
             window.vm.get_model_menus()
