@@ -329,9 +329,5 @@
     width: 20%;
   }
   
-  .del_btn {
-    border-radius: 20px;
-    width: 25px;
-    height: 25px;
-  }
+ 
 </style>

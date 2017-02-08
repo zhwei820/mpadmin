@@ -21,7 +21,7 @@
           <el-button size="small" @click="handleEdit($index, row)">
             编辑
           </el-button>
-          <el-button size="small" type="danger" @click="handleDelete($index, row)">
+          <el-button size="mini" type="danger" @click="handleDelete($index, row)">
             删除
           </el-button>
         </div>
@@ -223,14 +223,8 @@
             if (element[key1].field == "multi_select" && typeof (this.CIItem[element[key1].key]) == "string") {
               this.CIItem[element[key1].key] = [this.CIItem[element[key1].key]]
             }
-            console.log(this.CIItem[element[key1].key]);
-            console.log(typeof (this.CIItem[element[key1].key]));
-            
-
           }
         }
-            console.log(this.CIItem);
-        
       },
       createNewCIItem() {
         this.dialogFormVisible = true
@@ -253,7 +247,27 @@
         }
       },
       handleDelete(index, row) {
-        console.log(index, row);
+        this.$confirm('此操作将永久删除' + row.name + ', 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http.delete("/api/items/" + row.id + "/").then((response) => {
+            this.dialogFormVisible = false
+            this.fetch()
+          }, (response) => {
+            parent.vm.show_error_message(response.data.error)
+          });
+          this.$message({
+            type: 'success',
+            message: '删除成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });
+        });
       },
       submit() {
         var ci_item = deepCopyOfObject(this.CIItem)
@@ -261,8 +275,6 @@
         if (!this.CIItem.id) {
           delete ci_item.id
           this.$http.post("/api/items/", ci_item).then((response) => {
-            window.vm.get_model_menus()
-
             this.dialogFormVisible = false
             this.fetch()
           }, (response) => {
@@ -270,7 +282,6 @@
           });
         } else {
           this.$http.put("/api/items/" + this.CIItem.id + "/", ci_item).then((response) => {
-            window.vm.get_model_menus()
             this.dialogFormVisible = false
             this.fetch()
           }, (response) => {
@@ -347,13 +358,7 @@
     display: inline-block;
     width: 20%;
   }
-  
-  .del_btn {
-    border-radius: 20px;
-    width: 25px;
-    height: 25px;
-  }
-  
+    
   .multi_select {
     height: 200px
   }
