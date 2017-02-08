@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="id">
     <el-button type="primary" size="large" @click="createNewCIItem()">新建</el-button>
     <el-date-picker v-model="param.start_time" type="date" placeholder="开始日期" :picker-options="pickerOptions0">
     </el-date-picker>
@@ -53,12 +53,13 @@
                 <el-input :type="v1.field == 'number'?'number':'text'" v-model="CIItem[v1.key]" auto-complete="off"></el-input><span v-if="v1.field == 'number'"> {{v1.unit}}</span>
               </div>
               <div v-else>
-                <select v-model="CIItem[v1.key]" class="form-control">
+                <select v-model="CIItem[v1.key]" :class="{'form-control':true, 'multi_select':v1.field == 'multi_select'}" :multiple="v1.field == 'multi_select'">
                   <option v-for="item in v1._choice" v-bind:value="item">
                     {{ item }}
                   </option>
                 </select>
               </div>
+              类型：{{fields_comment[v1.field]}}, <span v-if="v1.field == 'string' || v1.field == 'number'">最大/最长： {{v1.max}}, 最小: {{v.min}}, </span>
             </el-form-item>
           </div>
         </div>
@@ -129,45 +130,32 @@
         // tmp_key: "",
         // tmp_name: "",
         // tmp_group: "default",
-        field_list: {},
-        fields_comment: {},
         field: "",
         cpg_list: {
           default: ""
         },
-        item_category_list: {},
-        group_name_list: {}
+        item_category: {},
+        field_list: {},
+        fields_comment: {},
       }
     },
-
     beforeMount: function () {
-      this.get_item_category_list()
+      console.log(this.id);
+      
+      window.vm_n = this
+      this.fetch(0, this.pageSize);
       this.get_field_list()
-
     },
     methods: {
-      get_item_category_list() {
-        var query = ""
-        this.$http.get("/api/items_categories/" + query).then((response) => {
-          this.item_category_list = {}
-          for (var key in response.data) {
-            this.item_category_list[response.data[key].name] = response.data[key];
-          }
-          this.group_name_list = {}
-          for (var key in response.data) {
-            this.group_name_list[response.data[key].id] = response.data[key].name;
-          }
-          this.fetch(0, this.pageSize);
-        }, (response) => {
-          this.$message({
-            type: 'info',
-            message: '请求失败, 请重试'
-          });
-        }).then();
-      },
       get_field_list() {
         var query = ""
         this.$http.get("/api/field_list" + query).then((response) => {
+          if (response.status !== 200) {
+            this.$message({
+              type: 'info',
+              message: '请求失败, 请重试'
+            });
+          }
           this.field_list = response.data['field_list']
           this.fields_comment = response.data['fields_comment']
         }, (response) => {
@@ -177,16 +165,10 @@
           });
         });
       },
-      fetch() {
-        var query = json2url(this.param)
-        this.$http.get("/api/items/?" + query).then((response) => {
-          var res = response.data
-          for (var key in res) {
-            res[key].group_name = this.group_name_list[res[key].group];
-          }
-          this.tableData1 = res
-          this.tableData = this.tableData1.slice(0, this.pageSize)
-          this.totalNum = this.tableData1.length
+      get_item_category() {
+        this.$http.get("/api/items_categories/" + this.id).then((response) => {
+          this.item_category = response.data
+          console.log(this.item_category);
         }, (response) => {
           this.$message({
             type: 'info',
@@ -194,30 +176,26 @@
           });
         });
       },
-      // addStructure() {
-      //   var tmp = {}
-      //   for (var k in this.field_list[this.field].properties) {
-      //     tmp[k] = "";
-      //   }
-      //   tmp['field'] = this.field;
-      //   tmp['name'] = this.tmp_name;
-      //   tmp['key'] = this.tmp_key;
-
-      //   this.tmp_name = ""
-      //   this.tmp_key = ""
-
-      //   if (this.CIItem.structure[this.tmp_group] == undefined) {
-      //     this.CIItem.structure[this.tmp_group] = []
-      //   }
-
-      //   this.CIItem.structure[this.tmp_group].push(tmp)
-      //   Vue.set(this.CIItem.structure['hidden'], this.tmp_group, false)
-      //   Vue.set(this.cpg_list, this.tmp_group, '')
-      //   this.tmp_group = "default"
-      // },
-      // delStructure(g, i) {
-      //   this.CIItem.structure[g].splice(i, 1)
-      // },
+      fetch() {
+        var id = this.$route.params.id
+        this.id = id == undefined ? "" : id
+        console.log(this.id);
+        
+        if (this.id) {
+          this.$http.get("/api/items_categories/" + this.id + '/items').then((response) => {
+            var res = response.data
+            this.tableData1 = res
+            this.tableData = this.tableData1.slice(0, this.pageSize)
+            this.totalNum = this.tableData1.length
+            this.get_item_category()
+          }, (response) => {
+            this.$message({
+              type: 'info',
+              message: '请求失败, 请重试'
+            });
+          });
+        }
+      },
       handleEdit(index, row) {
         row.structure['hidden'] = {}
         for (var key in row.structure) {
@@ -235,8 +213,8 @@
         this.CIItem = {
           "name": "234",
           "id": "",
-          _category: this.item_category_list['mysql'],
-          category: this.item_category_list['mysql'].id,
+          _category: this.item_category,
+          category: this.id,
         }
         for (var key in this.CIItem._category.structure) {
           var element = this.CIItem._category.structure[key];
@@ -246,7 +224,9 @@
                 "multi_select")) {
               this.CIItem._category.structure[key][key1]._choice = this.CIItem._category.structure[key][key1].choice.split(
                 "|")
-                element[key1].default = this.CIItem._category.structure[key][key1]._choice[0]
+              if (element[key1].field == "multi_select") {
+                element[key1].default = [this.CIItem._category.structure[key][key1]._choice[0]] //multi_select 默认是array
+              }
             }
             var element1 = element[key1];
             if (element1.key != undefined) {
@@ -265,12 +245,9 @@
           delete ci_item.id
           this.$http.post("/api/items/", ci_item).then((response) => {
             window.vm.get_model_menus()
-            this.$router.push({
-              path: "/item_edit/"
-            })
+
             this.dialogFormVisible = false
             this.fetch()
-
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
@@ -278,10 +255,6 @@
         } else {
           this.$http.put("/api/items/" + this.CIItem.id + "/", ci_item).then((response) => {
             window.vm.get_model_menus()
-            this.$router.push({
-              path: "/item_edit/"
-            })
-
             this.dialogFormVisible = false
             this.fetch()
           }, (response) => {
@@ -363,5 +336,9 @@
     border-radius: 20px;
     width: 25px;
     height: 25px;
+  }
+  
+  .multi_select {
+    height: 200px
   }
 </style>

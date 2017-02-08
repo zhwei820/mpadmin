@@ -21,7 +21,7 @@
       <el-col :span="4">
         <el-menu mode="vertical" default-active="1" class="el-menu-vertical-demo" @select="handleSelect">
           <el-menu-item index="/model/index.html"><i class="fa fa-cogs"></i> 模型</el-menu-item>
-          <el-menu-item index="/model/index.html?"><i class="fa fa-cogs"></i> 模型</el-menu-item>
+          <el-menu-item index="/barn/index.html?"><i class="fa fa-cogs"></i> 仓库</el-menu-item>
           <!--</el-menu-item-group>-->
         </el-menu>
       </el-col>

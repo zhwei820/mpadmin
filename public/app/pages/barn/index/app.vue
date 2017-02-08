@@ -78,7 +78,7 @@
     },
     watch: {
     '$route' (to, from) {
-      if(to.path.split("/")[1] == from.path.split("/")[1] || (from.path == "/" && to.path.split("/")[1] == "layer_edit")){
+      if(to.path.split("/")[1] == from.path.split("/")[1] || (from.path == "/" && to.path.split("/")[1] == "items")){
         window.vm_n.fetch(0,100)
       }
     }},
@@ -151,7 +151,7 @@
                 menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
                 menu_item.text = element2.name
 
-                menu_item.route = { path: '/item_category_edit/' + element2.id}
+                menu_item.route = { path: '/items/' + element2.id}
 
                 menus2.id = element1.id
                 menus2.items.push(menu_item)
@@ -209,23 +209,7 @@
         if (key != "/") {
         }
       },
-      createNewLayer() {
-        this.$router.push({path:"/layer_edit/"})        
-      },
-      createNewGroup() {
-        this.$router.push({path:"/group_edit/"})                
-      },
-      createNewItemCategory() {
-        this.$router.push({path:"/item_category_edit/"})
-      },
-      editLayer(id, e){
-        this.$router.push({path:"/layer_edit/" + id})
-        e.stopPropagation()
-      },
-      editGroup(id, e){
-        this.$router.push({path:"/group_edit/" + id})
-        e.stopPropagation()
-      },
+     
       show_error_message(msg){
           parent.vm.show_error_message(msg)
       },

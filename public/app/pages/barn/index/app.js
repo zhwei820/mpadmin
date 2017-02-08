@@ -6,7 +6,7 @@ import {
 import 'element-ui/lib/theme-default/index.css'
 import App from './app.vue'
 
-import ItemEdit from '../item_edit.vue'
+import Items from '../items.vue'
 
 
 import VueRouter from 'vue-router'
@@ -16,14 +16,14 @@ const router = new VueRouter({
   base: __dirname,
   routes: [{
       path: '/',
-      component: ItemEdit
+      component: Items
     },
     {
-      path: '/item_edit',
-      component: ItemEdit,
+      path: '/items',
+      component: Items,
       children: [{
         path: ':id',
-        component: ItemEdit
+        component: Items
       }]
     },
     
