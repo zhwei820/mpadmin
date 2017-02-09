@@ -1,20 +1,11 @@
 <template>
   <div v-if="id">
     <el-button type="primary" size="large" @click="createNewCIItem()">新建</el-button>
-    <el-date-picker v-model="param.start_time" type="date" placeholder="开始日期" :picker-options="pickerOptions0">
-    </el-date-picker>
-    <el-date-picker v-model="param.end_time" type="date" placeholder="结束日期" :picker-options="pickerOptions0">
-    </el-date-picker>
-    <el-select v-model="param.value" placeholder="请选择">
-      <!--<el-option v-for="item in options" :label="item.label" :value="item.value">
-      </el-option>-->
-    </el-select>
-    <el-input placeholder="姓名" v-model="param.name">
-    </el-input>
-    <el-button type="default" class="fa fa-refresh" @click="refresh_data"></el-button>
+    
     <el-button type="primary" class="r fa fa-share-square-o" @click="saveExcel"></el-button>
     <el-input placeholder="搜索" class="right_search" icon="search" v-model="input2" @click="handleIconClick" @keyup.enter.native="handleIconClick">
     </el-input>
+    <el-button type="default" class="r fa fa-refresh" @click="refresh_data"></el-button>
     <el-table :data="tableData" border style="width: 100%" height="920">
       <el-table-column fixed :context="_self" inline-template label="操作" width="150">
         <div>
@@ -245,6 +236,7 @@
             this.tableData1 = res
             this.tableData = this.tableData1.slice(0, this.pageSize)
             this.totalNum = this.tableData1.length
+            this.handleIconClick()
             this.get_item_category()
           }, (response) => {
             this.$message({
@@ -385,7 +377,6 @@
       },
       refresh_data() {
         this.fetch(0, this.pageSize)
-
       },
       fold_cpg(e) {
         if (this.CIItem._category.structure['hidden'][e]) {
