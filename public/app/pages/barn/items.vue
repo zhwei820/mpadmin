@@ -279,7 +279,7 @@
       createNewCIItem() {
         this.dialogFormVisible = true
         var _CIItem = {
-          "name": "234",
+          "name": "",
           "id": "",
           _category: this.item_category,
           category: this.id,
