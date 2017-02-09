@@ -128,7 +128,7 @@ from django.utils.deprecation import MiddlewareMixin
 
 from api.models import UserActionLog
 import json, datetime
-
+from django.utils import timezone
 class UserActionLoggingMiddleware(MiddlewareMixin):
     """
     This middleware log user every action  except GET
@@ -152,7 +152,7 @@ class UserActionLoggingMiddleware(MiddlewareMixin):
             user_action_log.user_id = request.user.id
             user_action_log.user_name = request.user.username
             user_action_log.uri = request.path
-            user_action_log.ctime = datetime.datetime.now()
+            user_action_log.ctime = timezone.now()
             user_action_log.save()
 
         return None

@@ -594,7 +594,7 @@ def validate_item_structure(data):
     if json_shema_res[0] < 0:
         return -1, json_shema_res[1]
     try:
-        print(json_shema_res)
+        # print(json_shema_res)
         validate(data, json_shema_res[1])
     except Exception as e:
         print(e)

@@ -25,6 +25,7 @@ from django.conf import settings
 from django.views.decorators.csrf import csrf_exempt
 
 from util.fields_validation import _valid_fields, _fields_comment
+from util.util import *
 
 logger = logging.getLogger('default')
 
@@ -48,9 +49,3 @@ def upload_file(request):
     else:
         return JsonResponse({"error":1}, status=status.HTTP_400_BAD_REQUEST)
 
-def handle_uploaded_file(f):
-    img_url = 'media/image/' + f._name
-    with open(img_url, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-    return ('/' + img_url, f._name)
