@@ -1,12 +1,12 @@
 <template>
   <div class="" class="height_100">
     <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-      <el-menu-item index="/model/index.html?1">CMDB管理</el-menu-item>
+      <el-menu-item index="/model?1">CMDB管理</el-menu-item>
       <el-submenu index="2">
         <template slot="title">我的工作台</template>
-        <el-menu-item index="/model/index.html?11">选项1</el-menu-item>
-        <el-menu-item index="/model/index.html?12">选项2</el-menu-item>
-        <el-menu-item index="/model/index.html?13">选项3</el-menu-item>
+        <el-menu-item index="/model?11">选项1</el-menu-item>
+        <el-menu-item index="/model?12">选项2</el-menu-item>
+        <el-menu-item index="/model?13">选项3</el-menu-item>
       </el-submenu>
       <el-submenu index="x" class="nav-cap">
         <template slot="title">选项</template>
@@ -19,9 +19,9 @@
     </el-menu>
     <el-row class="tac height_100" :gutter="20">
       <el-col :span="4">
-        <el-menu mode="vertical" default-active="/model/index.html" class="el-menu-vertical-demo" @select="handleSelect">
-          <el-menu-item index="/model/index.html"><i class="fa fa-cogs"></i> 模型</el-menu-item>
-          <el-menu-item index="/barn/index.html?"><i class="fa fa-cogs"></i> 仓库</el-menu-item>
+        <el-menu mode="vertical" default-active="/model" class="el-menu-vertical-demo" @select="handleSelect" router>
+          <el-menu-item index="/model"><i class="fa fa-cogs"></i> 模型</el-menu-item>
+          <el-menu-item index="/barn"><i class="fa fa-cogs"></i> 仓库</el-menu-item>
           <!--</el-menu-item-group>-->
         </el-menu>
       </el-col>
@@ -31,7 +31,7 @@
           <el-breadcrumb-item>{{breadcrumb1}}</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>
         </el-breadcrumb>
-        <!--<iframe id="checkListFrame1" class="height_100" src="/model/index.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>-->
+        <!--<iframe id="checkListFrame1" class="height_100" src="/model" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>-->
         <router-view></router-view>
       </el-col>
     </el-row>
@@ -77,7 +77,6 @@
           location.href = key;
           return;
         }
-        document.getElementById("checkListFrame1").src = key
         // this.breadcrumb1 = this.menus1[keyPath[0]]['text']
         // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
       },

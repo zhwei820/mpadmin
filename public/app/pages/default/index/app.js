@@ -22,12 +22,11 @@ const router = new VueRouter({
     {
       path: '/barn',
       component: Barn,
-      children: [{
-        path: ':id',
-        component: Barn
-      }]
     },
-    
+    {
+      path: '/model',
+      component: Model,
+    },
   ]
 })
 
