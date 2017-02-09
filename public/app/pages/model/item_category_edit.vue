@@ -27,7 +27,7 @@
                       <div class="prop_label">{{ fields_comment[i] }}</div>
                       <el-switch v-if="i=='required'" on-text="" off-text="" v-model="CICategory.structure[index_cpg][index][i]"></el-switch>
                       <el-input v-else-if="i=='min' || i=='max' " type="number" v-model="CICategory.structure[index_cpg][index][i]" auto-complete="off"></el-input>
-                      <el-select v-if="i=='reference'" v-model="CICategory.structure[index_cpg][index][i]" placeholder="请选择模型引用">
+                      <el-select v-else-if="i=='reference'" v-model="CICategory.structure[index_cpg][index][i]" placeholder="请选择模型引用">
                         <el-option v-bind:label="item" v-bind:value="index" v-for="(item, index) in item_category_name_list">
                         </el-option>
                       </el-select>
