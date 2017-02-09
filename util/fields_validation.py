@@ -86,6 +86,7 @@ _fields_comment = {
     'text': "多行文本",
     'select': "单选",
     'multi_select': "多选",
+    'image': "图片",
     'number': "数值",
     'datetime': "日期时间",
     'required': "是否必填",
@@ -97,6 +98,8 @@ _fields_comment = {
     'choice': "选项(以|分割)",
     'field': "字段类型",
     'key': "关键词",
+    'ref': "模型引用",
+    'reference': "模型引用",
 
 
     # 'reference': {
@@ -344,6 +347,77 @@ _valid_fields = {
             # }
         }
     },
+    "image": {
+        "required": True,
+        "type": "object",
+        "id": "image",
+        "properties": {
+            "field": {
+                "required": True,
+                "type": "string",
+                "id": "field"
+            },
+            "required": {
+                "required": True,
+                "type": "boolean",
+                "id": "required"
+            },
+            "name": {
+                "required": True,
+                "type": "string",
+                "id": "name"
+            },
+            "key": {
+                "required": True,
+                "type": "string",
+                "id": "key"
+            },
+            # "choice": {
+            #     "required": True,
+            #     "type": "string",
+            #     "id": "choice",
+            #     "pattern":r'^(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(?:\s)?([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})(?::)?([0-5]{1}\d{1})$'
+            # }
+        }
+    },
+    "ref": {
+            "required": True,
+            "type": "object",
+            "id": "image",
+            "properties": {
+                "field": {
+                    "required": True,
+                    "type": "string",
+                    "id": "field"
+                },
+                "required": {
+                    "required": True,
+                    "type": "boolean",
+                    "id": "required"
+                },
+                "name": {
+                    "required": True,
+                    "type": "string",
+                    "id": "name"
+                },
+                "key": {
+                    "required": True,
+                    "type": "string",
+                    "id": "key"
+                },
+                "reference": {
+                    "required": True,
+                    "type": "string",
+                    "id": "key"
+                },
+                # "choice": {
+                #     "required": True,
+                #     "type": "string",
+                #     "id": "choice",
+                #     "pattern":r'^(\d{2}|\d{4})(?:\-)?([0]{1}\d{1}|[1]{1}[0-2]{1})(?:\-)?([0-2]{1}\d{1}|[3]{1}[0-1]{1})(?:\s)?([0-1]{1}\d{1}|[2]{1}[0-3]{1})(?::)?([0-5]{1}\d{1})(?::)?([0-5]{1}\d{1})$'
+                # }
+            }
+        },
 }
 
 
@@ -379,6 +453,16 @@ _valid_item_fields = {
         "id": "machine_type",
     },
     "datetime": {
+        "required": True,
+        "type": "string",
+        "id": "machine_type",
+    },
+    "image": {
+        "required": True,
+        "type": "string",
+        "id": "machine_type",
+    },
+    "ref": {
         "required": True,
         "type": "string",
         "id": "machine_type",

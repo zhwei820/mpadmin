@@ -37,7 +37,20 @@ def field_list(request):
 
 @login_required
 def current_user(request):
-    print(request.user)
     if request.method == 'GET':
         return JsonResponse({"username":request.user.username, "realname":request.user.first_name + request.user.last_name}, safe = False)
 
+@csrf_exempt
+def upload_file(request):
+    if request.method == 'POST':
+        res = handle_uploaded_file(request.FILES['file'])
+        return JsonResponse({"url":res[0], "name":res[1]})
+    else:
+        return JsonResponse({"error":1}, status=status.HTTP_400_BAD_REQUEST)
+
+def handle_uploaded_file(f):
+    img_url = 'media/image/' + f._name
+    with open(img_url, 'wb+') as destination:
+        for chunk in f.chunks():
+            destination.write(chunk)
+    return ('/' + img_url, f._name)

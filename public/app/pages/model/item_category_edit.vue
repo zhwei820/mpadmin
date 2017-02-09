@@ -27,6 +27,11 @@
                       <div class="prop_label">{{ fields_comment[i] }}</div>
                       <el-switch v-if="i=='required'" on-text="" off-text="" v-model="CICategory.structure[index_cpg][index][i]"></el-switch>
                       <el-input v-else-if="i=='min' || i=='max' " type="number" v-model="CICategory.structure[index_cpg][index][i]" auto-complete="off"></el-input>
+                      <el-select v-if="i=='reference'" v-model="CICategory.structure[index_cpg][index][i]" placeholder="请选择模型引用">
+                        <el-option v-bind:label="item" v-bind:value="index" v-for="(item, index) in item_category_name_list">
+                        </el-option>
+                      </el-select>
+
                       <el-input v-else v-model="CICategory.structure[index_cpg][index][i]" auto-complete="off"></el-input>
                     </div>
                     <div v-if="i == 'field'">
@@ -131,7 +136,9 @@
           default: ""
         },
         group_list: {},
-        group_name_list: {}
+        group_name_list: {},
+        item_category_list:{},
+        item_category_name_list:{},        
       }
     },
 
@@ -141,8 +148,34 @@
       
       this.get_group_list()
       this.get_field_list()
+      this.get_item_category_list()
     },
     methods: {
+      get_item_category_list() {
+        var query = ""
+        this.$http.get("/api/items_categories/" + query).then((response) => {
+          if (response.status !== 200) {
+            this.$message({
+              type: 'info',
+              message: '请求失败, 请重试'
+            });
+          }
+          this.item_category_list = {}
+          for (var key in response.data) {
+            this.item_category_list[response.data[key].name] = response.data[key].id;
+          }
+          this.item_category_name_list = {}
+          for (var key in response.data) {
+            this.item_category_name_list[response.data[key].id] = response.data[key].name;
+          }
+
+        }, (response) => {
+          this.$message({
+            type: 'info',
+            message: '请求失败, 请重试'
+          });
+        }).then();
+      },
       get_group_list() {
         var query = ""
         this.$http.get("/api/groups/" + query).then((response) => {

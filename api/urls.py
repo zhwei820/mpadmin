@@ -32,6 +32,7 @@ urlpatterns += [
 urlpatterns += [
     url(r'^field_list/', field_list),
     url(r'^current_user/', current_user),
+    url(r'^upload_file/', upload_file),
     
 ]
 

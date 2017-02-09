@@ -139,7 +139,7 @@ class UserActionLoggingMiddleware(MiddlewareMixin):
         super(UserActionLoggingMiddleware, self).__init__(get_response=get_response)
 
     def process_request(self, request):
-        if request.method != "GET" and request.path != "/api/api-token-auth/":
+        if request.method != "GET" and request.path != "/api/api-token-auth/" and len(request.FILES) == 0:
             user = verify(request.META.get("HTTP_AUTHORIZATION"))
             if user:
                 request.user = user

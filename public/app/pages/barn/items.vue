@@ -49,16 +49,17 @@
           {{index_cpg}} 组
           <div v-if="! CIItem._category.structure['hidden'][index_cpg]">
             <el-form-item :label="v1.name" :label-width="formLabelWidth" v-for="v1 in v">
-              <div v-if="v1.field != 'select' && v1.field != 'multi_select' && v1.field != 'datetime'">
+              <div v-if="v1.field != 'select' && v1.field != 'multi_select' && v1.field != 'datetime' && v1.field != 'image' && v1.field != 'ref'">
                 <el-input :type="v1.field == 'number'?'number':'text'" v-model="CIItem[v1.key]" auto-complete="off"></el-input><span v-if="v1.field == 'number'"> {{v1.unit}}</span>
               </div>
-              <!--<div v-if="v1.field == 'select'">
-                <select v-model="CIItem[v1.key]" :class="{'form-control':true}">
-                  <option v-for="item in v1._choice" v-bind:value="item">
-                    {{ item }}
-                  </option>
-                </select>
-              </div>-->
+              <div v-if="v1.field == 'ref'">
+                <el-select v-model="CIItem[v1.key]">
+                  <el-option v-for="item in tmp_ref_ci_list" v-bind:label="item.name" v-bind:value="item.id">
+                    {{ item.name }}
+                  </el-option>
+                </el-select> {{tmp_item_category.name}} 引用
+
+              </div>
               <div v-if="v1.field == 'multi_select' || v1.field == 'select'">
                 <el-select v-model="CIItem[v1.key]" :multiple="v1.field == 'multi_select'">
                   <el-option v-for="item in v1._choice" v-bind:value="item">
@@ -69,6 +70,16 @@
               <div v-if="v1.field == 'datetime'">
                 <el-date-picker v-model="CIItem[v1.key]" type="datetime" placeholder="选择日期时间">
                 </el-date-picker>
+              </div>
+              <div v-if="v1.field == 'image'">
+                <el-upload action="/api/upload_file/" type="drag" :thumbnail-mode="true" :before-upload="beforeUpload(v1.key)" :on-success="handleSuccess"
+                  :on-preview="handlePreview" :on-remove="handleRemove" :default-file-list="fileList[v1.key]">
+                  <i class="el-icon-upload"></i>
+                  <div class="el-dragger__text">将文件拖到此处，或<em>点击上传</em></div>
+                  <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+                  </el-upload>
+                  <!--{{CIItem[v1.key]}}-->
+                  <!--<select multiple hidden name="" v-model="CIItem[v1.key]" id="" />-->
               </div>
               类型：{{fields_comment[v1.field]}}, <span v-if="v1.field == 'string' || v1.field == 'number'">最大/最长： {{v1.max}}, 最小: {{v.min}}, </span>
             </el-form-item>
@@ -145,6 +156,9 @@
         item_category: {},
         field_list: {},
         fields_comment: {},
+        im_k: "",
+        fileList: {},
+        tmp_ref_ci_list: [],
       }
     },
     beforeMount: function () {
@@ -153,6 +167,17 @@
       this.get_field_list()
     },
     methods: {
+      get_ref_ci_list(id) {
+        this.$http.get("/api/items_categories/" + id + '/items').then((response) => {
+          this.tmp_ref_ci_list = response.data
+
+        }, (response) => {
+          this.$message({
+            type: 'info',
+            message: '请求失败, 请重试'
+          });
+        });
+      },
       get_field_list() {
         var query = ""
         this.$http.get("/api/field_list" + query).then((response) => {
@@ -164,6 +189,17 @@
           }
           this.field_list = response.data['field_list']
           this.fields_comment = response.data['fields_comment']
+        }, (response) => {
+          this.$message({
+            type: 'info',
+            message: '请求失败, 请重试'
+          });
+        });
+      },
+      get_item_category_by_id(id) {
+        this.$http.get("/api/items_categories/" + id).then((response) => {
+          this.tmp_item_category = response.data
+
         }, (response) => {
           this.$message({
             type: 'info',
@@ -183,6 +219,11 @@
                   "multi_select")) {
                 this.item_category.structure[key][key1]._choice = this.item_category.structure[key][key1].choice.split(
                   "|")
+              }
+              if (element[key1].field == "ref") {
+                console.log(this.item_category.structure[key][key1].reference);
+                this.get_ref_ci_list(this.item_category.structure[key][key1].reference)
+                this.get_item_category_by_id(this.item_category.structure[key][key1].reference)                 
               }
             }
           }
@@ -221,15 +262,24 @@
         for (var key in this.item_category.structure) {
           var element = this.item_category.structure[key];
           for (var key1 in element) {
-            if(_CIItem[element[key1].key] == undefined){
+            if (_CIItem[element[key1].key] == undefined) {
               _CIItem[element[key1].key] = ""
             }
 
-            if (element[key1].field == "multi_select" && typeof (_CIItem[element[key1].key]) == "string") {
+            if ((element[key1].field == "multi_select") && typeof (_CIItem[element[key1].key]) == "string") {
               _CIItem[element[key1].key] = [_CIItem[element[key1].key]]
+            }
+            if (element[key1].field == "image") {
+              if (typeof (_CIItem[element[key1].key]) == "string") {
+                _CIItem[element[key1].key] = []
+              }
+              var fl = deepCopyOfObject(this.fileList)
+              fl[element[key1].key] = _CIItem[element[key1].key]
+              this.fileList = fl
             }
           }
         }
+
         this.CIItem = _CIItem
         console.log(this.CIItem);
 
@@ -248,10 +298,17 @@
             if (element[key1].field == "multi_select") {
               element[key1].default = [this.item_category.structure[key][key1]._choice[0]] //multi_select 默认是array
             }
+            if (element[key1].field == "image") {
+              element[key1].default = [] //multi_select 默认是array
+            }
             if (element[key1].key != undefined) {
               _CIItem[element[key1].key] = element[key1].default || ''
             }
           }
+        }
+        var k = element[key1].key
+        this.fileList = {
+          k: []
         }
         this.CIItem = _CIItem
       },
@@ -280,6 +337,7 @@
       },
       submit() {
         var ci_item = deepCopyOfObject(this.CIItem)
+
         delete ci_item._category
         if (!this.CIItem.id) {
           delete ci_item.id
@@ -335,6 +393,18 @@
         } else {
           this.CIItem._category.structure['hidden'][e] = true
         }
+      },
+      handleRemove(file, fl) {
+        console.log(file, fl);
+      },
+      handlePreview(file) {
+        console.log(file);
+      },
+      handleSuccess(data) {
+        this.CIItem[this.im_k].push(data)
+      },
+      beforeUpload(k) {
+        this.im_k = k
       }
     }
   }
