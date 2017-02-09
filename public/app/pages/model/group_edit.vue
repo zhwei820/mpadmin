@@ -83,7 +83,7 @@
         var id = this.$route.params.id
         this.id = id == undefined ? 0 : id
         if (id) {
-          this.$http.get("/api/groups/" + id + "/").then((response) => {
+          this.$http.get("/api/groups/" + id + "/?" + Date.now()).then((response) => {
             this.form = response.data
 
           }, (response) => {

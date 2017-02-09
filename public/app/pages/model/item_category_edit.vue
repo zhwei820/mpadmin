@@ -231,7 +231,7 @@
         this.id = id == undefined ? 0 : id
 
         if (id) {
-          this.$http.get("/api/items_categories/" + id + "/").then((response) => {
+          this.$http.get("/api/items_categories/" + id + "/?" + Date.now()).then((response) => {
             if (response.status !== 200) {
               this.$message({
                 type: 'info',

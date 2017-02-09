@@ -54,7 +54,7 @@
         this.id = id == undefined ? 0 : id
 
         if (id) {
-          this.$http.get("/api/layers/" + id + "/").then((response) => {
+          this.$http.get("/api/layers/" + id + "/?" + Date.now()).then((response) => {
             this.form = response.data
 
           }, (response) => {
