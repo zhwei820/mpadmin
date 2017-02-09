@@ -31,7 +31,6 @@
                         <el-option v-bind:label="item" v-bind:value="index" v-for="(item, index) in item_category_name_list">
                         </el-option>
                       </el-select>
-
                       <el-input v-else v-model="CICategory.structure[index_cpg][index][i]" auto-complete="off"></el-input>
                     </div>
                     <div v-if="i == 'field'">
@@ -137,15 +136,15 @@
         },
         group_list: {},
         group_name_list: {},
-        item_category_list:{},
-        item_category_name_list:{},        
+        item_category_list: {},
+        item_category_name_list: {},
       }
     },
 
     beforeMount: function () {
       window.vm_n = this;
       this._CICategory = deepCopyOfObject(this.CICategory)
-      
+
       this.get_group_list()
       this.get_field_list()
       this.get_item_category_list()
@@ -286,12 +285,8 @@
         if (!this.CICategory.id) {
           this.$http.post("/api/items_categories/", this.CICategory).then((response) => {
             window.vm.get_model_menus()
-            this.$router.push({
-              path: "/item_category_edit/" + response.data.id
-            })
-            // window.vm.get_model_menus()            
             // this.$router.push({
-            //   path: "/layer_edit/" + id
+            //   path: "/item_category_edit/" + response.data.id
             // })
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
@@ -300,16 +295,13 @@
         } else {
           this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {
             window.vm.get_model_menus()
-            this.$router.push({
-              path: "/item_category_edit/" + response.data.id
-            })
+            // this.$router.push({
+            //   path: "/item_category_edit/" + response.data.id
+            // })
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
         }
-      },
-      refresh_data() {
-        this.fetch(0, this.pageSize)
       },
       fold_cpg(e) {
         if (this.CICategory.structure['hidden'][e]) {
@@ -361,6 +353,4 @@
     display: inline-block;
     width: 20%;
   }
-  
- 
 </style>

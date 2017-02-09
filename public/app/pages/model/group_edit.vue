@@ -101,9 +101,9 @@
         if (!this.form.id) {
           this.$http.post("/api/groups/", this.form).then((response) => {
             window.vm.get_model_menus()
-            this.$router.push({
-              path: "/group_edit/" + response.data.id
-            })
+            // this.$router.push({
+            //   path: "/group_edit/" + response.data.id
+            // })
 
           }, (
             response) => {
@@ -116,9 +116,9 @@
         } else {
           this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {
             window.vm.get_model_menus()
-            this.$router.push({
-              path: "/group_edit/" + response.data.id
-            })
+            // this.$router.push({
+            //   path: "/group_edit/" + response.data.id
+            // })
           }, (
             response) => {
             this.$message({
@@ -128,8 +128,6 @@
           });
 
         }
-        this.dialogFormVisible = false
-        this.fetch(0, 100)
       },
       deleteGroup() {
         if (this.form.id) {

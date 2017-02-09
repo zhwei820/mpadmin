@@ -104,7 +104,9 @@
     },
     watch: {
     '$route' (to, from) {
-      if(to.path.split("/")[1] == from.path.split("/")[1] || (from.path == "/" && to.path.split("/")[1] == "layer_edit")){
+      if(to.path != from.path && (to.path.split("/")[1] == from.path.split("/")[1] || (from.path == "/" && to.path.split("/")[1] == "layer_edit"))) {
+        console.log('11111111111111');
+        
         window.vm_n.fetch(0,100)
       }
     }},
