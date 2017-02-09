@@ -31,15 +31,16 @@
           <el-breadcrumb-item>{{breadcrumb1}}</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>
         </el-breadcrumb>
-        <iframe id="checkListFrame1" class="height_100" src="/model/index.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>
+        <!--<iframe id="checkListFrame1" class="height_100" src="/model/index.html" frameborder="0" width="100%" height="90%" scrolling="auto"></iframe>-->
+        <router-view></router-view>
       </el-col>
     </el-row>
-    <div id="footer">
+    <!--<div id="footer">
       <hr>
       <footer class="text-center">
         <p>© 我的公司</p>
       </footer>
-    </div>
+    </div>-->
   </div>
 </template>
 <script>

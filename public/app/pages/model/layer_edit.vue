@@ -41,20 +41,25 @@
         id: 0,
       }
     },
+    props: ['layerId'],
+    watch: {
+      layerId: function (dest, src) {
+        this.fetch(0, 100)
+      }
+    },
 
     beforeMount: function () {
-      window.vm_n = this;
+      window.vm_m_n = this;
       this._form = deepCopyOfObject(this.form)
       this.fetch(0, 100)
-
     },
     methods: {
       fetch(offset, limit) {
-        var id = this.$route.params.id
-        this.id = id == undefined ? 0 : id
+        // var id = this.$route.params.id
+        // this.id = id == undefined ? 0 : id
 
-        if (id) {
-          this.$http.get("/api/layers/" + id + "/?" + Date.now()).then((response) => {
+        if (this.layerId) {
+          this.$http.get("/api/layers/" + this.layerId + "/?" + Date.now()).then((response) => {
             this.form = response.data
 
           }, (response) => {
@@ -70,7 +75,7 @@
       submit() {
         if (!this.form.id) {
           this.$http.post("/api/layers/", this.form).then((response) => {
-            window.vm.get_model_menus()
+            window.vm_m.get_model_menus()
             // this.$router.push({
             //   path: "/layer_edit/" + response.data.id
             // })
@@ -85,9 +90,9 @@
         } else {
           this.$http.put("/api/layers/" + this.form.id + "/", this.form).then((response) => {
             console.log(this.form);
-            
+
             // debugger
-            window.vm.get_model_menus()
+            window.vm_m.get_model_menus()
             // this.$router.push({
             //   path: "/layer_edit/" + response.data.id
             // })
@@ -104,7 +109,7 @@
       deleteLayer() {
         if (this.form.id) {
           this.$http.delete("/api/layers/" + this.form.id + "/").then((response) => {
-            window.vm.get_model_menus()
+            window.vm_m.get_model_menus()
             this.$router.push({
               path: "/layer_edit"
             })

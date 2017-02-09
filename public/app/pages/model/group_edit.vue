@@ -52,9 +52,14 @@
         id: 0,
       }
     },
-
+    props:['groupId'],
+    watch: {
+      groupId: function (dest, src) {
+        this.fetch(0, 100)
+      }
+    },
     beforeMount: function () {
-      window.vm_n = this;
+      window.vm_m_n = this;
       this._form = deepCopyOfObject(this.form)
       this.get_layer_list()
     },
@@ -80,10 +85,10 @@
       },
       fetch(offset, limit) {
         // var id = paramParse('id')
-        var id = this.$route.params.id
-        this.id = id == undefined ? 0 : id
-        if (id) {
-          this.$http.get("/api/groups/" + id + "/?" + Date.now()).then((response) => {
+        // var id = this.$route.params.id
+        // this.id = id == undefined ? 0 : id
+        if (this.groupId) {
+          this.$http.get("/api/groups/" + this.groupId + "/?" + Date.now()).then((response) => {
             this.form = response.data
 
           }, (response) => {
@@ -100,7 +105,7 @@
       submit() {
         if (!this.form.id) {
           this.$http.post("/api/groups/", this.form).then((response) => {
-            window.vm.get_model_menus()
+            window.vm_m.get_model_menus()
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
             // })
@@ -115,7 +120,7 @@
 
         } else {
           this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {
-            window.vm.get_model_menus()
+            window.vm_m.get_model_menus()
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
             // })
@@ -132,7 +137,6 @@
       deleteGroup() {
         if (this.form.id) {
           this.$http.delete("/api/groups/" + this.form.id + "/").then((response) => {
-            this.$emit('get_model_menus')
             this.$router.push({
               path: "/group_edit/"
             })

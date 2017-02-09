@@ -77,7 +77,7 @@
             <el-col :span="24">
               <el-button size="mini" type="danger" @click="deleteItemCategory()" :class="{'disabled': !this.CICategory.id}">删除</el-button>
             </el-col>
-            <el-button type="primary" @click="submit">确 定</el-button>
+            <el-button type="primary" @click="submit">保存</el-button>
           </el-row>
         </div>
       </el-col>
@@ -140,9 +140,13 @@
         item_category_name_list: {},
       }
     },
-
+    props:['ItemCategoryId'],
+    watch: {
+      ItemCategoryId: function (dest, src) {
+        this.fetch(0, 100)
+      }
+    },
     beforeMount: function () {
-      window.vm_n = this;
       this._CICategory = deepCopyOfObject(this.CICategory)
 
       this.get_group_list()
@@ -223,14 +227,13 @@
       fetch(offset, limit) {
         // console.log(this.param);
         // var query = json2url(this.param)
-        // this.$http.get("/api/items_categories/?" + query).then((response) => {
 
         // var id = paramParse('id')
-        var id = this.$route.params.id
-        this.id = id == undefined ? 0 : id
+        // var id = this.$route.params.id
+        // this.id = id == undefined ? 0 : id
 
-        if (id) {
-          this.$http.get("/api/items_categories/" + id + "/?" + Date.now()).then((response) => {
+        if (this.ItemCategoryId) {
+          this.$http.get("/api/items_categories/" + this.ItemCategoryId + "/?" + Date.now()).then((response) => {
             if (response.status !== 200) {
               this.$message({
                 type: 'info',
@@ -272,7 +275,12 @@
         if (this.CICategory.structure[this.tmp_group] == undefined) {
           this.CICategory.structure[this.tmp_group] = []
         }
-
+        if (tmp.min != undefined) {
+          tmp.min = 1
+        }
+        if (tmp.min != undefined) {
+          tmp.max = 200
+        }
         this.CICategory.structure[this.tmp_group].push(tmp)
         Vue.set(this.CICategory.structure['hidden'], this.tmp_group, false)
         Vue.set(this.cpg_list, this.tmp_group, '')
@@ -284,7 +292,7 @@
       submit() {
         if (!this.CICategory.id) {
           this.$http.post("/api/items_categories/", this.CICategory).then((response) => {
-            window.vm.get_model_menus()
+            window.vm_m.get_model_menus()
             // this.$router.push({
             //   path: "/item_category_edit/" + response.data.id
             // })
@@ -294,7 +302,7 @@
 
         } else {
           this.$http.put("/api/items_categories/" + this.CICategory.id + "/", this.CICategory).then((response) => {
-            window.vm.get_model_menus()
+            window.vm_m.get_model_menus()
             // this.$router.push({
             //   path: "/item_category_edit/" + response.data.id
             // })
@@ -313,7 +321,7 @@
       deleteItemCategory() {
         if (this.CICategory.id) {
           this.$http.delete("/api/items_categories/" + this.CICategory.id + "/").then((response) => {
-            window.vm.get_model_menus()
+            window.vm_m.get_model_menus()
             this.$router.push({
               path: "/item_category_edit/"
             })

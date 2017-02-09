@@ -5,7 +5,7 @@
     </el-menu>-->
     <el-row class="tac height_100">
       <el-col :span="4">
-        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" router>
+        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen">
           <div>
             <el-button size="large" type="primary" class="new_btn" @click="createNewLayer()">
               <i class="fa fa-plus"></i> 新增CI模型层
@@ -50,7 +50,11 @@
           <el-breadcrumb-item>{{breadcrumb1}}</el-breadcrumb-item>
           <el-breadcrumb-item>{{breadcrumb2}}</el-breadcrumb-item>-->
         </el-breadcrumb>
-        <router-view></router-view>
+        <!--<router-view></router-view>-->
+        <layeredit v-if="path == '/' || path == '/layer_edit' " :layer-id='id'> </layeredit>
+        <groupedit v-if="path == '/group_edit' " :group-id='id'> </groupedit>
+        <itemcategoryedit v-if="path == '/item_category_edit' " :item-category-id='id'> </itemcategoryedit>
+
       </el-col>
     </el-row>
 
@@ -60,59 +64,29 @@
   import {
     addEvent
   } from "../../../assets/js/util.js"
-
+import GroupEdit from "../group_edit.vue"
+import ItemCategoryEdit from "../item_category_edit.vue"
+import LayerEdit from "../layer_edit.vue"
   export default {
     data() {
       return {
         breadcrumb1: "dashboard",
         breadcrumb2: "",
         menus: [],
-
-        // menus: [{
-        //   uri: "/",
-        //   text: "层",
-        //   menus: [{
-        //     uri: "/model/layer.html?123",
-        //     text: "组",
-        //     items: [{
-        //       text: "模型",
-        //       uri: "/model/layer.html?123",
-        //     }, {
-        //       text: "模型",
-        //       uri: "/model/group.html?1233",
-        //     }, {
-        //       text: "模型",
-        //       uri: "/model/item_category.html?1232",
-        //     }, ]
-        //   }, {
-        //     uri: "/model/group.html?123",
-        //     text: "组",
-        //     items: [{
-        //       text: "模型",
-        //       uri: "/model/layer.html?1213",
-        //     }, {
-        //       text: "模型",
-        //       uri: "/model/group.html?12313",
-        //     }, {
-        //       text: "模型",
-        //       uri: "/model/item_category.html?12132",
-        //     }, ]
-        //   }],
-        // }],
         menus1: {},
+        id:"",
+        path:"/",
       }
     },
-    watch: {
-    '$route' (to, from) {
-      if(to.path != from.path && (to.path.split("/")[1] == from.path.split("/")[1] || (from.path == "/" && to.path.split("/")[1] == "layer_edit"))) {
-        console.log('11111111111111');
-        
-        window.vm_n.fetch(0,100)
-      }
-    }},
+    components:{
+      groupedit:GroupEdit,
+      itemcategoryedit:ItemCategoryEdit,
+      layeredit:LayerEdit,
+    },
+    
     mounted: function () {
       this.get_model_menus()
-      window.vm = this
+      window.vm_m = this
     },
     methods: {
       get_model_menus() {
@@ -158,7 +132,7 @@
           for (var key in layer_name_list) {
             var element = layer_name_list[key];
             var m1 = {
-              uri: "/model/layer_edit.html?id=" + key,
+              uri: key,
               text: element,
               id: key,
               items: []
@@ -169,14 +143,14 @@
               var element1 = group_by_list_of_group[key][key1];
 
               var menus2 = {};
-              menus2.uri = "/model/group_edit.html?id=" + element1.id
+              menus2.uri = element1.id
               menus2.text = element1.name
               menus2.id = element1.id
               menus2.items = []
               for (var key2 in group_by_list_of_item_category[element1.id]) {
                 var element2 = group_by_list_of_item_category[element1.id][key2];
                 var menu_item = {}
-                menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
+                menu_item.uri = element2.id
                 menu_item.text = element2.name
 
                 menu_item.route = { path: '/item_category_edit/' + element2.id}
@@ -228,36 +202,44 @@
               parent.document.location.href = "/default/login.html"
             }, 500);
             return
-          }
-            
+          }            
         });
       },
       handleSelect(key, keyPath) {
-        console.log('ll');
+        this.id = key
+        this.path = "/item_category_edit"        
       },
       handleOpen(key, keyPath) {
         if (key != "/") {
         }
       },
       createNewLayer() {
-        this.$router.push({path:"/layer_edit/"})        
+        this.path = "/layer_edit"        
+        this.id = ""
       },
       createNewGroup() {
-        this.$router.push({path:"/group_edit/"})                
+        this.id = ""
+        this.path = "/group_edit"
       },
       createNewItemCategory() {
-        this.$router.push({path:"/item_category_edit/"})
+        this.id = ""
+        this.path = "/item_category_edit"
       },
       editLayer(id, e){
-        this.$router.push({path:"/layer_edit/" + id})
+        this.id = id
+        this.path = "/layer_edit"
         e.stopPropagation()
       },
       editGroup(id, e){
-        this.$router.push({path:"/group_edit/" + id})
+        this.id = id
+        this.path = "/group_edit"
         e.stopPropagation()
       },
       show_error_message(msg){
-          parent.vm.show_error_message(msg)
+        this.$message({
+          type: 'info',
+          message: msg
+        });
       },
     },
   }

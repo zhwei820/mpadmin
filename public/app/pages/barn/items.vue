@@ -1,7 +1,6 @@
 <template>
-  <div v-if="id">
+  <div v-if="categoryId">
     <el-button type="primary" size="large" @click="createNewCIItem()">新建</el-button>
-    
     <el-button type="primary" class="r fa fa-share-square-o" @click="saveExcel"></el-button>
     <el-input placeholder="搜索" class="right_search" icon="search" v-model="input2" @click="handleIconClick" @keyup.enter.native="handleIconClick">
     </el-input>
@@ -28,7 +27,7 @@
         </el-pagination>
     </div>
     <el-dialog title="" v-model="dialogFormVisible">
-      <h2><span v-if="id">编辑</span><span v-else>新建</span> {{CIItem._category.name}} </h2>
+      <h2><span v-if="CIItem.id">编辑</span><span v-else>新建</span> {{CIItem._category.name}} </h2>
       <el-form :model="CIItem" label-position="left">
         <el-form-item label="名称" :label-width="formLabelWidth">
           <el-input v-model="CIItem.name" auto-complete="off"></el-input>
@@ -49,7 +48,6 @@
                     {{ item.name }}
                   </el-option>
                 </el-select> {{tmp_item_category.name}} 引用
-
               </div>
               <div v-if="v1.field == 'multi_select' || v1.field == 'select'">
                 <el-select v-model="CIItem[v1.key]" :multiple="v1.field == 'multi_select'">
@@ -152,6 +150,12 @@
         tmp_ref_ci_list: [],
       }
     },
+    props: ['categoryId'],
+    watch: {
+      categoryId: function (to, from) {
+        this.fetch(0, this.pageSize)
+      }
+    },
     beforeMount: function () {
       window.vm_n = this
       this.fetch(0, this.pageSize);
@@ -199,7 +203,7 @@
         });
       },
       get_item_category() {
-        this.$http.get("/api/items_categories/" + this.id).then((response) => {
+        this.$http.get("/api/items_categories/" + this.categoryId).then((response) => {
           this.item_category = response.data
 
           for (var key in this.item_category.structure) {
@@ -214,7 +218,7 @@
               if (element[key1].field == "ref") {
                 console.log(this.item_category.structure[key][key1].reference);
                 this.get_ref_ci_list(this.item_category.structure[key][key1].reference)
-                this.get_item_category_by_id(this.item_category.structure[key][key1].reference)                 
+                this.get_item_category_by_id(this.item_category.structure[key][key1].reference)
               }
             }
           }
@@ -227,11 +231,8 @@
         });
       },
       fetch() {
-        var id = this.$route.params.id
-        this.id = id == undefined ? "" : id
-
-        if (this.id) {
-          this.$http.get("/api/items_categories/" + this.id + '/items').then((response) => {
+        if (this.categoryId) {
+          this.$http.get("/api/items_categories/" + this.categoryId + '/items').then((response) => {
             var res = response.data
             this.tableData1 = res
             this.tableData = this.tableData1.slice(0, this.pageSize)
@@ -282,7 +283,7 @@
           "name": "",
           "id": "",
           _category: this.item_category,
-          category: this.id,
+          category: this.categoryId,
         }
         for (var key in this.item_category.structure) {
           var element = this.item_category.structure[key];
@@ -291,17 +292,18 @@
               element[key1].default = [this.item_category.structure[key][key1]._choice[0]] //multi_select 默认是array
             }
             if (element[key1].field == "image") {
-              element[key1].default = [] //multi_select 默认是array
+              element[key1].default = [] //image 默认是array
+              var k = element[key1].key
+              this.fileList = {
+                k: []
+              }
             }
             if (element[key1].key != undefined) {
               _CIItem[element[key1].key] = element[key1].default || ''
             }
           }
         }
-        var k = element[key1].key
-        this.fileList = {
-          k: []
-        }
+
         this.CIItem = _CIItem
       },
       handleDelete(index, row) {

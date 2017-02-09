@@ -5,17 +5,15 @@
     </el-menu>-->
     <el-row class="tac height_100">
       <el-col :span="4">
-        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen" router>
-
+        <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen">
           <el-submenu :index="submenus.uri" v-for="submenus in menus">
             <template slot="title"><i class="fa fa-sitemap"></i> {{submenus.text}}
             </template>
             <!--<el-menu-item :index="submenu.uri" v-for="submenu in submenus.items">{{submenu.text}}</el-menu-item>-->
             <el-submenu :index="submenus1.uri" v-for="submenus1 in submenus.menus">
               <template slot="title"><i class="fa fa-cubes"></i> {{submenus1.text}}
-
               </template>
-              <el-menu-item :index="submenu.uri" :route="submenu.route" v-for="submenu in submenus1.items"><i class="fa fa-cube"> {{submenu.text}}</el-menu-item>
+              <el-menu-item :index="submenu.uri" v-for="submenu in submenus1.items"><i class="fa fa-cube"> {{submenu.text}}</el-menu-item>
             </el-submenu>
           </el-submenu>
         </el-menu>
@@ -24,7 +22,9 @@
       <el-col :span=20 class="height_100">
         <el-breadcrumb separator="/" class="breadcrumb_padding">
         </el-breadcrumb>
-        <router-view></router-view>
+        <!--<router-view></router-view>-->
+        <items :category-id="id"> </items>
+
       </el-col>
     </el-row>
 
@@ -34,6 +34,7 @@
   import {
     addEvent
   } from "../../../assets/js/util.js"
+  import Items from "../items.vue"
 
   export default {
     data() {
@@ -41,6 +42,7 @@
         breadcrumb1: "dashboard",
         breadcrumb2: "",
         menus: [],
+        id:"",
 
         // menus: [{
         //   uri: "/",
@@ -76,13 +78,14 @@
         menus1: {},
       }
     },
-    watch: {
-    '$route' (to, from) {
-      if(to.path.split("/")[1] == from.path.split("/")[1] || (from.path == "/" && to.path.split("/")[1] == "items")){
-        window.vm_n.fetch(0,100)
-      }
-    }},
-    mounted: function () {
+    components:{
+      items:Items,
+    },
+
+    beforeMount: function () {
+      var id = this.$route.params.id
+      this.id = id == undefined ? "" : id
+      // this.id = "58953a76cc8b7914090dea76"
       this.get_model_menus()
       window.vm = this
     },
@@ -148,7 +151,7 @@
               for (var key2 in group_by_list_of_item_category[element1.id]) {
                 var element2 = group_by_list_of_item_category[element1.id][key2];
                 var menu_item = {}
-                menu_item.uri = "/model/item_category_edit.html?id=" + element2.id
+                menu_item.uri = element2.id
                 menu_item.text = element2.name
 
                 menu_item.route = { path: '/items/' + element2.id}
@@ -203,7 +206,8 @@
         });
       },
       handleSelect(key, keyPath) {
-        console.log('ll');
+        this.id = key
+        console.log(this.id)
       },
       handleOpen(key, keyPath) {
         if (key != "/") {
@@ -211,7 +215,11 @@
       },
      
       show_error_message(msg){
-          parent.vm.show_error_message(msg)
+          // parent.vm.show_error_message(msg)
+          this.$message({
+            type: 'info',
+            message: msg
+          });
       },
     },
   }
