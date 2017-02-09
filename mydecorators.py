@@ -131,9 +131,8 @@ import json, datetime
 
 class UserActionLoggingMiddleware(MiddlewareMixin):
     """
-    This middleware compresses content if the browser allows gzip compression.
-    It sets the Vary header accordingly, so that caches will base their storage
-    on the Accept-Encoding header.
+    This middleware log user every action  except GET
+    
     """
     def __init__(self, get_response=None):
         self.get_response = get_response

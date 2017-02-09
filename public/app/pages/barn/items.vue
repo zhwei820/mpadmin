@@ -221,6 +221,9 @@
         for (var key in this.item_category.structure) {
           var element = this.item_category.structure[key];
           for (var key1 in element) {
+            if(_CIItem[element[key1].key] == undefined){
+              _CIItem[element[key1].key] = ""
+            }
 
             if (element[key1].field == "multi_select" && typeof (_CIItem[element[key1].key]) == "string") {
               _CIItem[element[key1].key] = [_CIItem[element[key1].key]]
