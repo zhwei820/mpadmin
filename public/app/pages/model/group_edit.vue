@@ -137,7 +137,7 @@
       deleteGroup() {
         if (this.form.id) {
           this.$http.delete("/api/groups/" + this.form.id + "/").then((response) => {
-            this.groupId = ""
+            window.vm_m.id = ""
 
           }, (response) => {
             parent.vm.show_error_message(response.data.error)

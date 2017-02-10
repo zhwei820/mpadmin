@@ -322,7 +322,7 @@
         if (this.CICategory.id) {
           this.$http.delete("/api/items_categories/" + this.CICategory.id + "/").then((response) => {
             window.vm_m.get_model_menus()
-            this.categoryId = ""
+            window.vm_m.id = ""
 
           }, (response) => {
             parent.vm.show_error_message(response.data.error)

@@ -39,11 +39,13 @@
         },
         _form: {},
         id: 0,
+        _layerId:"",
       }
     },
     props: ['layerId'],
     watch: {
       layerId: function (dest, src) {
+        this._layerId = this.layerId
         this.fetch(0, 100)
       }
     },
@@ -105,7 +107,7 @@
         if (this.form.id) {
           this.$http.delete("/api/layers/" + this.form.id + "/").then((response) => {
             window.vm_m.get_model_menus()
-            this.layerId = ""
+            window.vm_m.id = ""
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
