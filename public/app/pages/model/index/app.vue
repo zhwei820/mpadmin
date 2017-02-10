@@ -196,13 +196,7 @@ import LayerEdit from "../layer_edit.vue"
           console.log(response.data.detail);
           var msg = response.data.detail != undefined ? response.data.detail : response.data.error
           parent.vm.show_error_message(msg)
-          if(msg == "Signature has expired."){
-            localStorage.setItem("Authorization", '')
-            setTimeout(function() {
-              parent.document.location.href = "/default/login.html"
-            }, 500);
-            return
-          }            
+
         });
       },
       handleSelect(key, keyPath) {

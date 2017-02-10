@@ -1,6 +1,6 @@
 <template>
   <div v-if="categoryId">
-    <el-button type="primary" size="large" @click="createNewCIItem()">新建</el-button>
+    <!--<el-button type="primary" size="large" @click="createNewCIItem()">新建</el-button>-->
     <el-button type="primary" class="r fa fa-share-square-o" @click="saveExcel"></el-button>
     <el-input placeholder="搜索" class="right_search" icon="search" v-model="input2" @click="handleIconClick" @keyup.enter.native="handleIconClick">
     </el-input>

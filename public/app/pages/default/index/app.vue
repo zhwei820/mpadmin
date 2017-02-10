@@ -19,7 +19,7 @@
     </el-menu>
     <el-row class="tac height_100" :gutter="20">
       <el-col :span="4">
-        <el-menu mode="vertical" default-active="/model" class="el-menu-vertical-demo" @select="handleSelect" router>
+        <el-menu mode="vertical" :default-active="path" class="el-menu-vertical-demo" @select="handleSelect" router>
           <el-menu-item index="/model"><i class="fa fa-cogs"></i> 模型</el-menu-item>
           <el-menu-item index="/barn"><i class="fa fa-cogs"></i> 仓库</el-menu-item>
           <!--</el-menu-item-group>-->
@@ -55,10 +55,12 @@
         },
         admin_user: "",
         menus1: {},
+        path: "",
       }
     },
     mounted: function () {
       window.vm = this;
+      this.path = this.$route.path
 
       this.$http.get("/api/current_user/").then((response) => {
         this.admin_user = response.data.realname ? response.data.realname : response.data.username
@@ -81,13 +83,20 @@
         // this.breadcrumb2 = this.menus1[keyPath[0]][keyPath[1]]['text']
       },
       handleOpen(key, keyPath) {},
-      show_error_message(msg) {        
+      show_error_message(msg) {
         this.$message({
           type: 'error',
           message: msg || "请求失败, 请检查数据(重名)并重试",
           showClose: true,
           // duration: 5,
         });
+        if (msg == "Signature has expired.") {
+          localStorage.setItem("Authorization", '')
+          setTimeout(function () {
+            parent.document.location.href = "/default/login.html"
+          }, 500);
+          return
+        }
       },
     },
   }

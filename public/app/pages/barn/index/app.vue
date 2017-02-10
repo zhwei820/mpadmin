@@ -198,11 +198,10 @@
           }
           resolve([list, name_list, group_by_list])
         }, (response) => {
-          this.$message({
-            type: 'info',
-            message: '请求失败, 请重试'
-          });
-          reject()
+            var msg = response.data.detail != undefined ? response.data.detail : response.data.error
+            parent.vm.show_error_message(msg)
+
+          // reject()
         });
       },
       handleSelect(key, keyPath) {
