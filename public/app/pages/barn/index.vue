@@ -33,8 +33,8 @@
 <script>
   import {
     addEvent
-  } from "../../../assets/js/util.js"
-  import Items from "../items.vue"
+  } from "../../assets/js/util.js"
+  import Items from "./items.vue"
 
   export default {
     data() {
@@ -225,8 +225,8 @@
 
 </script>
 <style scoped>
-  @import '../../../assets/css/normalize.css';
-  @import '../../../assets/css/index.css';
+  @import '../../assets/css/normalize.css';
+  @import '../../assets/css/index.css';
   body {
     font-family: Helvetica, sans-serif;
   }

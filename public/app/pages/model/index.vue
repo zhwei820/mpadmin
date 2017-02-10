@@ -63,10 +63,10 @@
 <script>
   import {
     addEvent
-  } from "../../../assets/js/util.js"
-import GroupEdit from "../group_edit.vue"
-import ItemCategoryEdit from "../item_category_edit.vue"
-import LayerEdit from "../layer_edit.vue"
+  } from "../../assets/js/util.js"
+import GroupEdit from "./group_edit.vue"
+import ItemCategoryEdit from "./item_category_edit.vue"
+import LayerEdit from "./layer_edit.vue"
   export default {
     data() {
       return {
@@ -240,8 +240,8 @@ import LayerEdit from "../layer_edit.vue"
 
 </script>
 <style scoped>
-  @import '../../../assets/css/normalize.css';
-  @import '../../../assets/css/index.css';
+  @import '../../assets/css/normalize.css';
+  @import '../../assets/css/index.css';
   body {
     font-family: Helvetica, sans-serif;
   }
