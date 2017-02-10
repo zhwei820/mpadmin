@@ -322,9 +322,8 @@
         if (this.CICategory.id) {
           this.$http.delete("/api/items_categories/" + this.CICategory.id + "/").then((response) => {
             window.vm_m.get_model_menus()
-            this.$router.push({
-              path: "/item_category_edit/"
-            })
+            this.categoryId = ""
+
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });

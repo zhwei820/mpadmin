@@ -90,12 +90,7 @@
         } else {
           this.$http.put("/api/layers/" + this.form.id + "/", this.form).then((response) => {
             console.log(this.form);
-
-            // debugger
             window.vm_m.get_model_menus()
-            // this.$router.push({
-            //   path: "/layer_edit/" + response.data.id
-            // })
           }, (
             response) => {
             this.$message({
@@ -110,11 +105,8 @@
         if (this.form.id) {
           this.$http.delete("/api/layers/" + this.form.id + "/").then((response) => {
             window.vm_m.get_model_menus()
-            this.$router.push({
-              path: "/layer_edit"
-            })
+            this.layerId = ""
           }, (response) => {
-            debugger
             parent.vm.show_error_message(response.data.error)
           });
         }

@@ -2,14 +2,14 @@
   <div>
     <el-row type="flex" class="row-bg" justify="center">
       <el-col :span="6">
-        <h2><span v-if="id">编辑</span><span v-else>新建</span>CI模型组</h2>
+        <h2><span v-if="id">编辑</span><span v-else>新建</span>管理项目</h2>
         <el-form label-position="top">
-          <el-form-item label="CI模型组名称">
+          <el-form-item label="管理项目名称">
             <el-input v-model="form.name" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="CI模型层">
+          <el-form-item label="父管理项目">
             <el-select v-model="form.layer" placeholder="请选择">
-              <el-option v-bind:label="index" v-bind:value="item" v-for="(item, index) in layer_list">
+              <el-option v-bind:label="index" v-bind:value="item" v-for="(item, index) in storage_group_list">
               </el-option>
             </el-select>
           </el-form-item>
@@ -52,7 +52,7 @@
         id: 0,
       }
     },
-    props: ['groupId'],
+    props:['groupId'],
     watch: {
       groupId: function (dest, src) {
         this.fetch(0, 100)
@@ -61,28 +61,8 @@
     beforeMount: function () {
       window.vm_m_n = this;
       this._form = deepCopyOfObject(this.form)
-      this.get_layer_list()
     },
     methods: {
-      get_layer_list() {
-        var query = ""
-        this.$http.get("/api/layers/" + query).then((response) => {
-          this.layer_list = {}
-          for (var key in response.data) {
-            this.layer_list[response.data[key].name] = response.data[key].id;
-          }
-          this.layer_name_list = {}
-          for (var key in response.data) {
-            this.layer_name_list[response.data[key].id] = response.data[key].name;
-          }
-          this.fetch(0, 100)
-        }, (response) => {
-          this.$message({
-            type: 'info',
-            message: '请求失败, 请重试'
-          });
-        });
-      },
       fetch(offset, limit) {
         // var id = paramParse('id')
         // var id = this.$route.params.id
@@ -119,7 +99,7 @@
           });
 
         } else {
-          this.$http.put("/api/groups/" + this.form.id + "/", this.form).then((response) => {
+          this.$http.put("/api/storage_groups/" + this.form.id + "/", this.form).then((response) => {
             window.vm_m.get_model_menus()
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
@@ -136,9 +116,8 @@
       },
       deleteGroup() {
         if (this.form.id) {
-          this.$http.delete("/api/groups/" + this.form.id + "/").then((response) => {
+          this.$http.delete("/api/storage_groups/" + this.form.id + "/").then((response) => {
             this.groupId = ""
-
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });

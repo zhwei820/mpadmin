@@ -12,6 +12,9 @@ from item.views import ItemCategoryListCreateAPIView,\
     ItemCategoryRetrieveUpdateDestroyAPIView, ItemListCreateAPIView, ItemRetrieveUpdateDestroyAPIView, \
     ItemWithCategoryIDListAPIView, ItemCategoryWithGroupIDListAPIView
 
+from storage.views import StorageGroupListCreateAPIView, StorageGroupRetrieveUpdateDestroyAPIView
+
+
 urlpatterns = [
     url(r'^layers/$', LayerListCreateAPIView.as_view()),
     url(r'^layers/(?P<id>\w{24})/$', LayerRetrieveUpdateDestroyAPIView.as_view()),
@@ -28,6 +31,12 @@ urlpatterns += [
     url(r'^items/(?P<id>\w{24})/$', ItemRetrieveUpdateDestroyAPIView.as_view()),
     url(r'^items_categories/(?P<id>\w{24})/items/$', ItemWithCategoryIDListAPIView.as_view()),
 ]
+
+urlpatterns += [
+    url(r'^storage_groups/$', StorageGroupListCreateAPIView.as_view()),
+    url(r'^storage_groups/(?P<id>\w{24})/$', StorageGroupRetrieveUpdateDestroyAPIView.as_view()),
+]
+
 
 urlpatterns += [
     url(r'^field_list/', field_list),
