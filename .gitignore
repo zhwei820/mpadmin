@@ -76,4 +76,4 @@ node_modules/
 server_conf.py
 local_conf.py
 
-.env
+*.env
