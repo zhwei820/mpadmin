@@ -9,7 +9,7 @@
           </el-form-item>
           <el-form-item label="父管理项目">
             <el-select v-model="form.layer" placeholder="请选择">
-              <el-option v-bind:label="index" v-bind:value="item" v-for="(item, index) in storage_group_list">
+              <el-option v-bind:label="index" v-bind:value="item" v-for="(item, index) in storageGroupList">
               </el-option>
             </el-select>
           </el-form-item>
@@ -52,7 +52,7 @@
         id: 0,
       }
     },
-    props:['groupId'],
+    props: ['groupId', 'storageGroupList'],
     watch: {
       groupId: function (dest, src) {
         this.fetch(0, 100)
@@ -67,8 +67,11 @@
         // var id = paramParse('id')
         // var id = this.$route.params.id
         // this.id = id == undefined ? 0 : id
+
+        console.log(this.groupId);
+
         if (this.groupId) {
-          this.$http.get("/api/groups/" + this.groupId + "/?" + Date.now()).then((response) => {
+          this.$http.get("/api/storage_groups/" + this.groupId + "/?" + Date.now()).then((response) => {
             this.form = response.data
 
           }, (response) => {
@@ -84,7 +87,7 @@
       },
       submit() {
         if (!this.form.id) {
-          this.$http.post("/api/groups/", this.form).then((response) => {
+          this.$http.post("/api/storage_groups/", this.form).then((response) => {
             window.vm_m.get_model_menus()
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
@@ -117,7 +120,7 @@
       deleteGroup() {
         if (this.form.id) {
           this.$http.delete("/api/storage_groups/" + this.form.id + "/").then((response) => {
-              window.vm_m.id = ""
+            window.vm_m.id = ""
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });

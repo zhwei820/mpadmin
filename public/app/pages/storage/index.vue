@@ -18,7 +18,7 @@
       <el-col :span=20 class="height_100">
         <el-breadcrumb separator="/" class="breadcrumb_padding">
         </el-breadcrumb>
-        <groupedit v-if="path == '/storage_group_edit' " :group-id='id'> </groupedit>
+        <storagegroupedit v-if="path == '/storage_group_edit'" :storage-group-list='group_list' :group-id='id'> </storagegroupedit>
       </el-col>
     </el-row>
   </div>
@@ -36,19 +36,20 @@
         menus: [],
         menus1: {},
         id: "",
-        path: "/",
+        path: "/storage_group_edit",
         _groups: {},
         defaultProps: {
           children: 'children',
           label: 'label'
-        }
+        },
+        group_list: {},
       }
     },
     components: {
       storagegroupedit: StorageGroupEdit,
     },
-
     mounted: function () {
+      this.id = "589da479cc8b7934b73dec9a"
       this.get_model_menus()
       window.vm_m = this
     },
@@ -56,20 +57,17 @@
       get_model_menus() {
         var that = this
 
-        var group_list, group_name_list, group_by_list_of_group
+        // var group_list, group_name_list, group_by_list_of_group
         var p2 = new Promise(
           function (resolve, reject) {
             that.get_model_data("/api/storage_groups/", resolve, reject)
           }
         );
 
-        p2.then((res) => {
-
-        })
+        p2.then((res) => {})
       },
 
       arrange_group_data(data) {
-
         var _data_by_id = {}
         this._groups = {}
         for (var index = 0; index < data.length; index++) {
@@ -125,7 +123,8 @@
           }
 
           this.arrange_group_data(response.data)
-          resolve([list, name_list, this._groups])
+          this.group_list = list
+          resolve([list])
         }, (response) => {
           console.log(response.data.detail);
           var msg = response.data.detail != undefined ? response.data.detail : response.data.error
@@ -142,11 +141,11 @@
       },
       createNewGroup() {
         this.id = ""
-        this.path = "/group_edit"
+        this.path = "/storage_group_edit"
       },
       editGroup(id, e) {
         this.id = id
-        this.path = "/group_edit"
+        this.path = "/storage_group_edit"
         e.stopPropagation()
       },
       show_error_message(msg) {
@@ -156,7 +155,9 @@
         });
       },
       handleNodeClick(data) {
-        console.log(data);
+        console.log(this.group_list[data.label]);
+
+        this.id = this.group_list[data.label]
       }
     },
   }
