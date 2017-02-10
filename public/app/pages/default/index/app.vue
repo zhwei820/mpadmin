@@ -22,7 +22,7 @@
         <el-menu mode="vertical" :default-active="path" class="el-menu-vertical-demo" @select="handleSelect" router>
           <el-menu-item index="/model"><i class="fa fa-cogs"></i> 模型</el-menu-item>
           <el-menu-item index="/barn"><i class="fa fa-cogs"></i> 视图</el-menu-item>
-          <el-menu-item index="/storage/"><i class="fa fa-cogs"></i> 仓库</el-menu-item>
+          <el-menu-item index="/barn/"><i class="fa fa-cogs"></i> 仓库</el-menu-item>
           <!--</el-menu-item-group>-->
         </el-menu>
       </el-col>
