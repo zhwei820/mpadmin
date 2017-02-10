@@ -8,6 +8,7 @@ import App from './app.vue'
 
 import Barn from '../../barn/index.vue'
 import Model from '../../model/index.vue'
+import Storage from '../../storage/index.vue'
 
 
 import VueRouter from 'vue-router'
@@ -22,6 +23,10 @@ const router = new VueRouter({
     {
       path: '/barn',
       component: Barn,
+    },
+    {
+      path: '/storage',
+      component: Storage,
     },
     {
       path: '/model',

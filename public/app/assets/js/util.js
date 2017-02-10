@@ -237,3 +237,149 @@ export {
     Vue,
     deepCopyOfObject,
 }
+
+
+
+var data = [{
+        "id": "589d5bbacc8b7934b73dec88",
+        "name": "组13-1",
+        "group": null
+    },
+    {
+        "id": "589d5bd6cc8b7934b73dec8a",
+        "name": "1111111组13-1",
+        "group": "589d5bbacc8b7934b73dec88"
+    },
+    {
+        "id": "589d5be4cc8b7934b73dec8b",
+        "name": "1111111xxx组13-1",
+        "group": "589d5bbacc8b7934b73dec88"
+    },
+    {
+        "id": "589d5befcc8b7934b73dec8c",
+        "name": "11341111xxx组13-1",
+        "group": "589d5bbacc8b7934b73dec88"
+    },
+    {
+        "id": "589d5bfccc8b7934b73dec8d",
+        "name": "1pp111xxx组13-1",
+        "group": "589d5bbacc8b7934b73dec88"
+    },
+    {
+        "id": "589d5c07cc8b7934b73dec8e",
+        "name": "1p1911xxx组13-1",
+        "group": "589d5bbacc8b7934b73dec88"
+    },
+    {
+        "id": "589d5c13cc8b7934b73dec8f",
+        "name": "1p19x组13-1",
+        "group": "589d5c07cc8b7934b73dec8e"
+    },
+    {
+        "id": "589d5c18cc8b7934b73dec90",
+        "name": "1p19xy1",
+        "group": "589d5c07cc8b7934b73dec8e"
+    },
+    {
+        "id": "589d5c1ccc8b7934b73dec91",
+        "name": "1p19xxy1",
+        "group": "589d5c07cc8b7934b73dec8e"
+    },
+    {
+        "id": "589d5c1fcc8b7934b73dec92",
+        "name": "1p19xxy1g",
+        "group": "589d5c07cc8b7934b73dec8e"
+    },
+    {
+        "id": "589d5c29cc8b7934b73dec93",
+        "name": "1p19sy1g",
+        "group": "589d5c1fcc8b7934b73dec92"
+    },
+    {
+        "id": "589d7468cc8b7934b73dec95",
+        "name": "1p119sy1g",
+        "group": "589d5c1fcc8b7934b73dec92"
+    },
+    {
+        "id": "589d7473cc8b7934b73dec96",
+        "name": "1p119sy1zg",
+        "group": "589d7468cc8b7934b73dec95"
+    },
+    {
+        "id": "589d7480cc8b7934b73dec97",
+        "name": "1p1zg",
+        "group": "589d7473cc8b7934b73dec96"
+    },
+    {
+        "id": "589da46ccc8b7934b73dec98",
+        "name": "1ewp1zg",
+        "group": null
+    },
+    {
+        "id": "589da479cc8b7934b73dec9a",
+        "name": "1ewrrp1zg",
+        "group": null
+    },
+    {
+        "id": "589daafacc8b7934b73dec9c",
+        "name": "1ewrrerrep1zg",
+        "group": "589d5bfccc8b7934b73dec8d"
+    },
+    {
+        "id": "589daaffcc8b7934b73dec9d",
+        "name": "1ewrrewerrep1zg",
+        "group": "589d5bfccc8b7934b73dec8d"
+    },
+    {
+        "id": "589dab02cc8b7934b73dec9e",
+        "name": "1ewrrewerrep1zgwe",
+        "group": "589d5bfccc8b7934b73dec8d"
+    }
+]
+
+var _data_by_id = {}
+var _groups = {}
+for (var index = 0; index < data.length; index++) {
+    var element = data[index];
+    element.label = element.name
+    _data_by_id[element.id] = element
+}
+
+for (var key in _data_by_id) {
+    var element = _data_by_id[key];
+    if (_groups[element.group] == undefined) {
+        _groups[element.group] = {}
+        _groups[element.group].info = _data_by_id[element.id]
+        _groups[element.group].label = _data_by_id[element.id].name
+        _groups[element.group].children = [element]
+    } else {
+        _groups[element.group].children.push(element)
+    }
+}
+
+
+var _g = {}
+
+function recursive_menu_data(g) {
+    var d = g.children
+
+    if (d) {
+        for (var key1 in d) {
+            if (!d[key1].id) {
+                continue
+            }
+            var id = d[key1].id
+            if (_groups[d[key1].id]) {
+                var kk = d[key1].id
+                d[key1] = _groups[kk]
+                d[key1].label = d[key1].info.name
+                recursive_menu_data(d[key1])
+            }
+        }
+    }
+}
+
+// recursive_menu_data(_groups[null])
+// console.log(_groups[null].children);
+
+// debugger
