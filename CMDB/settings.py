@@ -195,10 +195,12 @@ import mongoengine
 SESSION_ENGINE = 'django_mongoengine.sessions'
 SESSION_SERIALIZER = 'django_mongoengine.sessions.BSONSerializer'
 
+mongodb_url=config('MONGODB_URL', '192.168.199.222')
+
 MONGODB_DATABASES = {
     "default": {
         "name": 'mongotest',
-        "host": '192.168.199.222',
+        "host": mongodb_url,
         # "host": '127.0.0.1',        
         "password": 'mongotest',
         "username": 'mongotest',

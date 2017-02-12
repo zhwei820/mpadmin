@@ -71,7 +71,7 @@ def get_auth_obj(request):
     # 安装gateone的服务器以及端口.
     gateone_server = 'https://localhost:10443'
     # 之前生成的api_key 和secret 
-    secret = "OGZlMmFjNmFjNjQ1NGExOTk3MjVlNTA4YjViNWQ0YmEyZ"
+    secret = b"OGZlMmFjNmFjNjQ1NGExOTk3MjVlNTA4YjViNWQ0YmEyZ"
     api_key = "YjQyY2ViZmNkODllNGRmNzg5YjUyNzA2YzA4MTkyN2U5N"
 
 
@@ -83,7 +83,7 @@ def get_auth_obj(request):
         'api_version': '1.0'
     }
     my_hash = hmac.new(secret, digestmod=hashlib.sha1)
-    my_hash.update(authobj['api_key'] + authobj['upn'] + authobj['timestamp'])
+    my_hash.update((authobj['api_key'] + authobj['upn'] + authobj['timestamp']).encode("utf-8")) 
 
     authobj['signature'] = my_hash.hexdigest()
     auth_info_and_server = {"url": gateone_server, "auth": authobj}

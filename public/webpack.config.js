@@ -69,7 +69,7 @@ var config = {
       allChunks: true
     }),
     new CopyWebpackPlugin([
-      { from: 'app/gateone', to: 'dist/gateone' }
+      { from: 'app/gateone', to: './gateone' }
     ]),
 
   ],
