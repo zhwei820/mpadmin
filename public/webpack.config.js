@@ -5,6 +5,7 @@ var glob = require('glob');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CommonsChunkPlugin = require('webpack/lib/optimize/CommonsChunkPlugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 var entries = {};
 var chunks = [];
@@ -21,8 +22,8 @@ var config = {
     //配置别名，在项目中可缩减引用路径
     extensions: ['.js', '.vue'],
     alias: {
-      assets: path.join(__dirname,'/app/assets'),
-      components: path.join(__dirname,'/app/components'),
+      assets: path.join(__dirname, '/app/assets'),
+      components: path.join(__dirname, '/app/components'),
       root: path.join(__dirname, 'node_modules')
     }
   },
@@ -66,21 +67,20 @@ var config = {
     new ExtractTextPlugin({
       filename: 'assets/css/main.css',
       allChunks: true
-    })
+    }),
+    new CopyWebpackPlugin([
+      { from: 'app/gateone', to: 'dist/gateone' }
+    ]),
+
   ],
   devServer: {
     historyApiFallback: false,
     noInfo: true,
-    // proxy: {
-    //   '/github': {
-    //     target: 'https://github.com/github',
-    //     changeOrigin: true,
-    //     pathRewrite: {'^/github' : ''}
-    //   }
-    // },
   },
   devtool: '#eval-source-map'
 };
+
+
 
 var pages = getHtmls();
 pages.forEach(function (pathname) {
@@ -94,8 +94,8 @@ pages.forEach(function (pathname) {
     conf.inject = 'body';
     conf.chunks = ['vendors', chunk];
   }
-    conf.hash = false;
-  
+  conf.hash = false;
+
   if (process.env.NODE_ENV === 'production') {
     conf.hash = true;
   }
@@ -106,7 +106,7 @@ module.exports = config;
 
 function getEntriesAndChunks() {
   glob.sync('./app/pages/**/*.js').forEach(function (name) {
-    var n = name.slice(name.lastIndexOf('app/') + 10, name.length -3);
+    var n = name.slice(name.lastIndexOf('app/') + 10, name.length - 3);
     entries[n] = [name];
     chunks.push(n);
   });
