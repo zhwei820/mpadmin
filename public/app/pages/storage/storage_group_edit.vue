@@ -56,6 +56,7 @@
         form: {
           name: '',
           id: "",
+          group:""
         },
         _form: {},
         layer_list: {},
@@ -182,6 +183,10 @@
         if (this.groupId) {
           this.$http.get("/api/storage_groups/" + this.groupId + "/?t=" + Date.now()).then((response) => {
             this.form = response.data
+            if(!this.form.group){
+              this.form.group = ""
+            }
+            console.log(this.form);
           }, (response) => {
             this.$message({
               type: 'info',
@@ -193,10 +198,10 @@
           form.group = ''
           this.form = form
         }
-        // console.log(this.form);
       },
       submit() {
         if (!this.form.id) {
+          delete this.form.id
           this.$http.post("/api/storage_groups/", this.form).then((response) => {
             window.vm_m.get_model_menus()
           }, (
