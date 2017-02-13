@@ -8,8 +8,8 @@
             <el-input v-model="form.name" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="父管理项目">
-            <el-select v-model="form.layer" placeholder="请选择">
-              <el-option v-bind:label="index" v-bind:value="item" v-for="(item, index) in storageGroupList">
+            <el-select v-model="form.group" placeholder="请选择">
+              <el-option v-bind:label="item" v-bind:value="index" v-for="(item, index) in storageGroupListExceptOwnGroup">
               </el-option>
             </el-select>
           </el-form-item>
@@ -50,30 +50,60 @@
         layer_name_list: {},
         formLabelWidth: '120px',
         id: 0,
+        storageGroupListExceptOwnGroup: {},
+        filter_ids: [],
       }
     },
-    props: ['groupId', 'storageGroupList'],
+    props: ['groupId', 'storageGroupList', 'nestedList'],
     watch: {
       groupId: function (dest, src) {
         this.fetch(0, 100)
+      },
+      storageGroupList: function (dest, src) {
+        this.fetch(0, 100)
       }
     },
-    beforeMount: function () {
-      window.vm_m_n = this;
+    mounted: function () {
       this._form = deepCopyOfObject(this.form)
+      this.fetch(0, 100)
+      window.vm_m_n = this;
     },
     methods: {
+      recursive_filter(children, id) { // 过滤本组id
+        for (var key in children) {
+          var element = children[key];
+          if (element.id == id) {
+            this.filter_ids.push(id)
+            this.recursive_get_ids(element.children)
+          } else {
+            this.recursive_filter(element.children, id)
+          }
+        }
+      },
+      recursive_get_ids(children) {
+        for (var key in children) {
+          var element = children[key];
+          this.filter_ids.push(element.id)
+          this.recursive_get_ids(element.children)
+        }
+      },
       fetch(offset, limit) {
         // var id = paramParse('id')
         // var id = this.$route.params.id
         // this.id = id == undefined ? 0 : id
-
+        this.filter_ids = []
         console.log(this.groupId);
+        var tmp = deepCopyOfObject(this.storageGroupList)
+        this.storageGroupListExceptOwnGroup = tmp
+        this.recursive_filter(this.nestedList, this.groupId)
+        // console.log(this.filter_ids);
+        for (var ii = 0; ii < this.filter_ids.length; ii++) {
+          delete this.storageGroupListExceptOwnGroup[this.filter_ids[ii]]
+        }
 
         if (this.groupId) {
-          this.$http.get("/api/storage_groups/" + this.groupId + "/?" + Date.now()).then((response) => {
+          this.$http.get("/api/storage_groups/" + this.groupId + "/?t=" + Date.now()).then((response) => {
             this.form = response.data
-
           }, (response) => {
             this.$message({
               type: 'info',
@@ -81,8 +111,9 @@
             });
           });
         } else {
-          this.form = deepCopyOfObject(this._form)
-          this.form.layer = this.layer_list.default
+          var form = deepCopyOfObject(this._form)
+          form.group = ''
+          this.form = form
         }
       },
       submit() {
@@ -92,7 +123,6 @@
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
             // })
-
           }, (
             response) => {
             this.$message({
@@ -114,7 +144,6 @@
               message: '请求失败, 请重试'
             });
           });
-
         }
       },
       deleteGroup() {

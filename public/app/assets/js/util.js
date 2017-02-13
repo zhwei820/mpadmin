@@ -337,6 +337,19 @@ var data = [{
     }
 ]
 
+var data = [
+  {
+    "id": "58a11d0fcc8b7911c151fee1",
+    "name": "test1",
+    "group": null
+  },
+  {
+    "id": "58a12365cc8b7911c151fee2",
+    "name": "test2",
+    "group": "58a11d0fcc8b7911c151fee1"
+  }
+]
+
 var _data_by_id = {}
 var _groups = {}
 for (var index = 0; index < data.length; index++) {
@@ -357,12 +370,10 @@ for (var key in _data_by_id) {
     }
 }
 
-
 var _g = {}
 
 function recursive_menu_data(g) {
     var d = g.children
-
     if (d) {
         for (var key1 in d) {
             if (!d[key1].id) {
@@ -371,8 +382,7 @@ function recursive_menu_data(g) {
             var id = d[key1].id
             if (_groups[d[key1].id]) {
                 var kk = d[key1].id
-                d[key1] = _groups[kk]
-                d[key1].label = d[key1].info.name
+                d[key1].children = _groups[kk].children
                 recursive_menu_data(d[key1])
             }
         }
@@ -380,6 +390,9 @@ function recursive_menu_data(g) {
 }
 
 // recursive_menu_data(_groups[null])
+// console.log(_groups);
+// debugger
+
 // console.log(_groups[null].children);
 
 // debugger

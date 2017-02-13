@@ -4,21 +4,21 @@
       <el-menu-item index="1">CMDB管理中心</el-menu-item>
     </el-menu>-->
     <el-row class="tac height_100">
-      <el-col :span="4">
+      <el-col :span="6">
         <el-menu class="el-menu-vertical-demo" @select="handleSelect" @open="handleOpen">
           <div>
             <el-button size="large" type="primary" class="new_btn" @click="createNewGroup()">
               <i class="fa fa-plus"></i> 新增管理对象
             </el-button>
           </div>
-          <el-tree :data="menus" :props="defaultProps" @node-click="handleNodeClick"></el-tree>
+          <el-tree :data="menus" :props="defaultProps" @node-click="handleNodeClick" highlight-current default-expand-all accordion></el-tree>
         </el-menu>
       </el-col>
       <!--sidebar end-->
-      <el-col :span=20 class="height_100">
+      <el-col :span=18 class="height_100">
         <el-breadcrumb separator="/" class="breadcrumb_padding">
         </el-breadcrumb>
-        <storagegroupedit v-if="path == '/storage_group_edit'" :storage-group-list='group_list' :group-id='id'> </storagegroupedit>
+        <storagegroupedit v-if="path == '/storage_group_edit'" :storage-group-list='name_list' :nested-list="menus" :group-id='id'> </storagegroupedit>
       </el-col>
     </el-row>
   </div>
@@ -43,13 +43,13 @@
           label: 'label'
         },
         group_list: {},
+        name_list: {},
       }
     },
     components: {
       storagegroupedit: StorageGroupEdit,
     },
     mounted: function () {
-      this.id = "589da479cc8b7934b73dec9a"
       this.get_model_menus()
       window.vm_m = this
     },
@@ -101,8 +101,7 @@
             var id = d[key1].id
             if (this._groups[d[key1].id]) {
               var kk = d[key1].id
-              d[key1] = this._groups[kk]
-              d[key1].label = d[key1].info.name
+              d[key1].children = this._groups[kk].children
               this.recursive_menu_data(d[key1])
             }
           }
@@ -123,13 +122,13 @@
           }
 
           this.arrange_group_data(response.data)
+          this.name_list = name_list
           this.group_list = list
           resolve([list])
         }, (response) => {
           console.log(response.data.detail);
           var msg = response.data.detail != undefined ? response.data.detail : response.data.error
           parent.vm.show_error_message(msg)
-
         });
       },
       handleSelect(key, keyPath) {
@@ -155,8 +154,7 @@
         });
       },
       handleNodeClick(data) {
-        console.log(this.group_list[data.label]);
-
+        // console.log(this.group_list[data.label]);
         this.id = this.group_list[data.label]
       }
     },
