@@ -18,7 +18,8 @@
       <el-col :span=18 class="height_100">
         <el-breadcrumb separator="/" class="breadcrumb_padding">
         </el-breadcrumb>
-        <storagegroupedit v-if="path == '/storage_group_edit'" :storage-group-list='name_list' :nested-list="menus" :group-id='id'> </storagegroupedit>
+        <storagegroupedit v-if="path == '/storage_group_edit'" :storage-group-list='name_list' :nested-list="menus" :group-id='id'>
+        </storagegroupedit>
       </el-col>
     </el-row>
   </div>
@@ -88,8 +89,10 @@
           }
         }
         var _g = {}
-        this.recursive_menu_data(this._groups[null])
-        this.menus = this._groups[null].children
+        if (this._groups[null]) {
+          this.recursive_menu_data(this._groups[null])
+          this.menus = this._groups[null].children
+        }
       },
       recursive_menu_data(g) {
         var d = g.children

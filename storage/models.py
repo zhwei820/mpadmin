@@ -6,8 +6,8 @@ import datetime
 
 
 class StorageGroup(DynamicDocument):  # storage 分组
-    name = fields.StringField(max_length=200, required=True)
     group = fields.ReferenceField('self', blank = True, null = True)
+    name = fields.StringField(max_length=200, required=True)
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())
 

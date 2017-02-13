@@ -204,6 +204,7 @@
           delete this.form.id
           this.$http.post("/api/storage_groups/", this.form).then((response) => {
             window.vm_m.get_model_menus()
+            this.groupId = response.data.id
           }, (
             response) => {
             this.$message({
@@ -214,9 +215,7 @@
         } else {
           this.$http.put("/api/storage_groups/" + this.form.id + "/", this.form).then((response) => {
             window.vm_m.get_model_menus()
-            // this.$router.push({
-            //   path: "/group_edit/" + response.data.id
-            // })
+            this.groupId = response.data.id
           }, (
             response) => {
             this.$message({
@@ -230,6 +229,7 @@
         if (this.form.id) {
           this.$http.delete("/api/storage_groups/" + this.form.id + "/").then((response) => {
             window.vm_m.id = ""
+            window.vm_m.get_model_menus()
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
