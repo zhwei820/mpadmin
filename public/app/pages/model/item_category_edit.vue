@@ -182,12 +182,6 @@
       get_group_list() {
         var query = ""
         this.$http.get("/api/groups/" + query).then((response) => {
-          if (response.status !== 200) {
-            this.$message({
-              type: 'info',
-              message: '请求失败, 请重试'
-            });
-          }
           this.group_list = {}
           for (var key in response.data) {
             this.group_list[response.data[key].name] = response.data[key].id;
@@ -234,12 +228,6 @@
 
         if (this.ItemCategoryId) {
           this.$http.get("/api/items_categories/" + this.ItemCategoryId + "/?" + Date.now()).then((response) => {
-            if (response.status !== 200) {
-              this.$message({
-                type: 'info',
-                message: '请求失败, 请重试'
-              });
-            }
             this.CICategory = response.data
             // debugger
             for (var key in this.CICategory.structure) {

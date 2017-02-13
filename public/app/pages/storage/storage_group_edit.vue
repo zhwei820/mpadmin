@@ -1,17 +1,31 @@
 <template>
   <div>
     <el-row type="flex" class="row-bg" justify="center">
-      <el-col :span="6">
-        <h2><span v-if="id">编辑</span><span v-else>新建</span>管理项目</h2>
+      <el-col :span="15">
+        <h2><span v-if="groupId">编辑</span><span v-else>新建</span>管理项目</h2>
         <el-form label-position="top">
           <el-form-item label="管理项目名称">
             <el-input v-model="form.name" auto-complete="off"></el-input>
           </el-form-item>
-          <el-form-item label="父管理项目">
+          <el-form-item label="父项目 (可为空)">
             <el-select v-model="form.group" placeholder="请选择">
               <el-option v-bind:label="item" v-bind:value="index" v-for="(item, index) in storageGroupListExceptOwnGroup">
               </el-option>
             </el-select>
+          </el-form-item>
+          <el-form-item :label="item.group_name" v-for="(item, index) in form" v-if="index.length == 24">
+            <el-input v-model="item.name" auto-complete="off" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="添加资源" :label-width="formLabelWidth">
+            <div>
+              <el-select v-model="tmp_item" placeholder="请选择">
+                <el-option-group v-for="group in items_by_group" :label="group.label">
+                  <el-option v-for="item in group.options" :label="item.label" :value="item.id">
+                  </el-option>
+                </el-option-group>
+              </el-select>
+              <el-button @click="addResource"><i class="fa fa-plus"></i></el-button>
+            </div>
           </el-form-item>
         </el-form>
         <div class="dialog-footer">
@@ -31,7 +45,6 @@
     excel,
     deepCopyOfObject,
     paramParse
-
   } from "../../assets/js/util.js"
 
   export default {
@@ -43,7 +56,6 @@
         form: {
           name: '',
           id: "",
-          layer: "default",
         },
         _form: {},
         layer_list: {},
@@ -52,6 +64,8 @@
         id: 0,
         storageGroupListExceptOwnGroup: {},
         filter_ids: [],
+        tmp_item: "",
+        items_by_group: [],
       }
     },
     props: ['groupId', 'storageGroupList', 'nestedList'],
@@ -66,9 +80,72 @@
     mounted: function () {
       this._form = deepCopyOfObject(this.form)
       this.fetch(0, 100)
+      this.get_item_data()
       window.vm_m_n = this;
     },
     methods: {
+      get_item_data() {
+        var that = this
+        // var group_list, group_name_list, group_by_list_of_group
+        var p1 = new Promise(
+          function (resolve, reject) {
+            that.get_item_groups(resolve, reject)
+            return p2
+          }
+        );
+        var p2 = new Promise(
+          function (resolve, reject) {
+            that.get_items(resolve, reject)
+          }
+        );
+        p1.then((res) => {}).then((res) => {})
+      },
+      get_item_groups(resolve, reject) {
+        this.$http.get("/api/groups/" + "?t=" + Date.now()).then((response) => {
+          this.group_name_list = {}
+          for (var key in response.data) {
+            this.group_name_list[response.data[key].id] = response.data[key].name;
+          }
+          resolve()
+        }, (response) => {
+          this.$message({
+            type: 'info',
+            message: '请求失败, 请重试'
+          });
+        });
+      },
+      get_items(resolve, reject) {
+        this.$http.get("/api/items/" + "?t=" + Date.now()).then((response) => {
+          this.CICategory = response.data
+          this.items_name_list = {}
+          for (var key in response.data) {
+            this.items_name_list[response.data[key].id] = response.data[key];
+          }
+          var _items_by_group = {}
+          for (var key in response.data) {
+            var element = response.data[key]
+            if (_items_by_group[element.group] == undefined) {
+              _items_by_group[element.group] = {}
+              _items_by_group[element.group].id = element.group
+              _items_by_group[element.group].label = this.group_name_list[element.group]
+              _items_by_group[element.group].options = []
+            }
+            element.label = element.name
+            _items_by_group[element.group].options.push(element);
+          }
+          this.items_by_group = []
+          for (var key in _items_by_group) {
+            this.items_by_group.push(_items_by_group[key])
+          }
+          // console.log(this.items_by_group);
+          resolve()
+        }, (response) => {
+          this.$message({
+            type: 'info',
+            message: '请求失败, 请重试'
+          });
+        });
+      },
       recursive_filter(children, id) { // 过滤本组id
         for (var key in children) {
           var element = children[key];
@@ -100,6 +177,7 @@
         for (var ii = 0; ii < this.filter_ids.length; ii++) {
           delete this.storageGroupListExceptOwnGroup[this.filter_ids[ii]]
         }
+        this.storageGroupListExceptOwnGroup[''] = '空'
 
         if (this.groupId) {
           this.$http.get("/api/storage_groups/" + this.groupId + "/?t=" + Date.now()).then((response) => {
@@ -115,14 +193,12 @@
           form.group = ''
           this.form = form
         }
+        // console.log(this.form);
       },
       submit() {
         if (!this.form.id) {
           this.$http.post("/api/storage_groups/", this.form).then((response) => {
             window.vm_m.get_model_menus()
-            // this.$router.push({
-            //   path: "/group_edit/" + response.data.id
-            // })
           }, (
             response) => {
             this.$message({
@@ -130,7 +206,6 @@
               message: '请求失败, 请重试'
             });
           });
-
         } else {
           this.$http.put("/api/storage_groups/" + this.form.id + "/", this.form).then((response) => {
             window.vm_m.get_model_menus()
@@ -154,6 +229,20 @@
             parent.vm.show_error_message(response.data.error)
           });
         }
+      },
+      addResource() {
+        if (!this.tmp_item) {
+          this.$message({
+            type: 'info',
+            message: '请选择资源！'
+          });
+          return
+        }
+        var _form = deepCopyOfObject(this.form)
+        _form[this.tmp_item] = this.items_name_list[this.tmp_item]
+        _form[this.tmp_item].group_name = this.group_name_list[_form[this.tmp_item].group]
+        this.form = _form
+        console.log(this.form);
       },
     }
   }

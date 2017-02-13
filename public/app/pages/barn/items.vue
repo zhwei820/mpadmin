@@ -148,6 +148,7 @@
         im_k: "",
         fileList: {},
         tmp_ref_ci_list: [],
+        tmp_item_category:"",
       }
     },
     props: ['categoryId'],
@@ -331,7 +332,7 @@
       },
       submit() {
         var ci_item = deepCopyOfObject(this.CIItem)
-
+        ci_item.group = ci_item._category.group
         delete ci_item._category
         if (!this.CIItem.id) {
           delete ci_item.id

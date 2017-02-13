@@ -26,6 +26,7 @@ class ItemCategory(Document):  #CI 模型定义
 
 class Item(DynamicDocument): # CI 模型实例
     name = fields.StringField(max_length=200, required=True)
+    group = fields.ReferenceField('Group', required=True)
     category = fields.ReferenceField(ItemCategory, required=True)
     ctime = fields.DateTimeField(default=datetime.datetime.now())
     utime = fields.DateTimeField(default=datetime.datetime.now())

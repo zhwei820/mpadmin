@@ -60,3 +60,8 @@
 .prop_label {
     vertical-align: middle;
 }
+
+.el-input.is-disabled .el-input__inner {
+    color: #1f2d3d;
+    background-color: #fff;
+}
