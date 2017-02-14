@@ -3,7 +3,7 @@
     <el-row type="flex" class="row-bg" justify="center">
       <el-col :span="15">
         <h2><span v-if="groupId">编辑</span><span v-else>新建</span>管理项目</h2>
-        <el-form label-position="top">
+        <el-form label-position="left" label-width="80px">
           <el-form-item label="管理项目名称">
             <el-input v-model="form.name" auto-complete="off"></el-input>
           </el-form-item>
@@ -15,6 +15,9 @@
           </el-form-item>
           <el-form-item :label="item.group_name" v-for="(item, index) in form" v-if="index.length == 24">
             <el-input v-model="item.name" auto-complete="off" disabled></el-input>
+            <el-tooltip class="item" effect="dark" content="删除!" placement="top-start">
+              <el-button @click="delResource(index)" type="danger" icon="minus" size="mini" class="del_btn"></el-button>
+            </el-tooltip>
           </el-form-item>
           <el-form-item label="添加资源" :label-width="formLabelWidth">
             <div>
@@ -56,7 +59,7 @@
         form: {
           name: '',
           id: "",
-          group:""
+          group: ""
         },
         _form: {},
         layer_list: {},
@@ -170,7 +173,7 @@
         // var id = this.$route.params.id
         // this.id = id == undefined ? 0 : id
         this.filter_ids = []
-        console.log(this.groupId);
+        // console.log(this.groupId);
         var tmp = deepCopyOfObject(this.storageGroupList)
         this.storageGroupListExceptOwnGroup = tmp
         this.recursive_filter(this.nestedList, this.groupId)
@@ -183,10 +186,10 @@
         if (this.groupId) {
           this.$http.get("/api/storage_groups/" + this.groupId + "/?t=" + Date.now()).then((response) => {
             this.form = response.data
-            if(!this.form.group){
+            if (!this.form.group) {
               this.form.group = ""
             }
-            console.log(this.form);
+            // console.log(this.form);
           }, (response) => {
             this.$message({
               type: 'info',
@@ -247,7 +250,11 @@
         _form[this.tmp_item] = this.items_name_list[this.tmp_item]
         _form[this.tmp_item].group_name = this.group_name_list[_form[this.tmp_item].group]
         this.form = _form
-        console.log(this.form);
+      },
+      delResource(index) {
+        var _form = deepCopyOfObject(this.form)
+        delete _form[index]
+        this.form = _form
       },
     }
   }

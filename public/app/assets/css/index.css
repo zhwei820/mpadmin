@@ -68,3 +68,7 @@
 .item_edit_dialog .el-textarea{
     width: 80%;
 }
+
+.el-input {
+    width: 95%;
+}
