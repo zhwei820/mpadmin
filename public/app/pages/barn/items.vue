@@ -5,7 +5,6 @@
     <el-input placeholder="搜索" class="right_search" icon="search" v-model="input2" @click="handleIconClick" @keyup.enter.native="handleIconClick">
     </el-input>
     <el-button type="default" class="r fa fa-refresh" @click="refresh_data"></el-button>
-    {{item_category._structure}}
     <el-table :data="tableData" border style="width: 100%" height="920">
       <el-table-column fixed :context="_self" inline-template label="操作" width="150">
         <div>
