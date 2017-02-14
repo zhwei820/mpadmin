@@ -5,6 +5,7 @@
     <el-input placeholder="搜索" class="right_search" icon="search" v-model="input2" @click="handleIconClick" @keyup.enter.native="handleIconClick">
     </el-input>
     <el-button type="default" class="r fa fa-refresh" @click="refresh_data"></el-button>
+    {{item_category._structure}}
     <el-table :data="tableData" border style="width: 100%" height="920">
       <el-table-column fixed :context="_self" inline-template label="操作" width="150">
         <div>
@@ -20,6 +21,11 @@
       </el-table-column>
       <el-table-column :prop="item.key" :label=item._name width="120" v-for="(item, index) in item_category._structure" v-if="item.field != 'image'">
       </el-table-column>
+      <el-table-column :prop="item.key" :label=item._name width="240" v-for="(item, index) in item_category._structure" v-if="item.field == 'image'">
+        <template scope="scope">
+          <img :src="scope.row[item.key]" height="60" @click="show_image(scope.row[item.key])" />
+        </template>
+      </el-table-column>
       <!--<el-table-column prop="group_name" :label=tableHead.group_name width="120">
       </el-table-column>-->
     </el-table>
@@ -28,6 +34,15 @@
         :page-size="pageSize" layout="total, sizes, prev, pager, next, jumper" :total="totalNum">
         </el-pagination>
     </div>
+
+<el-dialog title="提示" v-model="dialogVisible" size="tiny">
+  <img :src="tmp_image_src" height="100%" width="100%"/>  
+  <span slot="footer" class="dialog-footer">
+    <el-button type="primary" @click="dialogVisible = false">关 闭</el-button>
+  </span>
+</el-dialog>
+
+
     <el-dialog title="" v-model="dialogFormVisible">
       <h2><span v-if="CIItem.id">编辑</span><span v-else>新建</span> {{CIItem._category.name}} </h2>
       <el-form :model="CIItem" label-position="left">
@@ -154,6 +169,8 @@
         fileList: {},
         tmp_ref_ci_list: {},
         tmp_item_category: "",
+        dialogVisible:false,
+        tmp_image_src:"",
       }
     },
     props: ['categoryId'],
@@ -171,29 +188,31 @@
       get_ref_ci_list(id, key) {
         this.$http.get("/api/items_categories/" + id + '/items').then((response) => {
           this.tmp_ref_ci_list[key] = response.data
+          var _tableData1 = deepCopyOfObject(this.tableData1)
+          for (var key0 in _tableData1) {
+            var element = _tableData1[key0];
+            for (var key1 in response.data) {
+              var element1 = response.data[key1];
+              if (element[key] == element1.id) {
+                element['_' + key] = element1.name
+              }
+            }
+          }
+          this.tableData1 = _tableData1
 
-          for (var key0 in this.tableData1) {
-            var element = this.tableData1[key0];
+          var _tableData = deepCopyOfObject(this.tableData)
+          for (var key0 in _tableData) {
+            var element = _tableData[key0];
             for (var key1 in response.data) {
               var element1 = response.data[key1];
               if (element[key] == element1.id) {
-                var element2 = deepCopyOfObject(element)
-                element2['_' + key] = element1.name
-                element = element2
+                element['_' + key] = element1.name
+
               }
             }
           }
-          for (var key0 in this.tableData) {
-            var element = this.tableData[key0];
-            for (var key1 in response.data) {
-              var element1 = response.data[key1];
-              if (element[key] == element1.id) {
-                var element2 = deepCopyOfObject(element)
-                element2['_' + key] = element1.name
-                element = element2
-              }
-            }
-          }
+          this.tableData = _tableData
+
         }, (response) => {
           this.$message({
             type: 'info',
@@ -253,6 +272,9 @@
                 this.get_item_category_by_id(this.item_category.structure[key][key1].reference, element[key1].key)
                 element1[key1].key = "_" + element[key1].key
               }
+              if (element[key1].field == "image") {
+                element1[key1].key = "_" + element[key1].key
+              }
               if (element1[key1].field == "number") {
                 element1[key1]._name = element1[key1].name + " (" + element1[key1].unit + ")"
               } else {
@@ -274,6 +296,15 @@
         if (this.categoryId) {
           this.$http.get("/api/items_categories/" + this.categoryId + '/items').then((response) => {
             var res = response.data
+            for (var key1 in res) {
+              var element1 = res[key1];
+              for (var key2 in element1) {
+                var element2 = element1[key2];
+                if (typeof (element2) == "object" && element2[0].url) {
+                  res[key1]["_" + key2] = element2[0].url
+                }
+              }
+            }
 
             this.tableData1 = res
             this.tableData = this.tableData1.slice(0, this.pageSize)
@@ -440,7 +471,11 @@
       },
       beforeUpload(k) {
         this.im_k = k
-      }
+      },
+      show_image(src){
+        this.dialogVisible = true
+        this.tmp_image_src = src
+      },
     }
   }
 </script>
