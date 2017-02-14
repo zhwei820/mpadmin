@@ -65,3 +65,6 @@
     color: #1f2d3d;
     background-color: #fff;
 }
+.item_edit_dialog .el-textarea{
+    width: 80%;
+}

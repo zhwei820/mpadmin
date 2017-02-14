@@ -42,7 +42,7 @@
 </el-dialog>
 
 
-    <el-dialog title="" v-model="dialogFormVisible">
+    <el-dialog title="" v-model="dialogFormVisible" class="item_edit_dialog">
       <h2><span v-if="CIItem.id">编辑</span><span v-else>新建</span> {{CIItem._category.name}} </h2>
       <el-form :model="CIItem" label-position="left">
         <el-form-item label="名称" :label-width="formLabelWidth">
@@ -59,7 +59,7 @@
                 <el-input :type="v1.field == 'number'?'number':'text'" v-model="CIItem[v1.key]" auto-complete="off"></el-input><span v-if="v1.field == 'number'"> {{v1.unit}}</span>
               </div>
               <div v-if="v1.field == 'text'">
-                <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="CIItem[v1.key]" auto-complete="off"></el-input>
+                <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="CIItem[v1.key]" auto-complete="off" width="300"></el-input>
               </div>
               <div v-if="v1.field == 'ref'">
                 <el-select v-model="CIItem[v1.key]">
