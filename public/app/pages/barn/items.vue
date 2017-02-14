@@ -18,7 +18,7 @@
       </el-table-column>
       <el-table-column prop="name" :label=tableHead.name width="120">
       </el-table-column>
-      <el-table-column :prop="item.key" :label=item._name width="120" v-for="(item, index) in item_category._structure">
+      <el-table-column :prop="item.key" :label=item._name width="120" v-for="(item, index) in item_category._structure" v-if="item.field != 'image'">
       </el-table-column>
       <!--<el-table-column prop="group_name" :label=tableHead.group_name width="120">
       </el-table-column>-->
