@@ -18,6 +18,8 @@
       </el-table-column>
       <el-table-column prop="name" :label=tableHead.name width="120">
       </el-table-column>
+      <el-table-column :prop="item.key" :label=item._name width="120" v-for="(item, index) in item_category._structure">
+      </el-table-column>
       <!--<el-table-column prop="group_name" :label=tableHead.group_name width="120">
       </el-table-column>-->
     </el-table>
@@ -39,12 +41,15 @@
           {{index_cpg}} 组
           <div v-if="! CIItem._category.structure['hidden'][index_cpg]">
             <el-form-item :label="v1.name" :label-width="formLabelWidth" v-for="v1 in v">
-              <div v-if="v1.field != 'select' && v1.field != 'multi_select' && v1.field != 'datetime' && v1.field != 'image' && v1.field != 'ref'">
+              <div v-if="v1.field == 'string' || v1.field == 'number'">
                 <el-input :type="v1.field == 'number'?'number':'text'" v-model="CIItem[v1.key]" auto-complete="off"></el-input><span v-if="v1.field == 'number'"> {{v1.unit}}</span>
+              </div>
+              <div v-if="v1.field == 'text'">
+                <el-input type="textarea" :autosize="{ minRows: 3, maxRows: 5}" v-model="CIItem[v1.key]" auto-complete="off"></el-input>
               </div>
               <div v-if="v1.field == 'ref'">
                 <el-select v-model="CIItem[v1.key]">
-                  <el-option v-for="item in tmp_ref_ci_list" v-bind:label="item.name" v-bind:value="item.id">
+                  <el-option v-for="item in tmp_ref_ci_list[v1.key]" v-bind:label="item.name" v-bind:value="item.id">
                     {{ item.name }}
                   </el-option>
                 </el-select> {{tmp_item_category.name}} 引用
@@ -147,8 +152,8 @@
         fields_comment: {},
         im_k: "",
         fileList: {},
-        tmp_ref_ci_list: [],
-        tmp_item_category:"",
+        tmp_ref_ci_list: {},
+        tmp_item_category: "",
       }
     },
     props: ['categoryId'],
@@ -163,9 +168,22 @@
       this.get_field_list()
     },
     methods: {
-      get_ref_ci_list(id) {
+      get_ref_ci_list(id, key) {
         this.$http.get("/api/items_categories/" + id + '/items').then((response) => {
-          this.tmp_ref_ci_list = response.data
+          this.tmp_ref_ci_list[key] = response.data
+
+          for (var key0 in this.tableData1) {
+            var element = this.tableData1[key0];
+            for (var key1 in response.data) {
+                var element1 = response.data[key1];
+                if(element[key]==element1.id){
+                  element['_'+key] = element1.name
+                }
+            }
+          }
+          console.log(this.tableData1);
+          
+          // this.tableData = this.tableData1.slice(0, this.pageSize)
 
         }, (response) => {
           this.$message({
@@ -192,7 +210,7 @@
           });
         });
       },
-      get_item_category_by_id(id) {
+      get_item_category_by_id(id, key) {
         this.$http.get("/api/items_categories/" + id).then((response) => {
           this.tmp_item_category = response.data
 
@@ -206,10 +224,14 @@
       get_item_category() {
         this.$http.get("/api/items_categories/" + this.categoryId).then((response) => {
           this.item_category = response.data
+          this.item_category._structure = []
 
           for (var key in this.item_category.structure) {
             var element = this.item_category.structure[key];
-
+            var element1 = deepCopyOfObject(element)
+            if (!key || key == "hidden") {
+              continue
+            }
             for (var key1 in element) {
               if (element[key1].field != undefined && (element[key1].field == "select" || element[key1].field ==
                   "multi_select")) {
@@ -218,11 +240,19 @@
               }
               if (element[key1].field == "ref") {
                 console.log(this.item_category.structure[key][key1].reference);
-                this.get_ref_ci_list(this.item_category.structure[key][key1].reference)
-                this.get_item_category_by_id(this.item_category.structure[key][key1].reference)
+                this.get_ref_ci_list(this.item_category.structure[key][key1].reference, element[key1].key)
+                this.get_item_category_by_id(this.item_category.structure[key][key1].reference, element[key1].key)
+                element1[key1].key = "_" + element[key1].key                
+              }
+              if (element1[key1].field == "number") {
+                element1[key1]._name = element1[key1].name + " (" + element1[key1].unit + ")"
+              } else {
+                element1[key1]._name = element1[key1].name
               }
             }
+            this.item_category._structure = this.item_category._structure.concat(element1)
           }
+          // console.log(this.item_category._structure);
 
         }, (response) => {
           this.$message({
@@ -235,11 +265,13 @@
         if (this.categoryId) {
           this.$http.get("/api/items_categories/" + this.categoryId + '/items').then((response) => {
             var res = response.data
+
             this.tableData1 = res
             this.tableData = this.tableData1.slice(0, this.pageSize)
             this.totalNum = this.tableData1.length
             this.handleIconClick()
             this.get_item_category()
+
           }, (response) => {
             this.$message({
               type: 'info',
