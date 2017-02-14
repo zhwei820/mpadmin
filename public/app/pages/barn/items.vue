@@ -175,16 +175,25 @@
           for (var key0 in this.tableData1) {
             var element = this.tableData1[key0];
             for (var key1 in response.data) {
-                var element1 = response.data[key1];
-                if(element[key]==element1.id){
-                  element['_'+key] = element1.name
-                }
+              var element1 = response.data[key1];
+              if (element[key] == element1.id) {
+                var element2 = deepCopyOfObject(element)
+                element2['_' + key] = element1.name
+                element = element2
+              }
             }
           }
-          console.log(this.tableData1);
-          
-          // this.tableData = this.tableData1.slice(0, this.pageSize)
-
+          for (var key0 in this.tableData) {
+            var element = this.tableData[key0];
+            for (var key1 in response.data) {
+              var element1 = response.data[key1];
+              if (element[key] == element1.id) {
+                var element2 = deepCopyOfObject(element)
+                element2['_' + key] = element1.name
+                element = element2
+              }
+            }
+          }
         }, (response) => {
           this.$message({
             type: 'info',
@@ -242,7 +251,7 @@
                 console.log(this.item_category.structure[key][key1].reference);
                 this.get_ref_ci_list(this.item_category.structure[key][key1].reference, element[key1].key)
                 this.get_item_category_by_id(this.item_category.structure[key][key1].reference, element[key1].key)
-                element1[key1].key = "_" + element[key1].key                
+                element1[key1].key = "_" + element[key1].key
               }
               if (element1[key1].field == "number") {
                 element1[key1]._name = element1[key1].name + " (" + element1[key1].unit + ")"
