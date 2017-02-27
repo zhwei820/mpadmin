@@ -195,7 +195,7 @@ import LayerEdit from "./layer_edit.vue"
           // reject()
           console.log(response.data.detail);
           var msg = response.data.detail != undefined ? response.data.detail : response.data.error
-          parent.vm.show_error_message(msg)
+          window.vm.show_error_message(msg)
 
         });
       },

@@ -112,7 +112,7 @@
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
             // })
-            parent.vm.show_ok_message("新建成功！")
+            window.vm.show_ok_message("新建成功！")
             this.groupId_1 = response.data.id
             this.fetch(0, 100)
 
@@ -130,7 +130,7 @@
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
             // })
-            parent.vm.show_ok_message("编辑成功！")
+            window.vm.show_ok_message("编辑成功！")
 
           }, (
             response) => {
@@ -147,11 +147,11 @@
           this.$http.delete("/api/groups/" + this.form.id + "/").then((response) => {
             this.groupId_1 = 0
             this.fetch(0, 100)
-            parent.vm.show_ok_message("删除成功！")
+            window.vm.show_ok_message("删除成功！")
             
             window.vm_m.get_model_menus()
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
         }
       },

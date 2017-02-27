@@ -199,7 +199,7 @@
           resolve([list, name_list, group_by_list])
         }, (response) => {
             var msg = response.data.detail != undefined ? response.data.detail : response.data.error
-            parent.vm.show_error_message(msg)
+            window.vm.show_error_message(msg)
 
           // reject()
         });
@@ -214,7 +214,7 @@
       },
      
       show_error_message(msg){
-          // parent.vm.show_error_message(msg)
+          // window.vm.show_error_message(msg)
           this.$message({
             type: 'info',
             message: msg

@@ -234,7 +234,7 @@
             window.vm_m.id = ""
             window.vm_m.get_model_menus()
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
         }
       },

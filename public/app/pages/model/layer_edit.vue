@@ -84,7 +84,7 @@
             // })
             this.layerId_1 = response.data.id
             this.fetch(0, 100)
-            parent.vm.show_ok_message("新建成功！")
+            window.vm.show_ok_message("新建成功！")
 
           }, (
             response) => {
@@ -98,7 +98,7 @@
           this.$http.put("/api/layers/" + this.form.id + "/", this.form).then((response) => {
             console.log(this.form);
             window.vm_m.get_model_menus()
-            parent.vm.show_ok_message("编辑成功！")
+            window.vm.show_ok_message("编辑成功！")
 
           }, (
             response) => {
@@ -115,10 +115,10 @@
           this.$http.delete("/api/layers/" + this.form.id + "/").then((response) => {
             window.vm_m.get_model_menus()
             this.layerId_1 = ""
-            parent.vm.show_ok_message("删除成功！")
-
+            this.fetch(0, 100)
+            window.vm.show_ok_message("删除成功！")
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
         }
 

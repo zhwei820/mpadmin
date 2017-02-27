@@ -2,7 +2,7 @@
   <div>
     <el-row type="flex" class="row-bg" justify="center">
       <el-col :span="16">
-        <h2><span v-if="id">编辑</span><span v-else>新建</span>CI模型</h2>
+        <h2><span v-if="ItemCategoryId_1">编辑</span><span v-else>新建</span>CI模型</h2>
         <el-form :model="CICategory" label-position="left">
           <el-form-item label="CI模型名称" :label-width="formLabelWidth">
             <el-input v-model="CICategory.name" auto-complete="off"></el-input>
@@ -138,11 +138,13 @@
         group_name_list: {},
         item_category_list: {},
         item_category_name_list: {},
+        ItemCategoryId_1: 0,
       }
     },
     props: ['ItemCategoryId'],
     watch: {
       ItemCategoryId: function (dest, src) {
+        this.ItemCategoryId_1 = this.ItemCategoryId
         this.fetch(0, 100)
       }
     },
@@ -190,6 +192,7 @@
           for (var key in response.data) {
             this.group_name_list[response.data[key].id] = response.data[key].name;
           }
+          this.ItemCategoryId_1 = this.ItemCategoryId
 
           this.fetch(0, this.pageSize);
         }, (response) => {
@@ -226,8 +229,8 @@
         // var id = this.$route.params.id
         // this.id = id == undefined ? 0 : id
 
-        if (this.ItemCategoryId) {
-          this.$http.get("/api/items_categories/" + this.ItemCategoryId + "/?" + Date.now()).then((response) => {
+        if (this.ItemCategoryId_1) {
+          this.$http.get("/api/items_categories/" + this.ItemCategoryId_1 + "/?" + Date.now()).then((response) => {
             this.CICategory = response.data
             // debugger
             for (var key in this.CICategory.structure) {
@@ -284,9 +287,11 @@
             // this.$router.push({
             //   path: "/item_category_edit/" + response.data.id
             // })
-            parent.vm.show_ok_message("新建成功！")
+            this.ItemCategoryId_1 = response.data.id
+            this.fetch(0, 100)
+            window.vm.show_ok_message("新建成功！")
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
 
         } else {
@@ -295,9 +300,9 @@
             // this.$router.push({
             //   path: "/item_category_edit/" + response.data.id
             // })
-            parent.vm.show_ok_message("编辑成功！")
+            window.vm.show_ok_message("编辑成功！")
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
         }
       },
@@ -312,10 +317,10 @@
         if (this.CICategory.id) {
           this.$http.delete("/api/items_categories/" + this.CICategory.id + "/").then((response) => {
             window.vm_m.get_model_menus()
-            window.vm_m.id = ""
-
+            this.ItemCategoryId_1 = 0
+            this.fetch(0, 100)
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
         }
       }

@@ -388,7 +388,7 @@
             this.dialogFormVisible = false
             this.fetch()
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
           this.$message({
             type: 'success',
@@ -411,14 +411,14 @@
             this.dialogFormVisible = false
             this.fetch()
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
         } else {
           this.$http.put("/api/items/" + this.CIItem.id + "/", ci_item).then((response) => {
             this.dialogFormVisible = false
             this.fetch()
           }, (response) => {
-            parent.vm.show_error_message(response.data.error)
+            window.vm.show_error_message(response.data.error)
           });
         }
       },
