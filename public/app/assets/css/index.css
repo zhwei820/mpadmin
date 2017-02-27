@@ -72,3 +72,7 @@
 .el-input {
     width: 90%;
 }
+
+.el-tooltip{
+    display: inline-block;
+}

@@ -258,9 +258,6 @@ import LayerEdit from "./layer_edit.vue"
     background: transparent;
     border: navajowhite;
   }
-  .item{
-    float: right;
-    margin-right: 24px;
-  }
+  
 
 </style>
