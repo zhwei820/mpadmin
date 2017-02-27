@@ -78,6 +78,6 @@
     display: inline-block;
 }
 
-.is-active {
+.main_menu .is-active {
     background-color: #B6AAE9;
 }

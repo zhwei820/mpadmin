@@ -19,7 +19,7 @@
     </el-menu>
     <el-row class="tac height_100" :gutter="5">
       <el-col :span="4" class=" height_100">
-        <el-menu mode="vertical" theme="" :default-active="path" class="el-menu-vertical-demo height_100" @select="handleSelect" router>
+        <el-menu mode="vertical" theme="" :default-active="path" class="el-menu-vertical-demo main_menu height_100" @select="handleSelect" router>
           <el-menu-item index="/model"><i class="fa fa-cogs"></i> 模型</el-menu-item>
           <el-menu-item index="/barn/"><i class="fa fa-cogs"></i> 仓库</el-menu-item>
           <el-menu-item index="/storage"><i class="fa fa-cogs"></i> 项目</el-menu-item>
