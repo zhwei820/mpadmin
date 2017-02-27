@@ -1,7 +1,7 @@
 <template>
   <div class="" class="height_100">
-    <el-menu theme="dark" default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
-      <el-menu-item index="/model?1">CMDB管理</el-menu-item>
+    <el-menu style="background-color: rgb(52, 45, 149); " default-active="1" class="el-menu-demo" mode="horizontal" @select="handleSelect">
+      <el-menu-item index="/model?1" style="color: #fff;">CMDB管理</el-menu-item>
       <el-submenu index="2">
         <template slot="title">我的工作台</template>
         <el-menu-item index="/model?11">选项1</el-menu-item>
@@ -145,5 +145,9 @@
   
   .breadcrumb_padding {
     padding: 8px 0 8px 0;
+  }
+  
+  .el-menu--horizontal .el-submenu .el-submenu__title {
+    color: #fff;
   }
 </style>
