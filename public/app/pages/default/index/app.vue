@@ -17,9 +17,9 @@
         <span>欢迎 管理员，{{admin_user}}！</span>
       </div>
     </el-menu>
-    <el-row class="tac height_100" :gutter="20">
-      <el-col :span="4">
-        <el-menu mode="vertical" :default-active="path" class="el-menu-vertical-demo" @select="handleSelect" router>
+    <el-row class="tac height_100" :gutter="5">
+      <el-col :span="4" class=" height_100">
+        <el-menu mode="vertical" :default-active="path" class="el-menu-vertical-demo height_100" @select="handleSelect" router>
           <el-menu-item index="/model"><i class="fa fa-cogs"></i> 模型</el-menu-item>
           <el-menu-item index="/barn/"><i class="fa fa-cogs"></i> 仓库</el-menu-item>
           <el-menu-item index="/storage"><i class="fa fa-cogs"></i> 项目</el-menu-item>
@@ -99,6 +99,14 @@
           return
         }
       },
+      show_ok_message(msg) {
+        this.$message({
+          type: 'success',
+          message: msg || "操作成功！",
+          showClose: true,
+          // duration: 5,
+        });
+      },
     },
   }
 </script>
@@ -133,5 +141,9 @@
     margin-right: 20px;
     position: relative;
     margin-top: 17px;
+  }
+  
+  .breadcrumb_padding {
+    padding: 8px 0 8px 0;
   }
 </style>

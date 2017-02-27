@@ -68,7 +68,7 @@
                 <el-option v-bind:label="fields_comment[index]" v-bind:value="index" v-for="(item, index) in field_list">
                 </el-option>
               </el-select>
-              <el-button @click="addStructure"><i class="fa fa-plus"></i></el-button>
+              <el-button @click="addStructure" class="add_btn">添加</el-button>
             </div>
           </el-form-item>
         </el-form>
@@ -140,7 +140,7 @@
         item_category_name_list: {},
       }
     },
-    props:['ItemCategoryId'],
+    props: ['ItemCategoryId'],
     watch: {
       ItemCategoryId: function (dest, src) {
         this.fetch(0, 100)
@@ -284,6 +284,7 @@
             // this.$router.push({
             //   path: "/item_category_edit/" + response.data.id
             // })
+            parent.vm.show_ok_message("新建成功！")
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
@@ -294,6 +295,7 @@
             // this.$router.push({
             //   path: "/item_category_edit/" + response.data.id
             // })
+            parent.vm.show_ok_message("编辑成功！")
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
@@ -347,5 +349,10 @@
   .prop_label {
     display: inline-block;
     width: 20%;
+  }
+  
+  .add_btn {
+    background-color: #00FF40;
+    color: black;
   }
 </style>

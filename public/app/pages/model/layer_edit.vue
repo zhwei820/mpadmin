@@ -2,7 +2,7 @@
   <!--<el-dialog title="CI模型层编辑" v-model="dialogFormVisible">-->
   <el-row type="flex" class="row-bg" justify="center">
     <el-col :span="6">
-      <h2><span v-if="id">编辑</span><span v-else>新建</span>CI模型层</h2>
+      <h2><span v-if="_layerId">编辑</span><span v-else>新建</span>CI模型层</h2>
       <el-form :model="form" label-position="top">
         <el-form-item label="CI模型层名称" label-width="80">
           <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -39,7 +39,7 @@
         },
         _form: {},
         id: 0,
-        _layerId:"",
+        _layerId: "",
       }
     },
     props: ['layerId'],
@@ -60,8 +60,8 @@
         // var id = this.$route.params.id
         // this.id = id == undefined ? 0 : id
 
-        if (this.layerId) {
-          this.$http.get("/api/layers/" + this.layerId + "/?" + Date.now()).then((response) => {
+        if (this._layerId) {
+          this.$http.get("/api/layers/" + this._layerId + "/?" + Date.now()).then((response) => {
             this.form = response.data
 
           }, (response) => {
@@ -81,6 +81,10 @@
             // this.$router.push({
             //   path: "/layer_edit/" + response.data.id
             // })
+            this._layerId = response.data.id
+            this.fetch(0, 100)
+            parent.vm.show_ok_message("新建成功！")
+
           }, (
             response) => {
             this.$message({
@@ -93,6 +97,8 @@
           this.$http.put("/api/layers/" + this.form.id + "/", this.form).then((response) => {
             console.log(this.form);
             window.vm_m.get_model_menus()
+            parent.vm.show_ok_message("编辑成功！")
+
           }, (
             response) => {
             this.$message({

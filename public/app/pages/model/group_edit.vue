@@ -109,6 +109,7 @@
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
             // })
+            parent.vm.show_ok_message("新建成功！")
 
           }, (
             response) => {
@@ -124,6 +125,8 @@
             // this.$router.push({
             //   path: "/group_edit/" + response.data.id
             // })
+            parent.vm.show_ok_message("编辑成功！")
+
           }, (
             response) => {
             this.$message({
@@ -138,6 +141,7 @@
         if (this.form.id) {
           this.$http.delete("/api/groups/" + this.form.id + "/").then((response) => {
             window.vm_m.id = ""
+            window.vm_m.get_model_menus()
 
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
