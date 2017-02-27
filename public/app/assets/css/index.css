@@ -65,7 +65,8 @@
     color: #1f2d3d;
     background-color: #fff;
 }
-.item_edit_dialog .el-textarea{
+
+.item_edit_dialog .el-textarea {
     width: 80%;
 }
 
@@ -73,6 +74,10 @@
     width: 90%;
 }
 
-.el-tooltip{
+.el-tooltip {
     display: inline-block;
+}
+
+.is-active {
+    background-color: #B6AAE9;
 }
