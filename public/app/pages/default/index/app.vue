@@ -110,7 +110,7 @@
     },
   }
 </script>
-<style scoped>
+<style >
   @import '../../../assets/css/normalize.css';
   @import '../../../assets/css/index.css';
   body {
