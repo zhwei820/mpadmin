@@ -52,6 +52,8 @@
     beforeMount: function () {
       window.vm_m_n = this;
       this._form = deepCopyOfObject(this.form)
+      this.layerId_1 = this.layerId
+
       this.fetch(0, 100)
     },
     methods: {
@@ -112,7 +114,9 @@
         if (this.form.id) {
           this.$http.delete("/api/layers/" + this.form.id + "/").then((response) => {
             window.vm_m.get_model_menus()
-            window.vm_m.id = ""
+            this.layerId_1 = ""
+            parent.vm.show_ok_message("删除成功！")
+
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });

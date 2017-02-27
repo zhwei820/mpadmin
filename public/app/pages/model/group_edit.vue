@@ -2,7 +2,7 @@
   <div>
     <el-row type="flex" class="row-bg" justify="center">
       <el-col :span="6">
-        <h2><span v-if="id">编辑</span><span v-else>新建</span>CI模型组</h2>
+        <h2><span v-if="groupId_1">编辑</span><span v-else>新建</span>CI模型组</h2>
         <el-form label-position="top">
           <el-form-item label="CI模型组名称">
             <el-input v-model="form.name" auto-complete="off"></el-input>
@@ -50,11 +50,13 @@
         layer_name_list: {},
         formLabelWidth: '120px',
         id: 0,
+        groupId_1: "",
       }
     },
     props: ['groupId'],
     watch: {
       groupId: function (dest, src) {
+        this.groupId_1 = this.groupId
         this.fetch(0, 100)
       }
     },
@@ -75,6 +77,7 @@
           for (var key in response.data) {
             this.layer_name_list[response.data[key].id] = response.data[key].name;
           }
+          this.groupId_1 = this.groupId
           this.fetch(0, 100)
         }, (response) => {
           this.$message({
@@ -87,8 +90,8 @@
         // var id = paramParse('id')
         // var id = this.$route.params.id
         // this.id = id == undefined ? 0 : id
-        if (this.groupId) {
-          this.$http.get("/api/groups/" + this.groupId + "/?" + Date.now()).then((response) => {
+        if (this.groupId_1) {
+          this.$http.get("/api/groups/" + this.groupId_1 + "/?" + Date.now()).then((response) => {
             this.form = response.data
 
           }, (response) => {
@@ -110,6 +113,8 @@
             //   path: "/group_edit/" + response.data.id
             // })
             parent.vm.show_ok_message("新建成功！")
+            this.groupId_1 = response.data.id
+            this.fetch(0, 100)
 
           }, (
             response) => {
@@ -140,9 +145,11 @@
       deleteGroup() {
         if (this.form.id) {
           this.$http.delete("/api/groups/" + this.form.id + "/").then((response) => {
-            window.vm_m.id = ""
+            this.groupId_1 = 0
+            this.fetch(0, 100)
+            parent.vm.show_ok_message("删除成功！")
+            
             window.vm_m.get_model_menus()
-
           }, (response) => {
             parent.vm.show_error_message(response.data.error)
           });
